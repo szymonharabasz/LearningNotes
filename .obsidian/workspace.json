@@ -1,0 +1,210 @@
+{
+  "main": {
+    "id": "d6f2759bec88045b",
+    "type": "split",
+    "children": [
+      {
+        "id": "b8bd322ef72d1419",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "96b150c083967d6f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Spring and Spring Boot/Basics.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Basics"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a9bc3b86855e9bc5",
+    "type": "split",
+    "children": [
+      {
+        "id": "215a0d7bc524010e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c3d36d0389f76ada",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "0681d31e755b8c0e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "80509900baa4c38a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "64a0b1e1236f6ee0",
+    "type": "split",
+    "children": [
+      {
+        "id": "0d4729ee9fd70458",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e455400d803078dc",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Condensed Matter/2. Electrons in the lattice.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 2. Electrons in the lattice"
+            }
+          },
+          {
+            "id": "841c2c51bc8edef7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Condensed Matter/2. Electrons in the lattice.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 2. Electrons in the lattice"
+            }
+          },
+          {
+            "id": "c2a39aace8f07072",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "61333693b5495e80",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Condensed Matter/2. Electrons in the lattice.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 2. Electrons in the lattice"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "96b150c083967d6f",
+  "lastOpenFiles": [
+    "Physics/Quantum Chromodynamics.md",
+    "Work/Differences between macros.md",
+    "Spring and Spring Boot/REST with Spring Boot.md",
+    "Fortran.md",
+    "Spring and Spring Boot/Spring Security/Self-signed SSL certificate.md",
+    "Rust.md",
+    "Condensed Matter/Simulations.md",
+    "Condensed Matter/11. Order-disorder duality.md",
+    "Condensed Matter/2. Electrons in the lattice.md",
+    "Condensed Matter/4. Application of electronic interactions.md",
+    "Work/Studying properties of hot and dense baryonic matter with the  HADES experiment.md",
+    "Work/Thermal.md",
+    "Physics/Maximum momentum from accelerator rigidity.md",
+    "Physics/Drell-Yan-Szymon’s MacBook Pro.md",
+    "Condensed Matter/3. Lattice vibrations.md",
+    "Condensed Matter/9. Symmetries.md",
+    "Condensed Matter/6. Quantum field theory.md",
+    "Condensed Matter/7. Interaction in quantum field theory.md",
+    "AdS_CFT/General Relativity.md",
+    "Physics/Relativistic hydrodynamics.md",
+    "Spring and Spring Boot/Spring Security/Using OAuth2.md",
+    "Spring and Spring Boot/Spring Security/Spring Boot Security.md",
+    "Spring and Spring Boot/Spring Boot Security-Szymon’s MacBook Pro.md",
+    "Spring and Spring Boot/Spring Security",
+    "Spring and Spring Boot/Spring Cloud/Cloud Sleuth and Zipkin.md",
+    "Spring and Spring Boot/Spring Cloud/Cloud Stream.md",
+    "Spring and Spring Boot/Spring Cloud/Config Server.md",
+    "Spring and Spring Boot/Spring Cloud",
+    "Work",
+    "Spring and SPring Boot",
+    "Spring and Spring Boot",
+    "React et Co_",
+    "React et Co.",
+    "React et Co.",
+    "Physics",
+    "Condensed Matter"
+  ]
+}
