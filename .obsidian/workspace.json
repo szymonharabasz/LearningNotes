@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "b8bd322ef72d1419",
+        "id": "f98e0ad26045740e",
         "type": "tabs",
         "children": [
           {
-            "id": "96b150c083967d6f",
+            "id": "92a5394ec02eef2d",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Spring and Spring Boot/Basics.md",
+                "file": "Rust.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Basics"
+              "title": "Rust"
             }
           }
         ]
@@ -168,14 +168,15 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "96b150c083967d6f",
+  "active": "92a5394ec02eef2d",
   "lastOpenFiles": [
-    "Physics/Quantum Chromodynamics.md",
     "Work/Differences between macros.md",
+    "Rust.md",
+    "Physics/Quantum Chromodynamics.md",
+    "Spring and Spring Boot/Basics.md",
     "Spring and Spring Boot/REST with Spring Boot.md",
     "Fortran.md",
     "Spring and Spring Boot/Spring Security/Self-signed SSL certificate.md",
-    "Rust.md",
     "Condensed Matter/Simulations.md",
     "Condensed Matter/11. Order-disorder duality.md",
     "Condensed Matter/2. Electrons in the lattice.md",
@@ -196,7 +197,6 @@
     "Spring and Spring Boot/Spring Security",
     "Spring and Spring Boot/Spring Cloud/Cloud Sleuth and Zipkin.md",
     "Spring and Spring Boot/Spring Cloud/Cloud Stream.md",
-    "Spring and Spring Boot/Spring Cloud/Config Server.md",
     "Spring and Spring Boot/Spring Cloud",
     "Work",
     "Spring and SPring Boot",

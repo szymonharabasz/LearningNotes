@@ -89,18 +89,21 @@ Parenthesis are used here just to deliminate alternatives: `<` - align left, `^`
 Some methods:
 ```Rust
 metaphysics_in_greek.is_empty()
+"42".parse::<i32>(); // return Result
 ```
 #### Collections
+###### Arrays
 An array with some element repeated $n$ times can be created like:
 ```Rust
 let a = ["a"; 5]
 ```
-Slices:
+###### Slices
 ```Rust
 let slice = &a[1..3]; // exlusive
 let slice = &a[1..=3]; // inclusive
 ```
-For vectors, the compiler can infer the type of elements based on `push` calls:
+###### Vectors
+The compiler can infer the type of elements based on `push` calls:
 ```Rust
 let mut my_vec = Vec::new();
 vec.push(42);
@@ -123,13 +126,51 @@ Converting arrays, the compiler can infer the type of elements:
 let mut my_vec: Vec<String> = a.into();
 let mut my_vec: Vec<_> = [1, 2, 3, 4].into();
 ```
-Tuples:
+###### Tuples:
 ```Rust
 let my_tuple = (1, "Hello", 42.0);
 let second = my_tuple.1;
 let (_, two, three) = my_tuple;
 println!("two: {}", two); // prints "two: Hello"
 ```
+###### Maps and sets
+`HashMap` and `BTreeMap` - the latter has ordered keys. `insert(key, value)` returns an `Option` of old value.
+`entry(key)` returns (code simplified):
+```Rust
+enum Entry<K, V> {
+	Occupied(OccupiedEntry<K, V>),
+	Vacant(VacantEntry<K, V>),
+}
+```
+This enum has a method:
+```Rust
+fn or_insert(self, default: V) -> &mut V {
+	match self {
+		Occupied(entry) => entry.into_mut(),
+		Vacant(entry) => entry.insert(default),
+	}
+}
+```
+Therefore, the combination of `entry()` and `or_insert()` allows to implement a counter of elements:
+```Rust
+for book in book_collection {
+	// if the key exists in the HashMap it is returned, otherwise 0 is
+	// inserted, in both cases, reference to the value, new or already
+	// existing, is returned
+	let return_value = book_hashmap_counter.entry(book).or_insert(0);
+	// and in any case, the refered value is incremented
+	*return_value += 1;
+}
+```
+One can do more complicated things with the returned `&mut`:
+```Rust
+survey.entry(item.0).or_insert(Vec::new()).push(item.1);
+```
+`HashSet` and `BTreeSet` are implemented as maps with value `()`.
+
+**`BinaryHeap`** is a *priority queue*, it always has the largest element in front (accessible through `.pop()`) and remaining elements unordered.
+
+**`VecDeque`** is optimized to pop elements from the back  (`.pop_back()`) and from the front (`.pop_front()`). It is implemented with a ring buffer. It can be easily created `::from` a vector.
 #### Flow control
 
 For loop:
@@ -209,6 +250,35 @@ let answer = match input {
 	number @ 5..=9 => "Less than 10",
 	_ => "Less than four or at least ten"
 };
+```
+Pattern matching in conditional statement - `if let`
+```Rust
+if let Some(number) = my_vec.get(index) {
+	println!("The number is {number}");
+}
+```
+Handling the case when pattern matching fails - `let ... else`:
+```Rust
+let Some(number) = my_vec.get(index) else {
+	println!("There is no number");
+}
+```
+Diverging code - we know that `number` is available after the code block, because of the `continue` inside of it:
+```Rust
+for index in 0..10 {
+	let Some(number) = my_vec.get(index) else {
+		continue;
+	}
+	println!("The number is {number}");
+}
+```
+Looping until pattern can be matched:
+```Rust
+while let Some(information) = my_vec.pop() {
+	if let Ok(number) = information.parse::<i32>() {
+		println!("Negative of the number is {}", -number);
+	}
+}
 ```
 #### References
 Mutable references are created with:
@@ -314,8 +384,51 @@ fn check_border_thickness(Shape { border_thickness: thickness } : &Shape) {
 	// ...
 }
 ```
+#### Generics
+Many types with many constraints:
+```Rust
+fn compare_and_display<T: Display, U: Display + PartialOrd>(
+	statement: T, a: U, b: U
+) { ... }
+```
+or
+```Rust
+fn compare_and_display<T, U>(statement: T, a: U, b: U)
+where T: Display, U: Display + PartialOrd
+{ ... }
+```
 #### Standard library
 Reference counting wrappers are `Rc<T>` and `Arc<T>`. To enable internal mutability, one can use `Rc<RefCell<T>>` and `Arc<Mutex<T>>`. One uses `::new()` for initialization. One can borrow the values like this:
 ```Rust
 let val = my_rc.borrow_mut();
+```
+###### Options
+Methods:
+```Rust
+my_option.is_some();
+my_option.is_none();
+my_option.unwrap();
+my_option.unwrap_or(&0);
+my_option.expect("My own error message");
+```
+###### Results
+`Result<T, E>` is an enum with `Ok(T)` and `Err(E)`.
+Methods:
+```Rust
+my_result.is_ok();
+my_result.is_err();
+my_result.unwrap();
+my_result.unwrap_or(&0);
+my_result.expect("My own error message");
+```
+Errors often implement the trait `Error`.
+
+**Question mark operator** `?` (also available for `Option`) return the value if the `Result` is `Ok` or immediately returns the `Err` from the function (so the enclosing function also has to return `Result` with corresponding `Err`).
+
+Explicit panic:
+```Rust
+panic!("It's not Titanic");
+assert!(length < 4, "Length should be smaller than 4");
+assert_eq!(length, 4, "Length should be 4");
+assert_ne!(length, 4, "Length should not be 4");
 ```
