@@ -101,6 +101,7 @@ $$
 \mathrm{six\ matrices\ }\sigma^{\mu\nu}=\frac{i}{2}\left[\gamma^\mu,\gamma^\nu\right].
 $$
 
+#### Center symmetry
 Color gauge transformation:
 $$
 U(x)=\exp\left(
@@ -128,7 +129,69 @@ $$
 \mathcal{L}_\theta=\frac{g_3^2\bar\theta}{64\pi^2}
 \epsilon_{\mu\nu\rho\sigma}\mathcal{G}_a^{\mu\nu}\mathcal{G}_a^{\rho\sigma},\;\epsilon_{0123}=1.
 $$
+Inside the color $SU(3)$ symmetry there is a hidden center symmetry $Z(3)$ which is valid in. pure gauge theory and approximate in QCD:
+$$
+\Omega_1=e^{2\pi i/3}\mathbb{1},\ \ \ 
+\Omega_2=e^{-2\pi i/3}\mathbb{1},\ \ \ 
+\Omega_3=\mathbb{1}.\ \ \  
+$$
+It is a group, made by constant and diagonal matrices, so gauge fields are invariant under these transformations, because $e^{\pm2\pi i/3}=1$, $\det\Omega_i=1$, so this group is a subgroup of $SU(3)$.
+A Wilson line:
+$$
+L(\vec x)=\mathcal{P}\exp\left(ig\int_0^{1/T}A_0(\tau,\vec x)d\tau\right),
+$$
+with $A_0(\tau,\vec x)$ acting as effective potential, can be understood as a propagator of an infinitely heavy (no kinetic term in $\exp$) *test quark*. It transform under gauge transformation like:
+$$
+L(\vec x)\rightarrow U^\dagger(1/T,\vec x)L(\vec x)U(0,\vec x).
+$$
+Now the gauge transformation of gluons depend on time, we can chose it to be periodic up to $Z(3)$:
+$$
+U(1/T,\vec x)=e^{2\pi i\nu/3}U(0,\vec x),\ \ \ \nu\in\lbrace -1,0,1\rbrace.
+$$
+Gluons do not change, because they are invariant under $Z(3)$, but the $L(\vec x)$, propagator can get some phase.
+If the vacuum consists of domains where different phases apply, then the propagating *test quark* will pick up phases at random. Random phases add to 0, and the propagator vanishes, the quark does not propagate and is **confined**.
+At high temperature $g(T)\sim 1/\log(T)$, so the propagator $\rightarrow 1$ and the quark is **deconfined**.
+Closed Wilson line becomes **Wilson loop**:
+$$
+W(C)=\mathrm{tr}\mathcal{P}\exp\left(ig\oint_CA_\mu(x)dx^\mu\right),
+$$
+which can be interpreted as creation of quark-antiquark pair, its propagation for some time, and annihilation. It is related to the potential and the time interval over which it is considered. 
 
+In the confined case, the potential is linear, $V\sim\sigma R$, where $\sigma$ - string tension, so the expectation value of the loop behaves as exponential of a quantity proportional to the area enclosed by the loop (**area law**).
+In the deconfined case, the expectation value behaves as an exponential of a quantity proportional to the perimeter of the loop (**perimeter law**).
+
+We can write a partition function as an Euclidean path integral:
+$$
+\mathcal{Z}=\mathrm{Tr}\exp(-\beta H)=\int DA_\mu\exp(-S_E),\ \ \ 
+S_E=\frac{1}{4}\int_0^\beta d\tau\int d^3x F_{\mu\nu}F_{\mu\nu},
+$$
+where periodic boundary conditions are imposed on fields:
+$$
+A_\mu(\beta, \vec x)=A_\mu(0, \vec x).
+$$
+This corresponds to quantum field theory with *compactified* Euclidean time.
+Now the temporal Wilson loop in Euclidean space that extends over the whole time axis, after compactification becomes a **Polyakov loop** and its charge conjugate:
+$$
+W(C)\rightarrow P(\vec x)P^\dagger(\vec x +\vec R).
+$$
+Polyakov loop is a loop that encircles the whole compactified Euclidean time:
+$$
+P[A_0](\vec x)=\exp\left(ig\int_0^\beta A_0(x_0,\vec x)dx_0\right).
+$$
+A single loop, as opposed to loop pair, is related to the free energy of single quark:
+$$
+\langle P(\vec x)\rangle = \exp[-\beta(F_q-F_0)],
+$$
+In the confined phase, where there are no free quarks, this free energy goes to infinity, so $\langle P(\vec x)\rangle=0$, In the deconfined phase, the free energy is finite, so $\langle P(\vec x)\rangle\neq0$. 
+
+Let there be a gauge field localized on a closed curve $C_1$ in three dimensions. The field corms a **center vortex** if a Wilson loop calculated over a curve $C_2$ gets a non-trivial center element of the gauge group once the curves $C_1$ and $C_2$ are linked in a non-trivial way, that us:
+$$
+W[A(C_1)](C_2)=z^{L(C_1,C_2)},
+$$
+where $L(C_1,C_2)$ is the Gauss linking number.
+
+**Lattice data suggest that center vortices are dominant field configurations in the infrared region and are responsible both for deconfinement and chiral symmetry.**
+#### Chiral symmetry
 Chiral left- and right-handed projectors:
 $$
 P_{L,R}=\frac{1}{2}\left(1\pm\gamma_5\right).
@@ -226,6 +289,8 @@ $$
 \epsilon_{\mu\nu\rho\sigma}\mathcal{G}_a^{\mu\nu}\mathcal{G}_a^{\rho\sigma},\;\epsilon_{0123}=1.
 $$
 Factor of 3 comes from the number of flavors, In the $N_c\rightarrow\infty$ limit, the current is again conserved, because $g_3^2\sim N_c^{-1}$.
+The $U(1)_A$ symmetry is also broken by topological fluctuations. The effects that break this symmetry are suppressed like $T^{-7}$ in pure gauge or $T^{-8}, T^{-9}$ in QCD. Lattice simulations are needed to know if it happens before the chiral transition.
+
 With the finite quark masses, $\mathcal{M}=\mathrm{diag}(m_u, m_d, m_s)$, the divergences are (not considering anomalies):
 $$
 \begin{eqnarray}
