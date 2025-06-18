@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Rust notes/Own types.md",
+                "file": "Rust/Own types.md",
                 "mode": "source",
                 "source": false
               },
@@ -168,14 +168,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "92a5394ec02eef2d",
+  "active": "c3d36d0389f76ada",
   "lastOpenFiles": [
-    "Rust notes/Standard library.md",
-    "Rust notes/Own types.md",
-    "Rust notes/Functional programming.md",
-    "Rust notes/Flow control.md",
-    "Rust notes/Basic types.md",
-    "Rust notes",
+    "Rust/Standard library.md",
+    "Rust/Own types.md",
+    "Rust/Functional programming.md",
+    "Rust/Flow control.md",
+    "Rust/Basic types.md",
+    "Rust",
     "Monte Carlo.md",
     "Scrapbook.md",
     "Physics/Quantum Chromodynamics.md",
