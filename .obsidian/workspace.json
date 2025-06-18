@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Rust.md",
+                "file": "Rust notes/Own types.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Rust"
+              "title": "Own types"
             }
           }
         ]
@@ -170,9 +170,16 @@
   },
   "active": "92a5394ec02eef2d",
   "lastOpenFiles": [
-    "Work/Differences between macros.md",
-    "Rust.md",
+    "Rust notes/Standard library.md",
+    "Rust notes/Own types.md",
+    "Rust notes/Functional programming.md",
+    "Rust notes/Flow control.md",
+    "Rust notes/Basic types.md",
+    "Rust notes",
+    "Monte Carlo.md",
+    "Scrapbook.md",
     "Physics/Quantum Chromodynamics.md",
+    "Work/Differences between macros.md",
     "Spring and Spring Boot/Basics.md",
     "Spring and Spring Boot/REST with Spring Boot.md",
     "Fortran.md",
@@ -190,13 +197,7 @@
     "Condensed Matter/6. Quantum field theory.md",
     "Condensed Matter/7. Interaction in quantum field theory.md",
     "AdS_CFT/General Relativity.md",
-    "Physics/Relativistic hydrodynamics.md",
-    "Spring and Spring Boot/Spring Security/Using OAuth2.md",
-    "Spring and Spring Boot/Spring Security/Spring Boot Security.md",
-    "Spring and Spring Boot/Spring Boot Security-Szymon’s MacBook Pro.md",
     "Spring and Spring Boot/Spring Security",
-    "Spring and Spring Boot/Spring Cloud/Cloud Sleuth and Zipkin.md",
-    "Spring and Spring Boot/Spring Cloud/Cloud Stream.md",
     "Spring and Spring Boot/Spring Cloud",
     "Work",
     "Spring and SPring Boot",
@@ -204,7 +205,6 @@
     "React et Co_",
     "React et Co.",
     "React et Co.",
-    "Physics",
-    "Condensed Matter"
+    "Physics"
   ]
 }
