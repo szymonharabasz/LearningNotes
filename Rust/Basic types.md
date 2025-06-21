@@ -101,6 +101,10 @@ An array with some element repeated $n$ times can be created like:
 ```Rust
 let a = ["a"; 5]
 ```
+Can be destructured:
+```Rust
+let [first, .., last] = a;
+```
 ###### Slices
 ```Rust
 let slice = &a[1..3]; // exlusive

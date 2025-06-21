@@ -145,6 +145,17 @@ But we cannot do:
 ```Rust
 // compare_and_display_c::<u8>("Result is: ", 2, 5);
 ```
+###### Const generics:
+```Rust
+struct Buffers<T, const N: usize> { 
+	array; [T; N],
+}
+```
+In that case `T` and `N` can be inferred:
+```Rust
+let my_buf = Buffer { array: [u8; 128] };
+```
+
 #### Traits
 Do nothing and use default implementation in the code of a trait:
 ```Rust
@@ -164,6 +175,25 @@ Trait bonds, necessary traits, allow assuming that `&self` in the default implem
 trait FightClose: Debug { ... }
 ```
 **Orphan rule:** you cannot implement someone else's traits for someone else's types.
+
+A trait implemented for every type:
+```Rust
+trait SaysHello {
+	fn hello(&self) {
+		println!("Hello");
+	}
+}
+
+impl<T> SaysHello for T {}
+// ...
+8.hello();
+// ...
+struct Nothing;
+Nothing.hello();
+// ...
+().hello();
+```
+In a *blanket trait* implementation `T` is usually bounded by another trait, e.g., `T: Debug`.
 #### Modularity
 Imports can be renamed:
 ```Rust

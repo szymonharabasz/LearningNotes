@@ -138,3 +138,35 @@ implHasSomeLifetimes<'_, '_> for SomeStruct<'_, '_> { ... }
 // but we can also have, e.g.,:
 impl<'a, 'b> HasSomeLifetimes<'a, 'b> for SomeStruct<'a, 'b> { ... }
 ```
+#### Const functions
+```Rust
+const POINTER: u8 = eight();
+
+const fn eight() { 8 }
+```
+#### Macros
+Writing a simple macro
+```Rust
+macro_rules! may_print {
+	($input:expr) => {
+		println!("you matched expression");
+	};
+	($input:stmt) => {
+		println!("You matched statement");
+	};
+}
+```
+All *fragment specifiers*:
+```Rust
+block expr ident item // a struct, module etc.
+lifetime literal mete // the information that goes inside attributed
+pat // a path, like std::vec::Vec
+stmt tt // token tree, matches almost everything
+ty // tepa mame 
+vis // visibility specifier, like pub
+```
+Zero or more tokens:
+```Rust
+($($input:tt),*) => { ... }
+```
+`,` indicates that tokens should be separated by commas, `*` means zero or more, `+` would be one or more, `?` - zero or one.

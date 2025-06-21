@@ -193,10 +193,91 @@ both return `Result`. They can be cloned and passed to other threads:
 ```Rust
 sender.clone();
 ```
+#### Async
+```Rust
+use tokio;
+
+async fn async_give_8() -> u8 { 8 }
+
+#[tokio::main]
+async fn main() {
+	let some_number = async_give_8().await;
+}
+```
+Awaiting many futures at the same time:
+```Rust
+let nums = joun!(
+	sleep_for_random_time_and_return(1),	
+	sleep_for_random_time_and_return(2),	
+	sleep_for_random_time_and_return(3)
+);
+```
+There is also one `try_join!` which waits or fails when one of the futures fail.
+Taking the result of the future that finished first:
+```Rust
+use std::time::Duration;
+use tokie::{select, time::sleep};
+// ...
+let num = select!(
+	first = sleep_then_string(10) => first,
+	second = sleep_then_string(11) => second,
+	thitd = sleep_then_num(12) => format!("Slept for {num} ms"),
+	_ = slepp(Duration::from_milis(100)) => format!("Timed out after 100 ms")
+);
+```
+
+#### IO
+##### Standard input
+```Rust
+std::io::stdin().read_line(&mut input_string)
+```
 ##### Environment variavles
 ```Rust
 std::env::var("RUST_BACKTRACE")
 std::env::set_var("RUST_BACKTRACE", "full");
+
+for (key, value) in std::env::vars() { ... }
+```
+##### Command-line arguments
+```Rust
+for arg in std::env::args() {
+	match arg.as_str { ... }
+}
+```
+##### Files
+Writing:
+```Rust
+use std::fs;
+use std::io::Write;
+
+fn main() -> std::io::Result<()> {
+	fs::File::create("myfile.txt")?.write_all(b"Hello")?;
+	//or
+	fn::write("myfile2.txt", "Hello again")?;
+	
+	Ok(())
+}
+```
+Reading:
+```Rust
+use std::fs;
+use std::io::Read;
+
+fn main -> std::io::Result<()> {
+	fs::file::open("myfile.txt")?.read_to_string(&mut input_string)?;
+}
+```
+Using open options:
+```Rust
+OpenOptions::new().write(true).create(true).truncate(true)
+	.open("myfile3.txt")?;
+// or
+File::options().write(true).create(true).truncate(true)
+	.open("myfile3.txt")?;
+```
+Available methods, mostly with a `bool` argument:
+```Rust
+append(), create(), create_new(), read(), truncate(), wrtie()
 ```
 ##### Defaults
 ```Rust
