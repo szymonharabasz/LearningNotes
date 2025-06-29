@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Rust/Flow control.md",
+                "file": "Rust/Leptos framework.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Flow control"
+              "title": "Leptos framework"
             }
           }
         ]
@@ -170,9 +170,10 @@
   },
   "active": "92a5394ec02eef2d",
   "lastOpenFiles": [
+    "Rust/Flow control.md",
+    "Rust/Leptos framework.md",
     "Rust/Basic types.md",
     "Rust/Own types.md",
-    "Rust/Flow control.md",
     "Rust/Standard library.md",
     "Rust/Functional programming.md",
     "Rust",
@@ -196,7 +197,6 @@
     "Condensed Matter/9. Symmetries.md",
     "Condensed Matter/6. Quantum field theory.md",
     "Condensed Matter/7. Interaction in quantum field theory.md",
-    "AdS_CFT/General Relativity.md",
     "Spring and Spring Boot/Spring Security",
     "Spring and Spring Boot/Spring Cloud",
     "Work",
