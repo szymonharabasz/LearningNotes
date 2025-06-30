@@ -288,6 +288,23 @@ Responding to errors:
 </ErrorBoundary>
 ```
 If `Err(_)` is rendered inside the boundary, the `fallback` is rendered instead.
+#### Context
+To send information from parent a child component up to the parent component, one can:
+- pass a `WriteSignal` to the child as a property
+- pass a callback, e.g., `on_click: impl FnMut(MouseEvent) + 'static` as an attribute to the child and call it when needd
+- pass a standard DOM event to the child, e.g., `on:click` and it will be added to top-level elements returned from the child
+- use Context API
+Context is especially useful for complex nested DOM trees. In the ancestor component:
+```Rust
+let (toggled, set_toggled) = signal(false);
+provide_context(set_toggled);
+```
+In the descendant component:
+```Rust
+let setter = use_context::<WriteSignal<bool>>().expect("to have found the setter provided");
+// ...
+setter.update(...);
+```
 #### Logging
 ```Rust
 leptos::logging::log!("{:?}", data.get());
