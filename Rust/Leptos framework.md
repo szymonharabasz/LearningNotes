@@ -182,6 +182,112 @@ struct DatabaseEntry {
     }
 />
 ```
+#### Forms and inputs
+Conrolled inputs
+```Rust
+let (name, set_name) = signal("Controlled".to_string());
+
+view! {
+    <input type="text"
+        // adding :target gives us typed access to target()
+        on:input:target=move |ev| {
+            set_name.set(ev.target().value());
+        }
+
+		// DOM property, not just attribute
+        prop:value=name
+    />
+    <p>"Name is: " {name}</p>
+}
+```
+or simpler, but doing the same:
+```Rust
+view! {
+    <input type="text"
+        bind:value=(name, set_name)
+    />
+    <label>
+        "Please send me lots of spam email."
+        <input type="checkbox"
+            bind:checked=spam_me
+        />
+    </label>
+    <fieldset>
+        <legend>"Favorite color"</legend>
+        <label>
+            "Red"
+            <input
+                type="radio"
+                name="color"
+                value="red"
+                bind:group=favorite_color
+            />
+        </label>
+        <label>
+            "Green"
+            <input
+                type="radio"
+                name="color"
+                value="green"
+                bind:group=favorite_color
+            />
+        </label>
+    </fieldset>
+    <p>"Your favorite color is " {favorite_color} "."</p>
+```
+Unconrtrolled inputs
+```Rust
+let (name, set_name) = signal("Uncontrolled".to_string());
+
+let input_element: NodeRef<html::Input> = NodeRef::new();
+
+view! {
+    <form on:submit=on_submit> // on_submit defined below
+        <input type="text"
+            value=name
+            node_ref=input_element
+        />
+        <input type="submit" value="Submit"/>
+    </form>
+    <p>"Name is: " {name}</p>
+}
+// ...
+let on_submit = move |ev: SubmitEvent| {
+    // stop the page from reloading!
+    ev.prevent_default();
+
+    // here, we'll extract the value from the input
+    let value = input_element.get().expect("<input> should be mounted").value();
+    set_name.set(value);
+};
+```
+#### Conditional rendering
+Standard Rust construct suffice for small DOM elements. But to avoid re-rendering big components many times, one can use:
+```Rust
+let (value, set_value) = signal(0);
+
+view! {
+  <Show
+    when=move || { value.get() > 5 }
+    fallback=|| view! { <Small/> }
+  >
+    <Big/>
+  </Show>
+}
+```
+Responding to errors:
+```Rust
+<ErrorBoundary
+    fallback=|errors| view! {
+        <div class="error">
+            <p>"Not a number!"</p>
+		</div>
+    }
+>
+	<p>"You entered " <strong>{value}</strong></p>
+</ErrorBoundary>
+```
+If `Err(_)` is rendered inside the boundary, the `fallback` is rendered instead.
 #### Logging
 ```Rust
 leptos::logging::log!("{:?}", data.get());
