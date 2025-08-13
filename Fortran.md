@@ -26,6 +26,9 @@ real(dp) :: fe(6)
 Arrays with custom indices
 ```fotran
 real(dp) :: idx(-3:3)
+
+ubound(idx, dim=1, kind=requested_kind_of_bound) ! 3
+lbound(idx, dim=1, kind=requested_kind_of_bound) ! -3
 ```
 Assigning a certain value to a whole array
 ```fortran
@@ -41,7 +44,7 @@ Slicing for rows and columns in assignments
 K(5,:) ! row 5
 K(:,4) ! column 4
 ```
-Fortran stores arrays in memory **by column**. NumPy arrays can be stored in the same way by specifying in the array constructor the option `pkeyw(order=F)`.
+Fortran stores arrays in memory **by column** (column-major order). NumPy arrays can be stored in the same way by specifying in the array constructor the option `pkeyw(order=F)`.
 
 Allocatable arrays of different dimensions
 ```fortran
@@ -100,7 +103,7 @@ do concurrent (i = 1:grid_size)
 end do
 ```
 #### Useful intrinsic functions
-Mathematical
+###### Mathematical
 ```fortran
 dot_product(u, v)
 matmul(A, B)
@@ -115,6 +118,45 @@ minval(array)
 product(array)
 sum(array)
 size(array)
+```
+###### Arrays and matrices:
+```Fortran
+rank(arr)
+shape(arr)
+size(arr)
+matrix = reshape(array, shape=[3,3], order=[2,1],pad=padding_array)
+```
+Default pad is `[1,2]` which is row-major
+```Fortran
+matrt = transpose(matr)
+matr2 = eoshift(matr, shift=-1, boundsry=42, dim=2)
+matr2 = cshift(matr, shift=-1, dim=2)
+```
+Positive `shift` - to the right, negative, to the left, `dim=1` - column, `2` - row.
+```Fortran
+all(M > 0, dim=1)
+any(M > 0, dim=1)
+count(M > 0, dim=1)
+maxval(M, dim=1, M < 0)
+minval(M, dim=1, M < 0)
+sum(M, dim=1, M < 0)
+maxloc(M, M < 0)
+minloc(M, M < 0)
+product(M, dim=1, M < 0)
+merge(matr1, matr2, matr1 > 0)
+pack(M, M > 0)
+spread(arr, dim=2, ncopies=40)
+dotproduct(arr1, arr2)
+matmul(matr1, matr2)
+```
+##### String
+```
+str = trim(str)
+```
+###### Navigating in a (scratch) file
+```Fortran
+rewind()
+backspace()
 ```
 #### Modular programming
 Subroutines
@@ -132,13 +174,33 @@ call myproc(d, E, F)
 ```
 Functions
 ```fortran
+real function f(x) result(res)
+	real :: x, res
+	res=sin(x)
+end function f
+
+a = f(y)
+```
+Naming result variable:
+```Fortran
 real function f(x)
 	real :: x
 	f=sin(x)
 	return
 end function f
+```
+Stating the function type in the declaration block:
+```Fortran
+program main
+	implicit none
+	integer(kind=1) :: cube, num
+	num = 2
+	num = cube(num)
+end program
 
-a = f(y)
+function cube(num)
+	cube = num ** 3
+end function
 ```
 Pure functions (do not allow side effects):
 ```Fortran
@@ -155,6 +217,10 @@ elemental integer function sum(a, b)
 end function sum
 ```
 They are by default `pure`. Since Fortran 2014 one can declare `impure elemental` functions.
+Recursive subroutines must be declared as such:
+```Fortran
+recursive integer function fib(n) ...
+```
 Optional and keyword arguments
 ```fortran
 subroutine order_icecream(number, flavor, topping)
@@ -196,15 +262,21 @@ end funcion myfunc
 
 area.= integrate(1.0, 2.0, myfunc)
 ```
+###### Modules
 Modules are created in a similar way as main programs, but with `module` keyword. Their variable can have `public` and `private` attributes. Subroutines and functions can be declared as `private` before the `contains` block:
 ```fortran
 module mymodule
 	private mysub
 contains
-	subroutine mysun
+	subroutine mysum
 	!...
 	end subroutine
 end module mymodule
+```
+Importing (might be in a block)
+```Fortran
+use mymodule
+use mymodule only: mysum
 ```
 Function overloading
 ```fortran
@@ -238,15 +310,28 @@ module vector_ops
 	
 end module vector_ops
 ```
-File I/O
+###### File I/O
+Checking if a file exists:
+```Fortran
+inquire(filename, exists=exists_variable)
+```
 ```fortran
 integer, parameter :: infile = 15
 integer, parameter :: outfile = 16
 
 open(unit=infile, file='indata.dat',access='sequential',action='read')
 open(unit=outfile, file='outdata.dat',access='sequential',action='out')
+open(newunit=newunit_variable, file='outdata.dat',status='new')
+open(newunit=newunit_variable, file='outdata.dat',status='old',position='append',iostat=iostat_var)
+open(newunit=newunit_variable,status='scratch',position='append',iostat=iostat_var)
 ```
-and unit numbers can be used in `read` and `write` statements. The files should be closed:
+When `iostat_var` is `0`, there was no error.
+Unit numbers can be used in `read` and `write` statements. 
+```Fortran
+write(unit=unit, fmt=fmt, advance="no"), string_to_write
+```
+If `advance="no"`, no new line will be added
+The files should be closed:
 ```fortran
 close(infile)
 close(outfile)
@@ -320,6 +405,10 @@ integer, allocatable, dimension(:,:), target :: A
 integer, dimension(:,:), pointer :: B, C
 
 allocate(A(20,20))
+
+if (allocate(A)) then
+! ...
+end if
 
 B => A
 B => null()
