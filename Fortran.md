@@ -499,4 +499,5 @@ program main
 	sync all	
 	write(*, '(24X,A20,I2)') 'Image Number After:', coarray
 end program
-```
+oarray```
+`coarray` (wothout the bracket) is a image local version of the variable. With `coarray[i]` one can access the value from image `i`. This is ususally done on image `1` to perform summary computation/merging of results.
