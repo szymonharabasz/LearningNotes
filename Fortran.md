@@ -486,7 +486,7 @@ Calling an inherited method
 ```fortran
 call this % particle_class % init()
 ```
-#### Coroutines
+#### Coarrays
 Basic usage
 ```fortran
 program main
