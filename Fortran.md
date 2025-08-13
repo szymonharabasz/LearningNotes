@@ -486,3 +486,17 @@ Calling an inherited method
 ```fortran
 call this % particle_class % init()
 ```
+#### Coroutines
+Basic usage
+```fortran
+program main
+	implicit none
+	integer(kind=1), codimension[*] :: coarray
+	integer(kind=1) :: n
+	coarray = this_image()
+	n = num_images
+	write(*, '(24X,A21,I2)') 'Image Number Before:', coarray
+	sync all	
+	write(*, '(24X,A20,I2)') 'Image Number After:', coarray
+end program
+```
