@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Fortran.md",
+                "file": "MongoDB.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Fortran"
+              "title": "MongoDB"
             }
           }
         ]
@@ -170,6 +170,8 @@
   },
   "active": "92a5394ec02eef2d",
   "lastOpenFiles": [
+    "Fortran.md",
+    "MongoDB.md",
     "Condensed Matter/4. Application of electronic interactions.md",
     "Condensed Matter/6. Quantum field theory.md",
     "Condensed Matter/7. Interaction in quantum field theory.md",
@@ -188,7 +190,6 @@
     "Work/Differences between macros.md",
     "Spring and Spring Boot/Basics.md",
     "Spring and Spring Boot/REST with Spring Boot.md",
-    "Fortran.md",
     "Spring and Spring Boot/Spring Security/Self-signed SSL certificate.md",
     "Condensed Matter/11. Order-disorder duality.md",
     "Condensed Matter/2. Electrons in the lattice.md",
@@ -196,7 +197,6 @@
     "Work/Thermal.md",
     "Physics/Drell-Yan-Szymon’s MacBook Pro.md",
     "Condensed Matter/3. Lattice vibrations.md",
-    "Condensed Matter/9. Symmetries.md",
     "Spring and Spring Boot/Spring Security",
     "Spring and Spring Boot/Spring Cloud",
     "Work",
