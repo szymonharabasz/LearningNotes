@@ -60,6 +60,33 @@ db.routes.find({
 })
 ```
 Often `$and [ expr1, expr2 ]` can be replaced with implicit `and`, i.e., `expr1, expr2`, but not when `expr1` and `expr2` use the same operator, because a JSON document cannot have the same key more than once.
+###### Updating documents
+Setting a value with optional upsert operation:
+```js
+db.podcasts.updateOne|updateMany(
+  { title: "The Developer Hub" },
+  { $set: { topics: ["databases", "MongoDB"] } },
+  { upsert: true }
+)
+
+db.podcasts.findAndModify({
+  query: { _id: ObjectId("6261a92dfee1ff300dc80bf1") },
+  update: { $inc: { subscribers: 1 } },
+  new: true,
+})
+```
+
+Adding a new alement to an array:
+```js
+db.podcasts.updateOne(
+  { _id: ObjectId("5e8f8f8f8f8f8f8f8f8f8f8") },
+  { $push: { hosts: "Nic Raboy" } }
+)
+```
+###### Deleting documents
+```js
+db.podcasts.deleteOne|deleteMany({category: “crime”})
+```
 #### Aggregations
 Randomly sampling data:
 ```js
