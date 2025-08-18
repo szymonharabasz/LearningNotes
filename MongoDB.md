@@ -21,7 +21,7 @@ Running the editor to edit the next command
 ```js
 edit
 ```
-#### Operators in CRUD operations
+#### CRUD operation
 Operator `$in`:
 ```js
 db.zips.find({
@@ -47,6 +47,25 @@ db.sales.find({
 	},
 })
 ```
+Sorting results:
+```js
+mycursor.sort({name: 1, surname: -1})
+```
+Asending order: `1`, descending order: `-1`.
+Projections:
+```js 
+// Inclusion approach:
+db.inspections.find(
+  { sector: "Restaurant - 818" },
+  { business_name: 1, result: 1 }
+)
+// Exclusion approach:
+db.inspections.find(
+  { result: { $in: ["Pass", "Warning"] } },
+  { date: 0, "address.zip": 0 }
+)
+```
+Only in case of the `_id` field inclusion approach can be combined with exclusion approach.
 Logical operators:
 ```js
 db.routes.find({
@@ -60,6 +79,10 @@ db.routes.find({
 })
 ```
 Often `$and [ expr1, expr2 ]` can be replaced with implicit `and`, i.e., `expr1, expr2`, but not when `expr1` and `expr2` use the same operator, because a JSON document cannot have the same key more than once.
+Coumtinh documents that match a certain query:
+```js
+db.trips.countDocuments({ tripduration: { $gt: 120 }, usertype: "Subscriber" })
+```
 ###### Updating documents
 Setting a value with optional upsert operation:
 ```js
