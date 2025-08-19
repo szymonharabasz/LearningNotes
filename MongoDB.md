@@ -137,3 +137,105 @@ Required fields
 	}
 }
 ```
+# Using the  Python client
+Connecting with PyMongo:
+```python
+from dotenv import load_dotenv
+from pymongo import MongoClient
+from bson.objectid import IbjectId
+
+load_dotenv()
+MONGO_URI = os.environ("MONGO_URI")
+
+client = MongoClient(MONGO_URI)
+db = client.bank
+accounts_collection = db.accounts
+```
+Inserting documents:
+```python
+new_account = { ... }
+
+result = accounts_collection.insert_one(new_account)
+document_id = result.inserted_id
+
+new_accounts = [{...}, {...}]
+
+result = accounts_collection.insert_many(new_accounts)
+document_ids = result.inserted_ids
+
+client.close()
+```
+Querying for a document:
+```python
+result = collection.find_one(query_document)
+cursor = collection.findfind(query_dcument_2)
+
+for document in cursor:
+	pass
+```
+Updating documents:
+```python
+result = accounts_collection.update_one(document_to_update, add_to_balance)
+print("Documents updated: " + str(result.modified_count))
+
+result = accounts_collection.update_many(select_accounts, set_field)
+print("Documents matched: " + str(result.matched_count))
+print("Documents updated: " + str(result.modified_count))
+```
+Deleting documents:
+```python
+result = accounts_collection.delete_one(document_to_delete)
+print("Documents deleted: " + str(result.deleted_count))result = accounts_collection.delete_many(documents_to_delete)
+print("Documents deleted: " + str(result.deleted_count))
+```
+`delete_many` with empty filter document removes all documents in a given collection.
+Transactions:
+```python
+# Step 1: Define the callback that specifies the sequence of operations 
+# to perform inside the transactions.
+def callback(
+    session,
+    transfer_id=None,
+    account_id_receiver=None,
+    account_id_sender=None,
+    transfer_amount=None,
+):
+
+    accounts_collection = session.client.bank.accounts
+
+    # Transaction operations
+    # Important: You must pass the session to each operation
+
+    accounts_collection.update_one(
+        {"account_id": account_id_sender},
+        {
+            "$inc": {"balance": -transfer_amount},
+            "$push": {"transfers_complete": transfer_id},
+        },
+        session=session,
+    )
+    accounts_collection.update_one(
+        {"account_id": account_id_receiver},
+        {
+            "$inc": {"balance": transfer_amount},
+            "$push": {"transfers_complete": transfer_id},
+        },
+        session=session,
+    )
+    return
+
+def callback_wrapper(s):
+    callback(
+        s,
+        transfer_id="TR218721873",
+        account_id_receiver="MDB343652528",
+        account_id_sender="MDB574189300",
+        transfer_amount=100,
+    )
+
+# Step 2: Start a client session
+with client.start_session() as session:
+    # Step 3: Use with_transaction to start a transaction, execute the callback, 
+    # and commit (or cancel on error)
+    session.with_transaction(callback_wrapper)
+```
