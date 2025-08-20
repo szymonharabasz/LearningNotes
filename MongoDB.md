@@ -137,7 +137,42 @@ Required fields
 	}
 }
 ```
-# Using the  Python client
+#### Indexes
+Creating single field index:
+```js
+db.customers.createIndex({email: 1}, {unique:true})
+```
+Creating compound index:
+```js
+db.customers.createIndex({active:1, birthdate:-1,name:1})
+```
+The recommended order of the fields in an index is their usage in a query:
+- Equality
+- Sort
+- Range
+Fields that are used for sorting in opposite orders in queries should have opposite sorting in the index (`1` and `-1).
+Viewing indexes:
+```js
+db.customers.getIndexes()
+```
+Viewing a query execution plan to check if an index was used:
+```js
+db.customers.explain().find(query)
+```
+Index may **cover** a query if it contains all the fields that are used in the query.
+Hiding and deleting indexes:
+```js
+db.customers.dropIndex('active_1_birthdate_-1_name_1')
+db.customers.dropIndex({active:1, birthdate:-1, name:1})
+
+db.customers.dropIndex('active_1_birthdate_-1_name_1')
+db.customers.dropIndex({active:1, birthdate:-1, name:1})
+
+db.customers.dropIndexes()
+db.collection.dropIndexes('index1name')
+db.collection.dropIndexes(['index1name', 'index2name', 'index3name'])
+```
+# Using the Python client
 Connecting with PyMongo:
 ```python
 from dotenv import load_dotenv
