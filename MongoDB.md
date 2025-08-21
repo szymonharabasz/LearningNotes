@@ -179,6 +179,17 @@ Outputting to a new (or overwriting an existing) collection:
 { $out: { db: "<output-db>", coll: "<output-collection>" } }
 { $out: "<output-collection>"}
 ```
+#### Transactions:
+```js
+const session = db.getMongo().startSession()
+session.startTransaction()
+
+const account = session.getDatabase('dbname').getCollection('collname')
+
+session.commitTransaction()
+// or
+session.abortTransaction()
+```
 #### JSON validation schemas
 Required fields
 ```json
