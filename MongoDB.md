@@ -21,7 +21,7 @@ Running the editor to edit the next command
 ```js
 edit
 ```
-#### CRUD operation
+#### CRUD operations
 Operator `$in`:
 ```js
 db.zips.find({
@@ -51,7 +51,8 @@ Sorting results:
 ```js
 mycursor.sort({name: 1, surname: -1})
 ```
-Asending order: `1`, descending order: `-1`.
+Ascending order: `1`, descending order: `-1`.
+
 Projections:
 ```js 
 // Inclusion approach:
@@ -66,6 +67,7 @@ db.inspections.find(
 )
 ```
 Only in case of the `_id` field inclusion approach can be combined with exclusion approach.
+
 Logical operators:
 ```js
 db.routes.find({
@@ -79,7 +81,8 @@ db.routes.find({
 })
 ```
 Often `$and [ expr1, expr2 ]` can be replaced with implicit `and`, i.e., `expr1, expr2`, but not when `expr1` and `expr2` use the same operator, because a JSON document cannot have the same key more than once.
-Coumtinh documents that match a certain query:
+
+Coumting documents that match a certain query:
 ```js
 db.trips.countDocuments({ tripduration: { $gt: 120 }, usertype: "Subscriber" })
 ```
@@ -113,10 +116,68 @@ db.podcasts.deleteOne|deleteMany({category: “crime”})
 #### Aggregations
 Randomly sampling data:
 ```js
-db.movies.aggregate(
-{[
+db.movies.aggregate([
 	$sample: { size: 1 }}
 ])
+```
+Matching documents:
+```js
+db.movies.aggregate([
+	$match: query_document}
+])
+```
+`query_document` works exactly like in the `find()` method.
+
+Grouping documents:
+```js
+db.zips.aggregate([
+{
+   $group: {_id: "$city", totalZips: { $count : { } }}
+}])
+```
+`$city` is a reference to a field in the original document (from the `zips` collection), `$count` is an operator.
+
+Sorting and limiting:
+```js
+db.zips.aggregate([
+	{$sort: {pop: -1}},
+	{$limit: 9}
+])
+```
+Projections in pipelines:
+```js
+{
+    $project: {
+        state:1, 
+        zip:1,
+        population:"$pop",
+        _id:0
+    }
+}
+```
+Setting new values:
+```js
+{
+    $set: {
+        place: {
+            $concat:["$city",",","$state"]
+        },
+        pop:10000
+     }
+  }
+```
+There are also operators like: `$multiply`.
+
+Counting documents in a pipeline:
+```js
+{
+  $count: "total_zips"
+}
+```
+Outputting to a new (or overwriting an existing) collection:
+```js
+{ $out: { db: "<output-db>", coll: "<output-collection>" } }
+{ $out: "<output-collection>"}
 ```
 #### JSON validation schemas
 Required fields
@@ -160,6 +221,7 @@ Viewing a query execution plan to check if an index was used:
 db.customers.explain().find(query)
 ```
 Index may **cover** a query if it contains all the fields that are used in the query.
+
 Hiding and deleting indexes:
 ```js
 db.customers.dropIndex('active_1_birthdate_-1_name_1')
@@ -224,6 +286,7 @@ print("Documents deleted: " + str(result.deleted_count))result = accounts_collec
 print("Documents deleted: " + str(result.deleted_count))
 ```
 `delete_many` with empty filter document removes all documents in a given collection.
+
 Transactions:
 ```python
 # Step 1: Define the callback that specifies the sequence of operations 
