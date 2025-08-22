@@ -182,13 +182,13 @@ Outputting to a new (or overwriting an existing) collection:
 #### Transactions:
 ```js
 const session = db.getMongo().startSession()
-session.startTransaction()
+session.startTransaction() // no shell output
 
 const account = session.getDatabase('dbname').getCollection('collname')
 
 session.commitTransaction()
 // or
-session.abortTransaction()
+session.abortTransaction() // no shell output
 ```
 #### JSON validation schemas
 Required fields
@@ -297,6 +297,11 @@ print("Documents deleted: " + str(result.deleted_count))result = accounts_collec
 print("Documents deleted: " + str(result.deleted_count))
 ```
 `delete_many` with empty filter document removes all documents in a given collection.
+
+Aggregations:
+```python
+results = collection.aggregate(pipeline)
+```
 
 Transactions:
 ```python
