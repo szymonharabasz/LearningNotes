@@ -111,7 +111,7 @@ db.podcasts.updateOne(
 ```
 ###### Deleting documents
 ```js
-db.podcasts.deleteOne|deleteMany({category: “crime”})
+db.podcasts.deleteOne|deleteMany|findOneAndDelete({category: “crime”})
 ```
 #### Aggregations
 Randomly sampling data:
