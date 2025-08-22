@@ -8,6 +8,10 @@ Setting database in the JavaScript code:
 ```js
 db = db.getSiblingDB("carsdb")
 ```
+Explicitly creating a collection:
+```js
+db.createCollection("coll")
+```
 Loading a JavaScript file:
 ```js
 load("path/to/the/file.js")
@@ -34,6 +38,13 @@ db.sales.find({
 	"customer.age": { $lte: 65 }
 })
 ```
+There are also operators `$lt`, `$gte`, `$gt`, `$ne`.
+
+Querying with regular expressions:
+```js
+db.sales.find({ name: /bc/ })
+```
+
 Querying for arrays that contain elements fulfilling certain criteria (`$elemMatch`):
 ```js
 db.sales.find({ products: "CurrencyService" })
@@ -42,7 +53,6 @@ db.sales.find({
 		$elemMatch: { 
 			name: "laptop", 
 			price: { $gt: 800 }, 
-			quantity: { $gte: 1 }
 		},
 	},
 })
@@ -159,11 +169,10 @@ Setting new values:
 ```js
 {
     $set: {
-        place: {
-            $concat:["$city",",","$state"]
-        },
-        pop:10000
-     }
+        place: { $concat:["$city",",","$state"] },
+        pop: 10000
+    },
+    $unset: { join_date: "" }
   }
 ```
 There are also operators like: `$multiply`. `$divide`, `$sum.
