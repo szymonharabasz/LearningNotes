@@ -166,7 +166,7 @@ Setting new values:
      }
   }
 ```
-There are also operators like: `$multiply`.
+There are also operators like: `$multiply`. `$divide`, `$sum.
 
 Counting documents in a pipeline:
 ```js
