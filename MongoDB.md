@@ -302,11 +302,47 @@ Search aggregation stage:
 db.movies.aggregate([{
     "$search": {
 		"index": "plotIndex",
-		"text": {
-		    "query": "space",
-		    "path": "plot"
+		"text": {             // full-text search
+		    "query": "space", // search query
+		    "path": "plot"    // field to search in
+	    },
+	    "equals": {
+		    "value": ISODate("1999-03-31T00:00:00.000Z")
+		    "path": "released"
 	    }
 	}
+}])
+```
+Search near a given date (or a JSONGeo point):
+```js
+db.movies.aggregate([{
+    "$search": {
+	    "index": "plotReleasedIndex",
+        "near": {
+	        "path": "released",
+            "origin": ISODate("1999-05-17T00:00:00.000+00:00"),
+            "pivot": 2629746000
+        }
+    }
+},
+{ 
+	"$project": { "_id": 0, "title": 1, "released": 1, "score": {
+		"$meta": "searchScore" 
+	}
+}
+}])
+```
+Search within a given range:
+```js
+db.movies.aggregate([{
+	"$search": {
+		"index": "plotReleasedIndex",
+		"range": {
+			"path": "released",
+			"gt": ISODate("1994-01-01T00:00:00.000Z")
+			"lt": ISODate("1999-01-01T00:00:00.000Z")
+	    }
+    }
 }])
 ```
 Return a summary of results:
@@ -316,12 +352,42 @@ db.movies.aggregate([{
 	    "index": "plotIndex",
         "text": {
 			"query": "space",
-		    "path": "plot"
+		    "path": "plot" 
 	    },
         "count": { "type": "total" }
     }
 }])
 ```
+Seatch facets define buckets for different categories or value ranges for a given field. They are defiend in an index by:
+```js
+{ "type": "stringFacet" }
+{ "type": "dateFacet" }
+{ "type": "numberFacet" }
+```
+Faceted indexes (indexes used with search facets) cannot be dynamic. Facets are created by the aggregation stage:
+```js
+db.movies.aggregate([{
+    "$searchMeta": {
+	    "index": "genresFacetedIndex",
+        "facet": {
+	        "operator": {
+            "range": {
+                "path": "released",
+                "gte": ISODate("2000-01-01T00:00:00.000Z"),
+                "lte": ISODate("2000-01-31T00:00:00.000Z")
+            },
+        },
+        "facets": {
+	        "genresFacet": {
+	            "type": "string",
+	            "path": "genres",
+	            "numBuckets": 2
+            }
+        }
+    }
+}])
+```
+This will select movies released within the given date range, group them according to their *genre*, and limit the results to 2 highest populated buckets.
 # Using the Python client
 Connecting with PyMongo:
 ```python
