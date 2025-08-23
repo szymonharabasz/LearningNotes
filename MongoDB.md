@@ -183,10 +183,26 @@ Counting documents in a pipeline:
   $count: "total_zips"
 }
 ```
-Outputting to a new (or overwriting an existing) collection:
+Outputting to a new (or overwrting an existing) collection:
 ```js
 { $out: { db: "<output-db>", coll: "<output-collection>" } }
 { $out: "<output-collection>"}
+```
+"Joining" information from other collection:
+```js
+db.authors.aggregate([
+{ 
+	$match: { 
+		_id: 20, 
+	}, 
+}, 
+{ 
+	$lookup: { 
+		from: "books", 
+		localField: "_id", 
+		foreignField: "author_id", as: "books", 
+	}, 
+}]);
 ```
 #### Transactions:
 ```js
