@@ -254,6 +254,74 @@ db.customers.dropIndexes()
 db.collection.dropIndexes('index1name')
 db.collection.dropIndexes(['index1name', 'index2name', 'index3name'])
 ```
+# Atlas Search
+Static mapping index specific fields in a document. Creating a search index for a static mapping:
+```js
+db.movies.createSearchIndex("plotReleasedIndex", {
+    "mappings": {
+	    "dynamic": false,
+        "fields": {
+	        "plot": {
+	            "type": "string"
+            },
+            "released": {
+	            "type": "date"
+            }
+         }
+      }
+   }
+)
+```
+Supported data types are:
+- `number` that maps to BSON Double, 32-bit Integer and 64-bit Integer
+- `string`
+- `date`
+- `boolean`
+- `objectId`
+- `document`
+- `embeddedDocuments` must be used if there could be an array of subdocuments
+- Arrays that we define in the same way as single elements, e.g., `string`
+To allow for indexing documents with a given field name having different data types, we can make an array of `{"type": ...}` objects in the index definition.
+
+Dynamic mappings index entire documents. To a dynamic mapping:
+```js
+"mappings": { "dynamic": true }
+```
+Indexing subdocuments:
+```js
+"fields": {
+	"released": {
+		"type": "document",
+		"dynamic": true
+	}
+}
+```
+
+Search aggregation stage:
+```js
+db.movies.aggregate([{
+    "$search": {
+		"index": "plotIndex",
+		"text": {
+		    "query": "space",
+		    "path": "plot"
+	    }
+	}
+}])
+```
+Return a summary of results:
+```js
+db.movies.aggregate([{
+    "$searchMeta": {
+	    "index": "plotIndex",
+        "text": {
+			"query": "space",
+		    "path": "plot"
+	    },
+        "count": { "type": "total" }
+    }
+}])
+```
 # Using the Python client
 Connecting with PyMongo:
 ```python
