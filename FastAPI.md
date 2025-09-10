@@ -156,3 +156,101 @@ class Settings(BaseSettings):
 
 print(Settings().model_dump())
 ```
+
+## FastAPI basics
+Creating an app:
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+	return {"message": "Hello FastAPI"}
+
+#path parameters:
+@app.get("/car/{id}")
+async def root(id: int):
+	return {"car_id": id}
+
+```
+If the file is named `main.py`, then the app is started with
+```bash
+uvicorn main:app --reload
+```
+
+Constraining path parameters:
+```python
+class AccountType(str, Enum):
+	FREE = "free"
+	PRO = "pro"
+
+@app.get("/account/{acc_type}/{months}")
+async def account(acc_type: AccountType, months: int = Path(..., ge=3, le=12)):
+	return {"message": "Account created", "account_type": acc_type, "months": months}
+```
+
+Query parameters:
+```python
+@app.get("/cars/price")
+async def cars_by_price(min_price: int = 0, max_price: int = 100000):
+	return {"Message": f"Listing cars with prices between {min_price} and {max_price}"}
+```
+
+Request body:
+```python
+@app.post("/cars")
+async def new_car(data: Dict = Body(...)):
+	return {"message": data}
+```
+or with a validated model:
+```python
+class InsertCar(BaseModel):
+	brand: str
+	model: str
+	year: int
+	
+app = FastAPI()
+
+@app.post("/cars")
+async def new_car(data: InsertCar):
+	return {"message": data}
+```
+
+Headers:
+```python
+@app.get("/headers")
+async def read_headers(user_agent: Annotated[str | None, Header()] = None):
+	return {"User-Agent": user_agent}
+```
+
+Request object:
+```python
+@app.get("/cars")
+async def raw_request(request: Request):
+	return {"message": request.base_url, "all": dir(request)}
+```
+
+Forms and files (one has to install `python-multipart`):
+```python
+import shutil
+
+@app.post("/upload")
+async def upload(file: UploadFile = File(...), brand: str = Form(...), model: str = Form(...)):
+	with open("saved_file.png", "wb") as buffer:
+		shutil.copyfileobj(picture.file, buffer)
+	return {"brand": brand, "model": model, "file_name": file.filename}
+```
+
+Setting response status:
+```python
+@app.get("/", status_code=status.HTTP_208_ALREADY_REPORTED)
+async def raw_fa_response():
+	return {"message": "fastapi response"}
+```
+
+HTTP errors:
+```python
+if car.year > 2022:
+	raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, detail="The car doesn't existyet!")
+```
