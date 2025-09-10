@@ -254,3 +254,48 @@ HTTP errors:
 if car.year > 2022:
 	raise HTTPException(status.HTTP_406_NOT_ACCEPTABLE, detail="The car doesn't existyet!")
 ```
+
+Dependency injection:
+```python
+async def pagination(q: str | None = None, skip: int = 0, limit: int = 100):
+	return {"q": q, "skip": skip, "limit": limit}
+
+@app.get("/cars/")
+async def read_items(commons: Annotated[dict, Depends(pagination)]):
+	return commons
+
+@app.get("/users/")
+async def read_users(commons: Annotated[dict, Depends(pagination)]):
+	return commons
+```
+
+###### API routers:
+In the main file:
+```python
+from fastapi import FastAPI
+from routers.cars import router as cars_router
+from routers.user import router as users_router
+
+app = FastAPI()
+app.include_router(cars_router, prefix="/cars", tags=["cars"])
+app.include_router(users_router, prefix="/users", tags=["users"])
+```
+In one of the router files:
+```python
+from fastapi import APIRouter
+
+router = APIRouter()
+@router.get("/")
+async def get_users():
+	return {"message": "All users here"}
+```
+
+###### Custom middleware
+```python
+@app.middleware("http")
+async def add_random_header(request: Request, call_next):
+	number = randint(1,10)
+	response = await call_next(request)
+	response.headers["X-Random-Integer "] = str(number)
+	return response
+```
