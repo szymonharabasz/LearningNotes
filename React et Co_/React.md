@@ -177,3 +177,16 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   );
 };
 ```
+#### React Hooks
+In `useState`, the state can be initialized with a value or with a generator function (`() => { return state }). The second option is useful when generating the value is expensive - the function will then be called only once, when `useState` is called for the first time. 
+In a `setState`-type call, an argument can be a new value or an updater function (`(oldState) => { return newState }`). In the second way, one can make sure that the old state value used to calculate a new one is always the most recent.
+
+Reducers:
+```js
+const [state, dispatch] = useReducer(reducer, initValue)
+```
+or
+```js
+const [state, dispatch] = useReducer(reducer, initFunction)
+```
+where reducer is a function `(state, action) => { return newState }`
