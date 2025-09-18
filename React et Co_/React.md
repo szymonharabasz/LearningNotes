@@ -190,3 +190,38 @@ or
 const [state, dispatch] = useReducer(reducer, initFunction)
 ```
 where reducer is a function `(state, action) => { return newState }`
+
+`useEffect` can return a cleanup function, which is executed before each re-render and when component is unmounted:
+```js
+function getSize() {
+	return {
+		width: window.innerWidth,
+		height: window.innerHeight
+	};
+}
+
+useEffect(() => {
+	function handleResize() {
+		setSize(getSize()); // setSize is returned by useState
+	}
+	
+	window.addEventListener("resize", handleResize);
+	
+	return () => window.removeEventListener("resize", handleResize);
+	
+},[]);
+```
+The function inside `useEffect` must return a function, not a promise, so it can never be `async`, to call an `async` function, one has to wrap it as follows:
+```js
+useEffect(() => {
+	async function getUsers() {
+		const resp = await fetch(url);
+		const data = await resp.json();
+		setUsers(data); // returned by useState
+	}
+	getUsers();
+},[]);
+```
+
+`useLayoutEffect` has the same API as `useEffect` but runs synchronously after React updated the DOM and before the browser repaints. Sometimes it helps avoid state flickering.
+
