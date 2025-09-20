@@ -280,3 +280,34 @@ This help avoiding re-render of a child component that receives the callback as 
 ```js
 const anagrams = useMemo(() => getAnagrams(source), [source]);
 ```
+
+Context API: create a context (possibly export it from a seprate JS file):
+```js
+const MyContext = createContext();
+```
+Optionally, one can define a default value:
+```js
+const MyContext = createContext(defaultValue);
+```
+Wrap components that may use the context in context provider:
+```jsx
+<MyContext.Providrr value={value}>
+	<MyComponent/>
+</MyContext.Provider>
+```
+In the component, access the context value:
+```js
+const localValue = useContect(MyContext);
+```
+Creating a custom provider allows to avoid unnecessary re-renders by including also the state, instead of having the state in parent, e.g., the `App`, component:
+```js
+export function UserProvider({children}) {
+	const [user, setUser] = useState(null);
+	return (
+		<UserContext.Provider value={{user, setUser}}>
+			{children}
+		</UserContext.Provider>
+	);
+}
+```
+In this way, one can also easily have in the custom provider nested contexts, separate for each state variable, for example `UserContext.Provider` and `UserSetContext.Provider`.
