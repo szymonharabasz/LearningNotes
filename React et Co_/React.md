@@ -225,3 +225,33 @@ useEffect(() => {
 
 `useLayoutEffect` has the same API as `useEffect` but runs synchronously after React updated the DOM and before the browser repaints. Sometimes it helps avoid state flickering.
 
+`useRef` can be used to create a state variable whose change does not cause a re-render:
+```js
+const ref = useRef(1);
+// ...
+const incRef = () = ref.current++;
+// ...
+<button onClick={incRef}>...
+```
+Another example with setting an deleting a timer:
+```js
+const timerRef = useRef(null);
+// ...
+useEffect(() => {
+	timerRef.current = setInterval(() => { /* interval code */)});
+	return stopTimer;
+}, []);
+
+function stopTimer() {
+	clearInterval(timerRef.current);
+}
+```
+It can also be used to directly access DOM elements bypassing React control (*uncontrolled components*):
+```js
+const nextButtonRef = useRef(null);
+// ...
+nectButtonRef.current.focus();
+// ...
+<button ref={nextButtonRef}>Next</button>
+```
+
