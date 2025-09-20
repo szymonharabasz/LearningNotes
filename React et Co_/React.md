@@ -223,6 +223,21 @@ useEffect(() => {
 },[]);
 ```
 
+To skip updates superseded by subsequent API calls in the `useEffect` one can do the following:
+```js
+useEffect(() => {
+	let doUpdate = true;
+	
+	fetch(url).then(resp => {
+		if (doUpdate) {
+			// perforrm update with resp
+		}
+	});
+	
+	return () => doUpdate = false;
+},[url]);
+```
+
 `useLayoutEffect` has the same API as `useEffect` but runs synchronously after React updated the DOM and before the browser repaints. Sometimes it helps avoid state flickering.
 
 `useRef` can be used to create a state variable whose change does not cause a re-render:
@@ -255,3 +270,13 @@ nectButtonRef.current.focus();
 <button ref={nextButtonRef}>Next</button>
 ```
 
+`useCallback ` allows to maintain the identity of a callback:
+```js
+const stableFunction = useCallback(functionToCache, dependencyList);
+```
+This help avoiding re-render of a child component that receives the callback as a property, when the parent component reruns. 
+
+`useMemo` memoizes a value returned by an expensive function
+```js
+const anagrams = useMemo(() => getAnagrams(source), [source]);
+```
