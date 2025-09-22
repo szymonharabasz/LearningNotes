@@ -139,6 +139,19 @@ const Pages = () => {
 
 export default Pages;
 ```
+Instead of `component`, one can also use `element`:
+```jsx
+<Route path="/favorites" element={<Favorites/>} />			
+```
+or nest JSX in the `Route`:
+```jsx
+<Route path="/favorites">
+	<Favorites/>
+</Route>			
+```
+
+A single component can also have `<Routes>` and they will represent subroutes of a route defined in some parent components (or in the  `App`). This is particularly useful un combination with the wildcard `*` (which can be used in the parent component, for example).
+
 In the component `NotePage` we can access the parameter `id` as follows:
 ```JSX
 import { Link } from 'react-router-dom';
@@ -178,10 +191,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 ```
 #### React Hooks
+###### Simple state
 In `useState`, the state can be initialized with a value or with a generator function (`() => { return state }). The second option is useful when generating the value is expensive - the function will then be called only once, when `useState` is called for the first time. 
 In a `setState`-type call, an argument can be a new value or an updater function (`(oldState) => { return newState }`). In the second way, one can make sure that the old state value used to calculate a new one is always the most recent.
-
-Reducers:
+###### Reducers
 ```js
 const [state, dispatch] = useReducer(reducer, initValue)
 ```
@@ -190,7 +203,7 @@ or
 const [state, dispatch] = useReducer(reducer, initFunction)
 ```
 where reducer is a function `(state, action) => { return newState }`
-
+###### Effects
 `useEffect` can return a cleanup function, which is executed before each re-render and when component is unmounted:
 ```js
 function getSize() {
@@ -239,7 +252,7 @@ useEffect(() => {
 ```
 
 `useLayoutEffect` has the same API as `useEffect` but runs synchronously after React updated the DOM and before the browser repaints. Sometimes it helps avoid state flickering.
-
+###### Refs
 `useRef` can be used to create a state variable whose change does not cause a re-render:
 ```js
 const ref = useRef(1);
@@ -269,7 +282,7 @@ nectButtonRef.current.focus();
 // ...
 <button ref={nextButtonRef}>Next</button>
 ```
-
+###### Callbacks
 `useCallback ` allows to maintain the identity of a callback:
 ```js
 const stableFunction = useCallback(functionToCache, dependencyList);
@@ -280,8 +293,8 @@ This help avoiding re-render of a child component that receives the callback as 
 ```js
 const anagrams = useMemo(() => getAnagrams(source), [source]);
 ```
-
-Context API: create a context (possibly export it from a seprate JS file):
+###### Context API
+reate a context (possibly export it from a seprate JS file):
 ```js
 const MyContext = createContext();
 ```
@@ -311,3 +324,4 @@ export function UserProvider({children}) {
 }
 ```
 In this way, one can also easily have in the custom provider nested contexts, separate for each state variable, for example `UserContext.Provider` and `UserSetContext.Provider`.
+###### Hooks related ot React Router
