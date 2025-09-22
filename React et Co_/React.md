@@ -325,3 +325,22 @@ export function UserProvider({children}) {
 ```
 In this way, one can also easily have in the custom provider nested contexts, separate for each state variable, for example `UserContext.Provider` and `UserSetContext.Provider`.
 ###### Hooks related ot React Router
+Extracting path parameters:
+```js
+const {flavor, size} = useParams();
+```
+Navigating to other routes:
+```js
+const navigate = useNavigate();
+navigate("/bubbletea");
+```
+Accessing query string parameters:
+```js
+const [searchParams, setSearchParams] = useSearchParams();
+
+searchParams.get("date");
+searchParams.get("bookableId");
+
+setSearchParams(params, {replace: true});
+```
+Here `params` is an object, `replace` causes the browser to replace the current URL in the browser history (and not create a new history entry.)
