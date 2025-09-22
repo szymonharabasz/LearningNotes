@@ -344,3 +344,60 @@ searchParams.get("bookableId");
 setSearchParams(params, {replace: true});
 ```
 Here `params` is an object, `replace` causes the browser to replace the current URL in the browser history (and not create a new history entry.)
+###### Hooks related to React Query
+Wrap components in Reqct Query provider:
+```js
+import {QueryClient, QueryClientProvider} from "react-query";
+
+const queryClient = new QueryClient();
+
+export default function App () {
+	return ( 
+		<QueryClientProvider client={queryClient}> 
+			<UserProvider>
+				<Router>
+					{/* unchanged JSX */}
+				</Router>
+			</UserProvider>
+		</QueryClientProvider>
+	);
+}
+```
+Fetch query data:
+```js
+const {data, status, error} = useQuery(key, () => fetch(url));
+```
+`key` could be a simple value, array, object, etc.
+One can directly access the cache, for example to avoid fetching part of data already fetched with different keys:
+```js
+const queryClient = useQueryClient();
+const bookables = queryClient.getQueryData("bookables");
+```
+This can also be used in the `options` object for `useQuery`:
+```js
+const {data, isLoading} = useQuery(
+	["bookable", id], 
+	() => getData(`http://localhost:3001/bookables/${id}`), 
+	{ 
+		initialData: 
+			queryClient.getQueryData("bookables") 
+			?.find(b => b.id === parseInt(id, 10))
+	}
+);
+```
+Update the server state with:
+```js
+const {mutate: createBookable, status, error} = useMutation(
+	item => createItem("http://localhost:3001/bookables", item), // POST...
+	{
+		onSuccess: bookable => {
+			queryClient.setQueryData(
+				"bookable", 
+				old => [...(old || []), bookable]
+			);
+		}
+	}
+);
+// ...
+createBookable(sormState.state);
+```
