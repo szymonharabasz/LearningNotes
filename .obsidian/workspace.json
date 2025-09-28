@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "React et Co_/React.md",
+                "file": "AdS_CFT/General Relativity.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "React"
+              "title": "General Relativity"
             }
           }
         ],
@@ -186,6 +186,7 @@
   },
   "active": "a63ab8dd5801b713",
   "lastOpenFiles": [
+    "React et Co_/React.md",
     "React et Co_/TypeScript.md",
     "Condensed Matter/12.  Second quantization.md",
     "FastAPI.md",
@@ -212,7 +213,6 @@
     "Spring and Spring Boot/Spring Security/Self-signed SSL certificate.md",
     "Condensed Matter/11. Order-disorder duality.md",
     "Condensed Matter/2. Electrons in the lattice.md",
-    "Work/Studying properties of hot and dense baryonic matter with the  HADES experiment.md",
     "Spring and Spring Boot/Spring Security",
     "Spring and Spring Boot/Spring Cloud",
     "Work",

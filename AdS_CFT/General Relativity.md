@@ -12,3 +12,44 @@ It reduces to the previous one using the equation of motion for $e$:
 $$
 \dot{x}^2+e^2m^2=0
 $$
+In curved spacetime, $\eta_{\mu\nu}$ is replaced with $g_{\mu\nu}(x)$. Then, equations of motion of a particle are *geodesic equatiobns*:
+$$
+\frac{d^2x^\mu}{d\tau}+
+{\Gamma^\mu}_{\rho\sigma}
+\frac{d^2x^\rho}{d\tau}
+\frac{d^2x^\sigma}{d\tau},
+$$
+where the *Christoffel symbol* is:
+$$
+{\Gamma^\alpha}_{\mu\nu}=\frac{1}{2}g^{\alpha\beta}\left(
+\partial_\nu g_{\beta\mu}+
+\partial_\mu g_{\beta\nu}-
+\partial_\beta g_{\mu\nu}
+\right).
+$$
+Einstein equation is:
+$$
+R_{\mu\nu}-\frac{1}{2}g_{\mu\nu}R=8\pi GT_{\mu\nu}.
+$$
+Term of the energy-momentum tensor with *cosmological constant* $\Lambda$:
+$$
+T_{\mu\nu}=-\frac{\Lambda}{8\pi G}g_{\mu\nu}.
+$$
+The Riemann curvature tensor can be defined with:
+$$
+{R^\lambda}_{\mu\nu\rho}=
+\partial_\nu{\Gamma^\lambda}_{\mu\rho}-
+\partial_\rho{\Gamma^\lambda}_{\mu\nu}+
+{\Gamma^\sigma}_{\mu\rho}{\Gamma^\lambda}_{\sigma\nu}-
+{\Gamma^\sigma}_{\mu\\nu}{\Gamma^\lambda}_{\sigma\rho}.
+$$
+Its contractioon is the Ricci tensor:
+$$
+R_{\mu\nu}={R^\lambda}_{\mu\lambda\nu}.
+$$
+The simplest solution of the Einstein equation without cosmological constant and without matter fields is the *Schwarzschild black hole*:
+$$
+ds^2=-\left(1-\frac{2GM}{r}\right)dt^2+
+\frac{dr^2}{1-\frac{2GM}{r}}+r^2d\Omega^2_2,
+$$
+where the line element of the unit 2D sphere is: $d\Omega^2_2=d\theta^2+\sin^2\theta d\phi^2$.
