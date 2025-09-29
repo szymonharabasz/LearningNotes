@@ -19,7 +19,7 @@ $$
 \frac{d^2x^\rho}{d\tau}
 \frac{d^2x^\sigma}{d\tau},
 $$
-where the *Christoffel symbol* is:
+where *Christoffel symbols* are:
 $$
 {\Gamma^\alpha}_{\mu\nu}=\frac{1}{2}g^{\alpha\beta}\left(
 \partial_\nu g_{\beta\mu}+
@@ -27,9 +27,25 @@ $$
 \partial_\beta g_{\mu\nu}
 \right).
 $$
+They allow to define covariant derivatives of vectors and forms:
+$$
+\nabla_\mu V^\nu=\partial_\mu V^\nu+V^\alpha{\Gamma^\nu}_{\alpha\mu},
+$$
+$$
+\nabla_\mu V_\nu=\partial_\mu V_\nu-V_\alpha{\Gamma^\alpha}_{\mu\nu}.
+$$
+A useful formula for covariant divergence:
+$$
+\nabla_\mu V^\mu=\frac{1}{\sqrt{-g}}\partial_\mu\left(\sqrt{-g}V^\mu\right),
+$$
+where $g=\det g_{\mu\nu}$.
 Einstein equation is:
 $$
 R_{\mu\nu}-\frac{1}{2}g_{\mu\nu}R=8\pi GT_{\mu\nu}.
+$$
+Energy-momentum tensor is:
+$$
+T_{\mu\nu}=-\frac{2}{\sqrt{-g}}\frac{\delta S_\mathrm{matter}}{\partial g^{\mu\nu}}.
 $$
 Term of the energy-momentum tensor with *cosmological constant* $\Lambda$:
 $$
@@ -46,6 +62,10 @@ $$
 Its contractioon is the Ricci tensor:
 $$
 R_{\mu\nu}={R^\lambda}_{\mu\lambda\nu}.
+$$
+The vacuum Einstein equation is derived from the action:
+$$
+S=\frac{1}{16\pi G}\int d^4x\sqrt{-g}R.
 $$
 The simplest solution of the Einstein equation without cosmological constant and without matter fields is the *Schwarzschild black hole*:
 $$
