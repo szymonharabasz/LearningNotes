@@ -8,20 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "92a5394ec02eef2d",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "FastAPI.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "FastAPI"
-            }
-          },
-          {
             "id": "a63ab8dd5801b713",
             "type": "leaf",
             "state": {
@@ -35,8 +21,7 @@
               "title": "Scrapbook"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"

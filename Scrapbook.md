@@ -162,3 +162,8 @@ if (angletoclosestnonfittedlep1>9 && angletoclosestnonfittedlep2>9 &&
 		angletoclosestnonfittedhad1>9 && angletoclosestnonfittedhad2>9)
 		kNoLegIsClosePairCandidate=kTRUE;
 ```
+where `isCutNb` comes from the ntuple and:
+```C++
+Bool_t kIsUpperMomentum = kFALSE;
+if (mom1<momUpCut && mom2<momUpCut) kIsUpperMomentum = kTRUE;
+```
