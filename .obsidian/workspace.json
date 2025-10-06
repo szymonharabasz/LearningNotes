@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Scrapbook.md",
+                "file": "NN reference analysis.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Scrapbook"
+              "title": "NN reference analysis"
             }
           }
         ]
@@ -171,8 +171,9 @@
   },
   "active": "a63ab8dd5801b713",
   "lastOpenFiles": [
-    "AdS_CFT/General Relativity.md",
     "Scrapbook.md",
+    "NN reference analysis.md",
+    "AdS_CFT/General Relativity.md",
     "React et Co_/React.md",
     "React et Co_/TypeScript.md",
     "Condensed Matter/12.  Second quantization.md",
@@ -197,7 +198,6 @@
     "Spring and Spring Boot/Basics.md",
     "Spring and Spring Boot/REST with Spring Boot.md",
     "Spring and Spring Boot/Spring Security/Self-signed SSL certificate.md",
-    "Condensed Matter/11. Order-disorder duality.md",
     "Spring and Spring Boot/Spring Security",
     "Spring and Spring Boot/Spring Cloud",
     "Work",
