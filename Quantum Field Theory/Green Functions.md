@@ -25,3 +25,11 @@ There is also a definition of a standard function:
 $$
 \Delta_+(x)=\int\frac{d^3k}{(2\pi)^32\omega}e^{-ikx}.
 $$
+In the case of vector fields, the spin sum that enters these quantities:
+$$
+E^{\mu\nu}(k)=\sum_\sigma\epsilon^\mu({\bf k},\sigma)\epsilon^{\nu*}({\bf k},\sigma)
+$$
+must be a linear combination of the two available second-rank tensors, $g^{\mu\nu}$ and $k^\mu k^\nu$. The gauge condition $\partial_\mu B^\mu=0$ gives $k_\mu\epsilon^\mu=0$, which fixes a relative coefficient between these two tensors. By fixing normalization, one obtains:
+$$
+E^{\mu\nu}(k)=-g^{\mu\nu}+\frac{k^\mu k^\nu}{m^2}.
+$$
