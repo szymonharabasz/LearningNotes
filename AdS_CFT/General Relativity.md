@@ -73,3 +73,22 @@ ds^2=-\left(1-\frac{2GM}{r}\right)dt^2+
 \frac{dr^2}{1-\frac{2GM}{r}}+r^2d\Omega^2_2,
 $$
 where the line element of the unit 2D sphere is: $d\Omega^2_2=d\theta^2+\sin^2\theta d\phi^2$.
+###### Gravitational redshift
+Is given by
+$$
+\frac{E(A)}{E(B)}=\sqrt{\frac{g_{00}(B)}{g_{00}(A)}}.
+$$
+###### Surface gravity
+Can be naively calculated from the Newton's law, the result coincides with the one measured by the asymptotic (at infinity) observer in General Relativity:
+$$
+\kappa=a(r=r_0)=\frac{c^4}{4GM}.
+$$
+Black body temperature of Hawking radiation is
+$$
+k_\mathrm{B}T=\frac{\hbar\kappa}{2\pi c}.
+$$
+This also allows to write the black hole entropy as
+$$
+S=\frac{A}{4G\hbar}k_\mathrm{B}c^3=\frac{1}{4}\frac{A}{l^2_\mathrm{Planck}}k_\mathrm{B},
+$$
+where the Planck length $l_\mathrm{Planck}=\sqrt{G\hbar/c^3}\approx10^{-35}~\mathrm{m}$. 
