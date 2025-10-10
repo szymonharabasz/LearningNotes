@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "AdS_CFT/General Relativity.md",
+                "file": "Condensed Matter/7. Interaction in quantum field theory.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "General Relativity"
+              "title": "7. Interaction in quantum field theory"
             }
           }
         ],
@@ -186,11 +186,12 @@
   },
   "active": "dd29ab9f7eb8ccdb",
   "lastOpenFiles": [
+    "Condensed Matter/6. Quantum field theory.md",
+    "AdS_CFT/General Relativity.md",
     "Quantum Field Theory/Green Functions.md",
     "Quantum Field Theory",
     "Scrapbook.md",
     "NN reference analysis.md",
-    "AdS_CFT/General Relativity.md",
     "React et Co_/React.md",
     "React et Co_/TypeScript.md",
     "Condensed Matter/12.  Second quantization.md",
@@ -198,7 +199,6 @@
     "MongoDB.md",
     "Fortran.md",
     "Condensed Matter/4. Application of electronic interactions.md",
-    "Condensed Matter/6. Quantum field theory.md",
     "Condensed Matter/7. Interaction in quantum field theory.md",
     "Physics/Quantum Chromodynamics.md",
     "Condensed Matter/Simulations.md",
