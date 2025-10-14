@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Monte Carlo.md",
+                "file": "Condensed Matter/13. Coherent states.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Monte Carlo"
+              "title": "13. Coherent states"
             }
           }
         ],
@@ -186,12 +186,13 @@
   },
   "active": "dd29ab9f7eb8ccdb",
   "lastOpenFiles": [
-    "Condensed Matter/Simulations.md",
+    "Condensed Matter/6. Quantum field theory.md",
+    "Condensed Matter/13. Coherent states.md",
     "Monte Carlo.md",
+    "Condensed Matter/Simulations.md",
     "Work/Thermal.md",
     "Scrapbook.md",
     "Quantum Field Theory/Green Functions.md",
-    "Condensed Matter/6. Quantum field theory.md",
     "Condensed Matter/7. Interaction in quantum field theory.md",
     "AdS_CFT/General Relativity.md",
     "Quantum Field Theory",
@@ -213,7 +214,6 @@
     "Rust/Functional programming.md",
     "Rust",
     "Work/Differences between macros.md",
-    "Spring and Spring Boot/Basics.md",
     "Spring and Spring Boot/Spring Security",
     "Spring and Spring Boot/Spring Cloud",
     "Work",
