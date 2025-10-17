@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Condensed Matter/13. Coherent states.md",
+                "file": "AdS_CFT/Free scalar field in 2D.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "13. Coherent states"
+              "title": "Free scalar field in 2D"
             }
           }
         ],
@@ -186,8 +186,9 @@
   },
   "active": "dd29ab9f7eb8ccdb",
   "lastOpenFiles": [
-    "Condensed Matter/6. Quantum field theory.md",
     "Condensed Matter/13. Coherent states.md",
+    "AdS_CFT/Free scalar field in 2D.md",
+    "Condensed Matter/6. Quantum field theory.md",
     "Monte Carlo.md",
     "Condensed Matter/Simulations.md",
     "Work/Thermal.md",
@@ -213,7 +214,6 @@
     "Rust/Standard library.md",
     "Rust/Functional programming.md",
     "Rust",
-    "Work/Differences between macros.md",
     "Spring and Spring Boot/Spring Security",
     "Spring and Spring Boot/Spring Cloud",
     "Work",
