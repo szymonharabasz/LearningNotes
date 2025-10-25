@@ -65,8 +65,39 @@ V_0(\phi)>0~\mathrm{and}~V_1(\phi)=0.
 $$
 For example, if $C_0 > V_0(\phi*)$, one can sell the option and buy the portfolio, which gives immediate risk-free profit of $C_0-V_0(\phi^*)$. After a year, profits from the portfolio and from the option cancel out:
 $$
--C+M\phi*0=\left(\begin{matrix}
+-C+M\phi^*=\left(\begin{matrix}
 0 \\ 0
 \end{matrix}\right)
 $$
 by definition of the replication portfolio. Otherwise, if $C_0<V_0(\phi^*)$, one can buy the option and sell the portfolio with immediate risk-free profit of $V_0(\phi^*)-C_0$. Such situations, however, are not realistic, and the option has normally an **arbitration price** $C_0=V_0(\phi^*)$.
+#### Three-state economy
+**Attainable contingent claims** are:
+$$
+\mathbb{A}=\{{\cal M}\phi,~\phi\in\mathbb{R}^2\}
+$$
+when short selling is allowed, or
+$$
+\mathbb{A}=\{{\cal M}\phi,~\phi\in\mathbb{R}^2_+\}
+$$
+when it is not allowed. There are three equations for only two variables. Then, $\mathbb{A}$ is only a subspace of $\mathbb{R}^3$. Contingent claims that are not attainable cannot be replicated. One says that the **market model is incomplete**. 
+
+In this case, the conditions that martingale measure is a probability measure puts inequality constraints on the probabilities $q\in\mathbb{Q}$. According to the first fundamental theorem, the martingale measure is not unique and the market model is again incomplete.
+###### Superreplication
+A portfolio $\phi$ superreplicates a contingent claim if
+$$
+V_1(\phi)\geq C_1~\mathrm{(matrix~element~wise)}
+$$
+For example, a portfolio with bonds only superreplicates first Arrow-Debrue secutiy $\gamma^u:~C_1=(1,0,0)^T$. One can then try to minimize the cost of obtaining the portfolio:
+$$
+\min_\phi V_0(\phi)~\mathrm{such~that}~V_1(\phi)\geq C_1.
+$$
+###### Approximate replication
+Can be obtained by minimizing:
+$$
+\min_\phi\mathrm{MSE}(V_1(\phi)-C_1).
+$$
+Line of $\mu$ versus $\sigma$ is called **capital market line (CML)**. The equation of its upper, increasing branch is:
+$$
+\mu=i-\frac{\mu_s-i}{\sigma_s}\sigma,
+$$
+where $\mu_s$, $\sigma_s$ describe a **market portfolio**, e.g., some large stock index.
