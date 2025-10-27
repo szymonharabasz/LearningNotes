@@ -70,3 +70,93 @@ $$
 \end{matrix}\right)
 $$
 by definition of the replication portfolio. Otherwise, if $C_0<V_0(\phi^*)$, one can buy the option and sell the portfolio with immediate risk-free profit of $V_0(\phi^*)-C_0$. Such situations, however, are not realistic, and the option has normally an **arbitration price** $C_0=V_0(\phi^*)$.
+
+Expected payout from a portfolio:
+$$
+E^p({\cal M}\phi)=bB_1+sE^p(S_1),
+$$
+where $\phi=(b,s)^T$. Defining a **matrix of return rates**:
+$$
+{\cal R}=
+\left(\begin{matrix}
+i & r^u_1 \\ i & r^d_1
+\end{matrix}\right),
+$$
+one gets:
+$$
+E^p({\cal R}\phi)=bi+s\mu,
+$$
+where $\mu$ is the expected return rate from shares.
+Volatility of the portfolio is:
+$$
+\sigma({\cal R}\phi)=s\sigma(r_1).
+$$
+**Arrow-Debreu security** yields a payoff of exactly one unit in a given state in the future. In a two-state economy there are exactly two such instruments. They are replicated portfolios fulfilling:
+$$
+{\cal M}\phi=
+\left(\begin{matrix}
+1 \\ 0
+\end{matrix}\right)
+$$
+and
+$$
+{\cal M}\phi=
+\left(\begin{matrix}
+0 \\ 1
+\end{matrix}\right).
+$$
+If their price processes are $\gamma^u=(\gamma^u_0,(1,0)^T)$ and $\gamma^d=(\gamma^d_0,(0,1)^T)$. For the portfolio consisting of these securities we define:
+$$
+{\cal M}^\gamma=
+\left(\begin{matrix}
+1 & 0 \\ 0 & 1
+\end{matrix}\right)=\mathbb{1}_2.
+$$
+The replication portfolio $\phi^\gamma$ for any conditional claim 
+$$
+C_1=
+\left(\begin{matrix}
+C^u_1 \\ c^d_1
+\end{matrix}\right)
+$$
+is then simply
+$$
+V_1(\phi^\gamma)={\cal M}^\gamma\phi^\gamma=\mathbb{1}_2\phi^\gamma=C_1
+$$
+and therefore $\phi^\gamma=C_1$. The arbitration price is then:
+$$
+C_0=V_0(\phi^\gamma)=C^u_1\gamma^u_0+C^d_1\gamma^d_0.
+$$
+###### Martingale pricing
+An asset is a martingale if:
+$$
+S_0=\frac{1}{1+i}E^Q(S_1).
+$$
+**Martingale measure** is a probability measure $Q:2^\Omega\rightarrow\mathbb{R}$ with respect to which it holds. 
+Define:
+$$
+q:=Q(u),
+$$
+then:
+$$
+S_0(1+i)=qS^u_1+(1-q)S^d_q
+$$
+or
+$$
+q=\frac{S_0(1+i)-S^d_1}{S^u_1-S^d_1}.
+$$
+For $q$ in order to define a correct probability measure it must hold:
+$$
+S^u_1>S_0(1+i)>S^d_1.
+$$
+If these conditions are not fulfilled, a simple arbitrage consists of buying or selling the instrument $S$. If inequalities are replaced with equality, there is a weak arbitrage, because risk-free profit can be expected only on average and not for certain.
+
+###### First fundamental theorem of asset pricing
+The following two statements are equivalent:
+- There exists a martingale probability measure
+- The economy is arbitration-free
+###### Second fundamental theorem of asset pricing
+The following two statements are equivalent:
+- The martingale measure is unique
+- The market model is complete
+
