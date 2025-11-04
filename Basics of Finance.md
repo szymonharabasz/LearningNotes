@@ -70,6 +70,96 @@ $$
 \end{matrix}\right)
 $$
 by definition of the replication portfolio. Otherwise, if $C_0<V_0(\phi^*)$, one can buy the option and sell the portfolio with immediate risk-free profit of $V_0(\phi^*)-C_0$. Such situations, however, are not realistic, and the option has normally an **arbitration price** $C_0=V_0(\phi^*)$.
+<<<<<<< HEAD
+
+Expected payout from a portfolio:
+$$
+E^p({\cal M}\phi)=bB_1+sE^p(S_1),
+$$
+where $\phi=(b,s)^T$. Defining a **matrix of return rates**:
+$$
+{\cal R}=
+\left(\begin{matrix}
+i & r^u_1 \\ i & r^d_1
+\end{matrix}\right),
+$$
+one gets:
+$$
+E^p({\cal R}\phi)=bi+s\mu,
+$$
+where $\mu$ is the expected return rate from shares.
+Volatility of the portfolio is:
+$$
+\sigma({\cal R}\phi)=s\sigma(r_1).
+$$
+**Arrow-Debreu security** yields a payoff of exactly one unit in a given state in the future. In a two-state economy there are exactly two such instruments. They are replicated portfolios fulfilling:
+$$
+{\cal M}\phi=
+\left(\begin{matrix}
+1 \\ 0
+\end{matrix}\right)
+$$
+and
+$$
+{\cal M}\phi=
+\left(\begin{matrix}
+0 \\ 1
+\end{matrix}\right).
+$$
+If their price processes are $\gamma^u=(\gamma^u_0,(1,0)^T)$ and $\gamma^d=(\gamma^d_0,(0,1)^T)$. For the portfolio consisting of these securities we define:
+$$
+{\cal M}^\gamma=
+\left(\begin{matrix}
+1 & 0 \\ 0 & 1
+\end{matrix}\right)=\mathbb{1}_2.
+$$
+The replication portfolio $\phi^\gamma$ for any conditional claim 
+$$
+C_1=
+\left(\begin{matrix}
+C^u_1 \\ c^d_1
+\end{matrix}\right)
+$$
+is then simply
+$$
+V_1(\phi^\gamma)={\cal M}^\gamma\phi^\gamma=\mathbb{1}_2\phi^\gamma=C_1
+$$
+and therefore $\phi^\gamma=C_1$. The arbitration price is then:
+$$
+C_0=V_0(\phi^\gamma)=C^u_1\gamma^u_0+C^d_1\gamma^d_0.
+$$
+###### Martingale pricing
+An asset is a martingale if:
+$$
+S_0=\frac{1}{1+i}E^Q(S_1).
+$$
+**Martingale measure** is a probability measure $Q:2^\Omega\rightarrow\mathbb{R}$ with respect to which it holds. 
+Define:
+$$
+q:=Q(u),
+$$
+then:
+$$
+S_0(1+i)=qS^u_1+(1-q)S^d_q
+$$
+or
+$$
+q=\frac{S_0(1+i)-S^d_1}{S^u_1-S^d_1}.
+$$
+For $q$ in order to define a correct probability measure it must hold:
+$$
+S^u_1>S_0(1+i)>S^d_1.
+$$
+If these conditions are not fulfilled, a simple arbitrage consists of buying or selling the instrument $S$. If inequalities are replaced with equality, there is a weak arbitrage, because risk-free profit can be expected only on average and not for certain.
+
+###### First fundamental theorem of asset pricing
+The following two statements are equivalent:
+- There exists a martingale probability measure
+- The economy is arbitration-free
+###### Second fundamental theorem of asset pricing
+The following two statements are equivalent:
+- The martingale measure is unique
+- The market model is complete
 #### Three-state economy
 **Attainable contingent claims** are:
 $$
@@ -101,3 +191,70 @@ $$
 \mu=i-\frac{\mu_s-i}{\sigma_s}\sigma,
 $$
 where $\mu_s$, $\sigma_s$ describe a **market portfolio**, e.g., some large stock index.
+###### Capital Asset Pricing Model (CAPM)
+For an asset $T$ which is a part of a market portfolio $S$ and not perfectly correlated with it,
+$$
+\mu_T=
+i+\frac{(\mu_S-i)\rho_{ST}}{\sigma_S}\sigma_T=
+i+\frac{\rho_{ST}\sigma_S\sigma_T}{\sigma^2_S}(\mu_S-i)=
+i+\frac{\sigma_{ST}}{\sigma^2_s}(\mu_S-i)\equiv
+i+\beta_T(\mu_S-i),
+$$
+where $\sigma_{ST}=\rho_{ST}\sigma_S\sigma_T$ is a covariance.
+Security Market Line (SML) is $\mu$ versus $\beta$.
+
+Unit price of risk is defined as:
+$$
+\lambda=\frac{\mu_S-i}{\sigma^2_S}.
+$$
+So that:
+$$
+\mu_T=i+\lambda\sigma_{ST}=\frac{E^p(T_1)-T_0}{T_0}.
+$$
+Therefore:
+$$
+T_0=\frac{E^p(T_1)}{1+i+\lambda\sigma_{ST}}.
+$$
+The denominator can be interpreted as a discount coefficient corrected for risk.
+#### Economy with many states
+Algebra is a family ${\cal F}$ of sets of elements of $\Omega$, such that:
+1. $\Omega\in{\cal F}$
+2. $\mathbb{E}\in{\cal F}\Rightarrow\mathbb{E}^c\in{\cal F}$
+3. $\mathbb{E}_1,\mathbb{E}_2,...,\mathbb{E}_I\in{\cal F}\Rightarrow\cup_{i=1}^I\in{\cal F}$.
+A random variable is a ${\cal F}$-measurable function:
+$$
+S:\Omega\rightarrow\mathbb{R},\omega\rightarrow S(\omega),
+$$
+that is, for each
+$$
+\mathbb{I}\in\{[a,b]:a,b\in\mathbb{R},a<b\}
+$$
+one has
+$$
+S^{-1}(\mathbb{I})\in{\cal F}.
+$$
+Economy with $K$ assets and $I$ states in the future is complete if:
+$$
+\{\phi\in\mathbb{R}^K:{\cal M}\phi\}=\mathbb{R}^I
+$$
+which happens when $\mathrm{rank}({\cal M})$ is maximal.
+###### Black-Scholes formula
+$$
+S_T=S_0\exp\left[\left(
+r-\frac{\sigma^2}2
+\right)T+\sigma\sqrt{T}z
+\right],
+$$
+where $z$ is a standard normally-distributed random variable.
+
+Black-Scholes-Merton formula can also model random jumps:
+$$
+S_T=S_0\left\{\exp\left[\left(
+r-\frac{\sigma^2}2
+\right)T+\sigma\sqrt{T}z^1_i
+\right]+
+[\exp\left(\mu+\delta z^2_i-1]y_i\right)
+\right\},
+
+$$
+where $y_i$ is Poisson-distributed, $\mu$ and $\delta$ are parameters of log-normal distribution of jumps.
