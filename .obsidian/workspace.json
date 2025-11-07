@@ -1,64 +1,41 @@
 {
   "main": {
-    "id": "d6f2759bec88045b",
+    "id": "ff40cf4d3a4dbdf1",
     "type": "split",
     "children": [
       {
-        "id": "f98e0ad26045740e",
+        "id": "5e3130b2d7c493b6",
         "type": "tabs",
         "children": [
           {
-            "id": "a63ab8dd5801b713",
+            "id": "86feed03d4b35aff",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "NN reference analysis.md",
+                "file": "Physics/Partial waves.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "NN reference analysis"
-            }
-          },
-          {
-            "id": "dd29ab9f7eb8ccdb",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-<<<<<<< HEAD
-                "file": "AdS_CFT/Free scalar field in 2D.md",
-=======
-                "file": "Quantum Field Theory/Density operator.md",
->>>>>>> 7cf63e874b4389a7e52dc8f4341ff5b6533dcdd3
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-<<<<<<< HEAD
-              "title": "Free scalar field in 2D"
-=======
-              "title": "Density operator"
->>>>>>> 7cf63e874b4389a7e52dc8f4341ff5b6533dcdd3
+              "title": "Partial waves"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
   },
   "left": {
-    "id": "a9bc3b86855e9bc5",
+    "id": "0a8f94069503fc24",
     "type": "split",
     "children": [
       {
-        "id": "215a0d7bc524010e",
+        "id": "0c33bbda062c4de3",
         "type": "tabs",
         "children": [
           {
-            "id": "c3d36d0389f76ada",
+            "id": "35dd7757fd4a3370",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -71,7 +48,7 @@
             }
           },
           {
-            "id": "0681d31e755b8c0e",
+            "id": "0619513150b9d1e4",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -88,7 +65,7 @@
             }
           },
           {
-            "id": "80509900baa4c38a",
+            "id": "26c05d6819e715c0",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -104,20 +81,20 @@
     "width": 300
   },
   "right": {
-    "id": "64a0b1e1236f6ee0",
+    "id": "ed3509fc54f95de9",
     "type": "split",
     "children": [
       {
-        "id": "0d4729ee9fd70458",
+        "id": "f22cd71dc8b7d407",
         "type": "tabs",
         "children": [
           {
-            "id": "e455400d803078dc",
+            "id": "f8b0928cc464705d",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Condensed Matter/2. Electrons in the lattice.md",
+                "file": "AdS_CFT/Free scalar field in 2D.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -127,25 +104,25 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for 2. Electrons in the lattice"
+              "title": "Backlinks for Free scalar field in 2D"
             }
           },
           {
-            "id": "841c2c51bc8edef7",
+            "id": "93678c2ba368028a",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Condensed Matter/2. Electrons in the lattice.md",
+                "file": "AdS_CFT/Free scalar field in 2D.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from 2. Electrons in the lattice"
+              "title": "Outgoing links from Free scalar field in 2D"
             }
           },
           {
-            "id": "c2a39aace8f07072",
+            "id": "649784cf734295fa",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -160,18 +137,18 @@
             }
           },
           {
-            "id": "61333693b5495e80",
+            "id": "c95ee06bdf6ee9d3",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "Condensed Matter/2. Electrons in the lattice.md",
+                "file": "AdS_CFT/Free scalar field in 2D.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 2. Electrons in the lattice"
+              "title": "Outline of Free scalar field in 2D"
             }
           }
         ]
@@ -183,63 +160,23 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "bases:Create new base": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
     }
   },
-  "active": "dd29ab9f7eb8ccdb",
+  "active": "86feed03d4b35aff",
   "lastOpenFiles": [
-<<<<<<< HEAD
-    "AdS_CFT/General Relativity.md",
-    "Physics/Relativistic hydrodynamics.md",
-    "Quantum Field Theory/Green Functions.md",
-=======
-    "Quantum Field Theory/Green Functions.md",
-    "Quantum Field Theory/Density operator.md",
-    "Condensed Matter/2. Electrons in the lattice.md",
-    "Basics of Finance.md",
-    "AdS_CFT/Free scalar field in 2D.md",
->>>>>>> 7cf63e874b4389a7e52dc8f4341ff5b6533dcdd3
-    "Condensed Matter/13. Coherent states.md",
-    "Basics of Finance.md",
-    "AdS_CFT/Free scalar field in 2D.md",
-    "Condensed Matter/6. Quantum field theory.md",
-    "Monte Carlo.md",
-    "Condensed Matter/Simulations.md",
-    "Work/Thermal.md",
-    "Scrapbook.md",
-    "Condensed Matter/7. Interaction in quantum field theory.md",
-    "Quantum Field Theory",
-    "NN reference analysis.md",
-    "React et Co_/React.md",
-    "React et Co_/TypeScript.md",
-    "Condensed Matter/12.  Second quantization.md",
-    "FastAPI.md",
-    "MongoDB.md",
-    "Fortran.md",
-    "Condensed Matter/4. Application of electronic interactions.md",
-    "Physics/Quantum Chromodynamics.md",
-    "Rust/Leptos framework.md",
     "Physics/Maximum momentum from accelerator rigidity.md",
-    "Rust/Flow control.md",
-    "Rust/Basic types.md",
-<<<<<<< HEAD
-    "Rust/Own types.md",
-=======
->>>>>>> 7cf63e874b4389a7e52dc8f4341ff5b6533dcdd3
-    "Rust",
-    "Spring and Spring Boot/Spring Security",
-    "Spring and Spring Boot/Spring Cloud",
-    "Work",
-    "Spring and SPring Boot",
-    "Spring and Spring Boot",
-    "React et Co_",
-    "React et Co.",
-    "React et Co."
+    "Physics/Partial waves.md",
+    "AdS_CFT/Primary fields.md",
+    "AdS_CFT/Free scalar field in 2D.md",
+    "AdS_CFT/General Relativity.md",
+    "Quantum Field Theory/Density operator.md",
+    "Basics of Finance.md"
   ]
 }
