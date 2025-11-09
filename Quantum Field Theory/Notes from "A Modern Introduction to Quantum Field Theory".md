@@ -277,14 +277,13 @@ $$
 
 **Loops** Additional minus on integration
 
-# Integrals by trajectories
+#### Path integrals
 
 $$
 \left\langle q_{f} , T_{f} | q_{i} , T_{i} \right\rangle = \int_{q \left( T_{i} \right) = q_{i}}^{q \left( T_{f} \right) = q_{f}} {[ d q ] \exp {\left( \frac{i}{\hslash} S \right) .}}
 $$
 
-Because (because there is ), then:$$\int_{q \left( T_{i} \right) = q_{i}}^{q \left( T_{f} \right) = q_{f}} {[ d q ] = \int_{- \infty}^{\infty} {d \overline{q}}} \int_{q \left( T_{i} \right) = q_{i}}^{q ( t ) = \overline{q}} {[ d q ] \int_{q ( t ) = \overline{q}}^{q \left( T_{f} \right) = q_{f}} [ d q ]} \int_{T_{i}}^{T_{f}} {d t '} L = \int_{t}^{T_{f}} {d t '} L + \int_{T_{i}}^{t} {d t '} L$$
-
+Because $\int_{q \left( T_{i} \right) = q_{i}}^{q \left( T_{f} \right) = q_{f}} {[ d q ] = \int_{- \infty}^{\infty} {d \overline{q}}} \int_{q \left( T_{i} \right) = q_{i}}^{q ( t ) = \overline{q}} {[ d q ] \int_{q ( t ) = \overline{q}}^{q \left( T_{f} \right) = q_{f}} [ d q ]}$ (because there is $\int_{T_{i}}^{T_{f}} {d t '} L = \int_{t}^{T_{f}} {d t '} L + \int_{T_{i}}^{t} {d t '} L$ in exponent), then:
 $$
 \left\langle q_{f} , T_{f} | \widehat{q} ( t ) | q_{i} , T_{i} \right\rangle = \int_{q \left( T_{i} \right) = q_{i}}^{q \left( T_{f} \right) = q_{f}} {[ d q ] q ( t ) \exp {\left( \frac{i}{\hslash} S \right) ,}}
 $$
@@ -292,41 +291,36 @@ $$
 $$
 \left\langle q_{f} , T_{f} | T \left\{ \widehat{q} \left( t_{1} \right) \ldots \widehat{q} ( t_{n} ) \right\} | q_{i} , T_{i} \right\rangle = \int_{q \left( T_{i} \right) = q_{i}}^{q \left( T_{f} \right) = q_{f}} {[ d q ] q \left( t_{1} \right) \ldots q ( t_{n} ) \exp {\left( \frac{i}{\hslash} S \right) .}}
 $$
-
-In field theory, the notation for vacuum in $$t = - \infty : | 0 , t = - \infty \right\rangle \equiv | 0 \rangle$$. Hence:
-
+In field theory, the notation for vacuum in $t = -\infty$: $| 0 , t = - \infty \rangle \equiv | 0 \rangle$. Hence:
 $$
 \left\langle 0 | T \left\{ \widehat{\phi} \left( x_{1} \right) \ldots \widehat{\phi} ( x_{n} ) \right\} | 0 \right\rangle = \frac{\int_{}^{} {D \phi \phi \left( x_{1} \right) \ldots \phi \left( x_{n} \right) e^{i S} \ }}{\int_{}^{} {D \phi e^{i S}}}
 $$
-
-(the denominator comes from the evolution of the vacuum state from to ). Generating function:$$- \infty + \infty$$
-
+(the denominator comes from the evolution of the vacuum state from $-\infty$ to $+\infty$). Generating functional:
 $$
 W [ J ] \equiv \int_{}^{} {D \phi \exp {\left\{ \frac{i}{2} \int_{}^{} {d^{4} x \left\lbrack \partial_{\mu} \phi \partial^{\mu} \phi - \left( m^{2} - i \epsilon \right) \phi^{2} \right\rbrack + \int_{}^{} {d^{4} x \  \phi ( x ) J ( x )}} \right\} .}}
 $$
-
-Based on the analogy to the formula:
-
+By the analogy to the formula:
 $$
 \int_{}^{} {\prod_{i = 1}^{N} {d y_{i} \exp {\left\lbrack - \frac{1}{2} \mathbf{y}^{\mathbf{T}} \mathbf{A y} + \mathbf{y}^{\mathbf{T}} \mathbf{z} \right\rbrack = ( 2 \pi )^{\frac{N}{2}} \left( \det A \right)^{- \frac{1}{2}} \exp \left\lbrack \frac{1}{2} \mathbf{z}^{\mathbf{T}} \mathbf{A}^{- 1} \mathbf{z} \right\rbrack}}}
 $$
-
 It can be concluded that:
-
 $$
-W [ J ] = \int_{}^{} {D \phi \exp {\left\{ \int_{}^{} {\frac{d^{4} p}{( 2 \pi )^{4}} \left\lbrack \frac{i}{2} \widetilde{\phi} ( - p ) \left( p^{2} - m^{2} + i \epsilon \right) \widetilde{\phi} ( p ) + \widetilde{J} ( - p ) \widetilde{\phi} ( p ) \right\rbrack} \right\} = \int_{}^{} {D \phi e^{i S}} \exp {\left\{ \frac{1}{2} \int_{}^{} {\frac{d^{4} p}{( 2 \pi )^{4}} \widetilde{J} ( - p ) \widetilde{D} ( p ) \widetilde{J} ( p )} \right\} = W [ 0 ] \exp \left\{ \frac{1}{2} \int_{}^{} {d^{4} x d^{4} y J ( x ) D ( x - y ) J ( y )} \right\}}} ,}
+\begin{split}
+W [ J ] = \int_{}^{} {D \phi \exp {\left\{ \int_{}^{} {\frac{d^{4} p}{( 2 \pi )^{4}} \left\lbrack \frac{i}{2} \widetilde{\phi} ( - p ) \left( p^{2} - m^{2} + i \epsilon \right) \widetilde{\phi} ( p ) + \widetilde{J} ( - p ) \widetilde{\phi} ( p ) \right\rbrack} \right\} = \int_{}^{} {D \phi e^{i S}} \exp {\left\{ \frac{1}{2} \int_{}^{} {\frac{d^{4} p}{( 2 \pi )^{4}} \widetilde{J} ( - p )  \widetilde{J} ( p )} \right\} = W [ 0 ] \exp \left\{ \frac{1}{2} \int_{}^{} {d^{4} x d^{4} y J ( x ) D ( x - y ) J ( y )} \right\}}} ,}
+\end{split}
+$$
+where $$\widetilde{D} ( p )=\frac{i}{p^{2} - m^{2} + i \epsilon}$$
+and we used
+$$
+W[0]=\int{\cal D}\phi~e^{iS}.
 $$
 
-where.$$\frac{i}{p^{2} - m^{2} + i \epsilon}$$
 
-Hence: (corresponding functional derivative) and . Functional:$$D ( x - y ) = \left\langle 0 | T \left\{ \phi ( x ) \phi ( y ) \right\} | 0 \right\rangle \left\langle 0 | T \left\{ \phi \left( x_{1} \right) \phi \left( x_{2} \right) \phi \left( x_{3} \right) \phi \left( x_{4} \right) \right\} | 0 \right\rangle = D \left( x_{1} - x_{2} \right) D \left( x_{3} - x_{4} \right) + D \left( x_{1} - x_{3} \right) D \left( x_{2} - x_{4} \right) + D \left( x_{1} - x_{4} \right) D ( x_{2} - x_{3} )$$
-
+Hence: $D ( x - y ) = \left\langle 0 | T \left\{ \phi ( x ) \phi ( y ) \right\} | 0 \right\rangle$ (corresponding functional derivative) and $\left\langle 0 | T \left\{ \phi \left( x_{1} \right) \phi \left( x_{2} \right) \phi \left( x_{3} \right) \phi \left( x_{4} \right) \right\} | 0 \right\rangle = D \left( x_{1} - x_{2} \right) D \left( x_{3} - x_{4} \right) + D \left( x_{1} - x_{3} \right) D \left( x_{2} - x_{4} \right) + D \left( x_{1} - x_{4} \right) D ( x_{2} - x_{3} ).$The functional:
 $$
 Z [ J ] = \ln {W [ J ] = Z [ 0 ] + \frac{1}{2} \int_{}^{} {d^{4} x d^{4} y J ( x ) D ( x - y ) J ( y )}}
 $$
-
-generates **consistent** Green functions.
-
+generates **connected** Green functions.
 #### Renormalization of the theory $\mathbf{\phi}^{\mathbf{4}}$
 When applying ultraviolet cutoff $\Lambda$, the sum of a series of double-loop diagrams is:
 $$
