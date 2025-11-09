@@ -327,56 +327,44 @@ $$
 
 generates **consistent** Green functions.
 
-# Renormalization of the theory $$\mathbf{\phi}^{\mathbf{4}}$$
-
-When applying ultraviolet trim, the sum of a series of double-loop diagrams is:$$\Lambda$$
-
+#### Renormalization of the theory $\mathbf{\phi}^{\mathbf{4}}$
+When applying ultraviolet cutoff $\Lambda$, the sum of a series of double-loop diagrams is:
 $$
 \frac{i}{A \left( \Lambda , p^{2} \right) p^{2} - m^{2} - B ( \Lambda )} , \  A \left( \Lambda , p^{2} \right) = 1 + \lambda^{2} \left( c_{1} \ln \frac{\Lambda^{2}}{p^{2}} + c_{2} \right) , \  B ( \Lambda ) = \frac{\lambda}{32 \pi^{2}} \left( \Lambda^{2} - m^{2} \ln \frac{\Lambda^{2} + m^{2}}{m^{2}} \right)
 $$
 
-Here, etc. At the single-loop level, we select the discrepancies anyway so that the discrepancies are eliminated and the propagator has a pole in the real, observed mass.$$\lambda = \lambda_{0} ( \Lambda ) , \  m = m_{0} ( \Lambda ) A = 1 m_{R}^{2} = m_{0}^{2} ( \Lambda ) + B ( \Lambda ) m_{0} ( \Lambda )$$
+Here, $\lambda = \lambda_{0} ( \Lambda ) , \  m = m_{0} ( \Lambda )$ etc. At the single-loop level, $A = 1 m_{R}^{2} = m_{0}^{2} ( \Lambda ) + B ( \Lambda )$ and we choose $m_{0} ( \Lambda )$ so that the divergencies are eliminated and the propagator has a pole in the real, observed mass.
 
-At the two-loop level, where the remaining words are finite, when , .$$\int_{}^{} {d^{4} x e^{i p x} \left\langle 0 \left| T \left\{ \phi_{0} ( x , \Lambda ) , \phi_{0} ( 0 , \Lambda ) \right\} \right| 0 \right\rangle_{C} = \frac{i Z}{p^{2} - m_{R}^{2}} + \ldots} p^{2} = m_{R}^{2} Z = Z \left( \lambda_{0} ( \Lambda ) , \frac{\Lambda}{m_{R}} \right) = \left\lbrack \left( \frac{d}{d \left( p^{2} \right)} A \left( \Lambda , p^{2} \right) p^{2} \right)_{p^{2} = m_{R}^{2}} \right\rbrack^{- 1}$$
+At the two-loop level.$\int_{}^{} {d^{4} x e^{i p x} \left\langle 0 \left| T \left\{ \phi_{0} ( x , \Lambda ) , \phi_{0} ( 0 , \Lambda ) \right\} \right| 0 \right\rangle_{C} = \frac{i Z}{p^{2} - m_{R}^{2}} + \ldots}$, where the remaining terms are finite, when, $p^{2} = m_{R}^{2} Z = Z \left( \lambda_{0} ( \Lambda ) , \frac{\Lambda}{m_{R}} \right) = \left\lbrack \left( \frac{d}{d \left( p^{2} \right)} A \left( \Lambda , p^{2} \right) p^{2} \right)_{p^{2} = m_{R}^{2}} \right\rbrack^{- 1}$.
 
-We assume that it is such that . We define the renormalized wave function: . If in the LZS formula we use instead of . Then we get a finite expression for the Green function. $$m_{R} \left\lbrack A \left( \Lambda , p^{2} \right) p^{2} - m_{0}^{2} ( \Lambda ) - B ( \Lambda ) \right\rbrack_{p^{2} = m_{R}^{2}} = 0 \phi_{0} = Z^{\frac{1}{2}} \left( \lambda_{0} , \frac{\Lambda}{m^{R}} \right) \phi_{R} \phi_{R} , m_{R} \phi_{0} , m_{0}$$
+We assume that $m_R$ is such that $\left\lbrack A \left( \Lambda , p^{2} \right) p^{2} - m_{0}^{2} ( \Lambda ) - B ( \Lambda ) \right\rbrack_{p^{2} = m_{R}^{2}} = 0$. We define the renormalized wave function: $\phi_{0} = Z^{\frac{1}{2}} \left( \lambda_{0} , \frac{\Lambda}{m^{R}} \right) \phi_{R}$. If in the LZS formula we use $\phi_{R} , m_{R}$ instead of $\phi_{0} , m_{0}$. Then we get a finite expression for the Green function.
 
-The four-point function gives a new contribution to the discrepancy:
-
+The four-point function gives a new contribution to the divergence:
 $$
-i \mathcal{M}_{2 \rightarrow 2} = - i \lambda + i \lambda^{2} \left( \beta_{0} \ln {\Lambda + s k o ń c z o n e} \right) + O \left( \lambda_{0}^{3} \right) .
-$$
-
-The first member corresponds to a diagram without a loop. , which corresponds to three contributions from diagrams in the form of a "candy": , where (when calculating this expression, Wick's rotation is used) and depends only the finite part.$$\beta_{0} = \frac{3}{16 \pi^{2}} \mathcal{M = -} \lambda + 3 \mathcal{A} ( 0 ) \mathcal{A} ( p ) = \frac{( - i \lambda )^{2}}{2} \int_{}^{} \frac{d^{4} k}{( 2 \pi )^{2}} \frac{i}{k^{2} - m^{2} + i \epsilon} \frac{i}{( k - p )^{2} - m^{2} + i \epsilon} p$$
-
-For $$p_{1} = p_{2} = p_{3} = p_{4} = \left( m_{R} , 0 \right) :$$
-
-$$
-{}- i \lambda_{R} \equiv i \mathcal{M}_{2 \rightarrow 2} ( 0 ) = - i \lambda_{0} ( \Lambda ) \left\lbrack 1 - \lambda_{0} ( \Lambda ) \left( \beta_{0} \ln \frac{\Lambda}{m_{R}} \right) + s k o ń c z . \right\rbrack + O \left( \lambda_{0}^{3} \right) .
+i \mathcal{M}_{2 \rightarrow 2} = - i \lambda + i \lambda^{2} \left( \beta_{0} \ln {\Lambda + \mathrm{finite}} \right) + O \left( \lambda_{0}^{3} \right) .
 $$
 
-For:$$\left( p_{1} + p_{2} \right)^{2} = q^{2} \gg m_{R}$$
+The first term corresponds to a diagram without a loop $\beta_{0} = \frac{3}{16 \pi^{2}}$ , which corresponds to three contributions from diagrams in the form of a "candy": $\mathcal{M = -} \lambda + 3 \mathcal{A} ( 0 )$, where $\mathcal{A} ( p ) = \frac{( - i \lambda )^{2}}{2} \int_{}^{} \frac{d^{4} k}{( 2 \pi )^{2}} \frac{i}{k^{2} - m^{2} + i \epsilon} \frac{i}{( k - p )^{2} - m^{2} + i \epsilon} p$ (when calculating this expression, Wick's rotation is used) and depends only the finite part.
+For $p_{1} = p_{2} = p_{3} = p_{4} = \left( m_{R} , 0 \right)$:
 
 $$
-i \mathcal{M}_{2 \rightarrow 2} \left( q^{2} \right) = - i \lambda_{0} ( \Lambda ) \left\lbrack 1 - \lambda_{0} ( \Lambda ) \left( \frac{\beta_{0}}{2} \ln \frac{\Lambda^{2}}{q^{2}} + s k o ń c z . \right) \right\rbrack + O \left( \lambda_{0}^{3} \right) = - i \lambda_{R} \left\lbrack 1 + \lambda_{R} \frac{\beta_{0}}{2} \ln \frac{q^{2}}{m_{R}^{2}} \right\rbrack + O \left( \lambda_{R}^{3} \right) = - i \lambda_{e f f} ( q^{2} )
+{}- i \lambda_{R} \equiv i \mathcal{M}_{2 \rightarrow 2} ( 0 ) = - i \lambda_{0} ( \Lambda ) \left\lbrack 1 - \lambda_{0} ( \Lambda ) \left( \beta_{0} \ln \frac{\Lambda}{m_{R}} \right) + \mathrm{finite} \right\rbrack + O \left( \lambda_{0}^{3} \right) .
 $$
 
-And it is finite in every scale of energy.
-
-Renormalization Group
-
+For:$\left( p_{1} + p_{2} \right)^{2} = q^{2} \gg m_{R}$:
+$$
+i \mathcal{M}_{2 \rightarrow 2} \left( q^{2} \right) = - i \lambda_{0} ( \Lambda ) \left\lbrack 1 - \lambda_{0} ( \Lambda ) \left( \frac{\beta_{0}}{2} \ln \frac{\Lambda^{2}}{q^{2}} + \mathrm{finite} \right) \right\rbrack + O \left( \lambda_{0}^{3} \right) = - i \lambda_{R} \left\lbrack 1 + \lambda_{R} \frac{\beta_{0}}{2} \ln \frac{q^{2}}{m_{R}^{2}} \right\rbrack + O \left( \lambda_{R}^{3} \right) = - i \lambda_{e f f} ( q^{2} )
+$$
+And it is finite at every energy scale.
+###### Renormalization Group
 N-point function:
-
 $$
 \Gamma_{R} \left( p_{i} ; g_{R} , \mu \right) = Z^{- \frac{n}{2}} \left( g_{0} ( \Lambda ) , \frac{\Lambda}{\mu} \right) \Gamma_{0} \left( p_{i} ; g_{0} ( \Lambda ) , \Lambda \right) .
 $$
-
 Renormalization group equation:
-
 $$
 \left\lbrack \Lambda \frac{\partial}{\partial \Lambda} + \beta \left( g_{0} \right) \frac{\partial}{\partial g_{0}} - n \eta \left( g_{0} \right) \right\rbrack \Gamma_{0} \left( p_{i} ; g_{0} , \Lambda \right) = 0 ,
 $$
-
 $$
 \beta \left( g_{0} \right) = \Lambda \frac{d g_{0}}{d \Lambda} , \  \eta \left( g_{0} \right) = \frac{1}{2} \Lambda \frac{d}{d \Lambda} \ln Z
 $$
