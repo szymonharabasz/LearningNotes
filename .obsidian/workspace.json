@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Quantum Field Theory/Feynman rules.md",
+                "file": "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Feynman rules"
+              "title": "Notes from \"A Modern Introduction to Quantum Field Theory\""
             }
           }
         ]
@@ -169,10 +169,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "86feed03d4b35aff",
+  "active": "35dd7757fd4a3370",
   "lastOpenFiles": [
-    "Condensed Matter/8. Renormalisation.md",
     "Quantum Field Theory/Feynman rules.md",
+    "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
+    "Notatki z książki „A Modern Introduction to Quantum Field Theory\".md",
+    "Condensed Matter/8. Renormalisation.md",
     "Physics/Partial waves.md",
     "Physics/Maximum momentum from accelerator rigidity.md",
     "AdS_CFT/Primary fields.md",
