@@ -32,11 +32,11 @@ $$\Lambda_{L} = e^{\left( - i \overrightarrow{\theta} - \overrightarrow{\eta} \r
 3.  The representation $$\left( \frac{1}{2} , \frac{1}{2} \right)$$ is complex vector representation (because $j = 0 , 1$). States have the form:  
 $$\left( \left( \psi_{L} \right)_{\alpha} , \left( \psi_{R} \right)_{\beta} \right) , \  \  \alpha , \beta = 1 , 0$$States $\xi_{R}^{\dagger} \sigma^{\mu} \psi_{R}$ and $\xi_{L}^{\dagger} \overline{\sigma}^{\mu} \psi_{L}$, where $\sigma^{\mu} = \left( 1 , \overrightarrow{\sigma} \right) , \  \overline{\sigma}^{\mu} = ( 1 , - \overrightarrow{\sigma} )$, are complex four-vectors.
 
-# Representations in the fields
+#### Field representations
 
 The representation $$\delta \phi = \phi^{'} \left( x^{'} \right) - \phi ( x )$$ is one-dimensional, the infinite-dimensional representation is , where .$$\delta_{0} \phi = \phi^{'} ( x ) - \phi ( x ) = - \delta x^{\mu} \partial_{\mu} \phi ( x ) = {\frac{i}{2} \omega^{\mu \nu} \left( J_{\mu \nu} \right)_{\  \  \  \sigma}^{\rho} \delta x^{\sigma} \  \partial_{\rho} \phi \equiv - \frac{i}{2} \omega^{\mu \nu} \  L_{\mu \nu}} L^{\mu \nu} = i \left( x^{\mu} \partial^{\nu} - x^{\nu} \partial^{\mu} \right)$$
 
-## Weyl and Dirac Field
+###### Weyl and Dirac Field
 
 $$
 \psi_{L} ( x ) \rightarrow \psi_{L}^{'} \left( x^{'} \right) = \Lambda_{L} \psi_{L} ( x )
@@ -66,7 +66,7 @@ $$
 \Psi^{C} = - i \begin{pmatrix}0 & \sigma^{2} \\ - \sigma^{2} & 0\end{pmatrix} \Psi^{*}
 $$
 
-## Marjoram Field
+###### Majorana Field
 
 $$
 \Psi_{M} = \begin{pmatrix}\psi_{L} \\ i \sigma^{2} \psi_{L}^{*}\end{pmatrix}
@@ -94,7 +94,7 @@ $$
 
 It is a Lorentz-invariant Pauli-Lubański vector.
 
-## Massive representation
+###### Massive representation
 
 Select the resting system and . The representation is numbered by the mass and spin of the particle, and the states differ in the spin roll.$$W_{\mu} W^{\mu} = - m^{2} j ( j + 1 )$$
 
@@ -102,7 +102,7 @@ Massless representation
 
 We select and the small group is SU(2). Representations are numbered by an operator's eigenvalue called torsion. An algebraic proof that it doesn't work, because there is no , but a certain topological proof works.$$P^{\mu} = ( \omega , 0 , 0 , \omega ) h J_{3} h = 0 , \pm \frac{1}{2} . \pm 1 , \ldots J_{1} , J_{2}$$
 
-# Symmetries and laws of conservation
+#### Symmetries and laws of conservation
 
 $$
 x^{\mu} \rightarrow x^{'}^{\mu} = x^{\mu} + \epsilon^{\alpha} A_{\alpha}^{\mu} ( x )\phi_{i} ( x ) \rightarrow \phi^{'}_{i} \left( x^{'} \right) = \phi_{i} ( x ) + \epsilon^{\alpha} F_{i \alpha} ( \phi , \partial \phi )
@@ -146,7 +146,7 @@ $$
 
 The load associated with the symmetry transformation is the average value of the generator expressed as an operator acting on the field between states. For example, for U(1) and $$j_{\mu} = i \phi^{*} \overset{\overleftrightarrow{}}{\partial}_{\mu} \phi Q_{U ( 1 )} = \int_{}^{} {d^{3} x j^{0} = i \int_{}^{} {d^{3} x \phi^{*} \overset{\overleftrightarrow{}}{\partial}_{0} \phi \equiv \left\langle \phi | \phi \right\rangle} = \left\langle \phi | I | \phi \right\rangle}$$
 
-# Classic Fields
+#### Classic Fields
 
 For Weyl's field, the solution of a flat wave has .$$\mathcal{L}_{L} = i \psi_{L}^{\dagger} \overline{\sigma}^{\mu} \partial_{\mu} \psi_{L} \psi_{L} = u_{L} e^{- i p x} h = - \frac{1}{2}$$
 
@@ -154,7 +154,7 @@ For the field of Dirac. Chiral representation and . Other representations bind t
 
 Operators (Dirac's algebra: gives a reducible representation of a Lorentz group.$$J^{\mu \nu} = \frac{\sigma^{\mu \nu}}{2} , \  \sigma^{\mu \nu} = \frac{1}{2} \left\lbrack \gamma^{\mu} , \gamma^{\nu} \right\rbrack \left\{ \gamma^{\mu} , \gamma^{\nu} \right\} = 2 \eta^{\mu \nu}$$
 
-## Chiral symmetry
+#### Chiral symmetry
 
 We are introducing a global transformation for the Dirac field:
 
@@ -174,7 +174,7 @@ $$
 \partial_{\mu} j_{A}^{\mu} = 2 i m \overline{\psi} \gamma_{5} \psi
 $$
 
-# LZS Pattern
+#### LZS reduction formula
 
 $$
 \left( 2 E_{\mathbf{k}} \right)^{\frac{1}{2}} a_{\mathbf{k}}^{\dagger \left( \frac{i n}{o u t} \right)} = - i Z^{- \frac{1}{2}} \lim_{t \rightarrow \mp \infty} {\int_{}^{} {d^{3} x} e^{- i k x} \overset{\overleftrightarrow{}}{\partial}_{0}} \phi
@@ -226,44 +226,30 @@ $$D ( x - y ) = \left\langle 0 | T \left\{ \phi ( x ) \phi ( y ) \right\} | 0 \r
 
 Bypass factors related to the outer branches of the diagram that shorten with the corresponding factors of the LZS pattern. Then we immediately get a matrix element,
 
-## Feynman's rules for theory $$\mathbf{\phi}^{\mathbf{4}}$$
-
-Vertex: (join constant)$$- i \lambda$$
-
-Loop (integral after slow momentum variable)$$\int_{}^{} \frac{d^{4} k \ }{( 2 \pi )^{4}}$$
-
-# QED
-
-## Field of Dirac
-
+#### Feynman's rules for $\phi^4$ theory 
+###### Vertex: (coupling constant)$$- i \lambda$$
+###### Loop (integral after slow momentum variable)$$\int_{}^{} \frac{d^{4} k \ }{( 2 \pi )^{4}}$$
+#### QED
+###### Dirac field
 $$
 S ( x - y ) = \left\langle 0 | T \left\{ \psi ( x ) \overline{\psi} ( y ) \right\} | 0 \right\rangle , \  T \left\{ \psi ( x ) \overline{\psi} ( y ) \right\} = \begin{cases}\psi ( x ) \overline{\psi} ( y ) \\ - \overline{\psi} ( y ) \psi ( x )\end{cases}
 $$
-
 $$
-\widetilde{S} ( p ) = \frac{i}{p - m}
+\widetilde{S} ( p ) = \frac{i}{p\!\!\!/ - m}
 $$
-
-## Photon
-
+###### Photon
 In covariant gauge:
-
 $$
 D_{\mu \nu} ( x - y ) = \left\langle 0 | T \left\{ A_{\mu} ( x ) A_{\nu} ( y ) \right\} | 0 \right\rangle
 $$
-
 $$
 \widetilde{D}_{\mu \nu} ( k ) = \frac{- i}{k^{2} + i \epsilon} \eta_{\mu \nu}
 $$
-
-## Vertex
-
+###### Vertex
 $$
 {}- i e \gamma^{\mu}
 $$
-
-## Outer legs
-
+###### Outer legs
 (except exponential factors)
 
 |         | Photon                         | Electron                     | Positron                     |
@@ -274,9 +260,8 @@ $$
 $$
 \psi ( x ) = \int_{}^{} {\frac{d^{3} p}{( 2 \pi )^{3} \sqrt{2 E_{\mathbf{p}}}} \left( \sum_{s = 1 , 2}^{} \left( a_{\mathbf{p} , s} u^{s} ( p ) e^{- i p x} + b_{\mathbf{p} , s}^{\dagger} v^{s} ( p ) e^{i p x} \right) \right)}
 $$
-
-**Loops** Additional minus on integration
-
+###### Loops
+Additional minus on integration
 #### Path integrals
 
 $$
