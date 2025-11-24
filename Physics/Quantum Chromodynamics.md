@@ -511,3 +511,14 @@ $$
 $$
 where $F_0$ is pion decay constant. **The non-vanishing pion decay constant is necessary and sufficient condition for chiral symmetry breaking.**
 
+###### Gluon condensate
+It is related to the trace of the energy-momentum tensor:
+$$
+\langle T^\mu_\mu\rangle=\epsilon-3P=
+-\langle G^2\rangle+m_q\langle\bar qq\rangle,
+$$
+where:
+$$
+G^2=\frac{\beta(g_s)}{g_s}G^{\mu\nu}_aG_{\mu\nu}^a
+$$
+involves the renormalization-group beta function. It appears, because the non-vanishing vacuum value of $T_\mu^\mu$ breaks the scale invariance of the classical QCD Lagrangian, what is induced by quantum loop corrections.
