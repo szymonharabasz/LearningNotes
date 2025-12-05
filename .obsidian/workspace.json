@@ -34,9 +34,23 @@
               "icon": "lucide-file",
               "title": "Quantum Chromodynamics"
             }
+          },
+          {
+            "id": "39985c33f2c2fc19",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Quantum Field Theory/Green Functions.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Green Functions"
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -184,13 +198,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "05cc462866d3cd1d",
+  "active": "39985c33f2c2fc19",
   "lastOpenFiles": [
+    "Quantum Field Theory/Feynman rules.md",
+    "Quantum Field Theory/Green Functions.md",
+    "Physics/Quantum Chromodynamics.md",
+    "Physics/Transport simulations of Heavy-Ion Collisions.md",
     "Work/Differences between macros.md",
     "Work/HADES safety instructions.md",
     "Work/Studying properties of hot and dense baryonic matter with the  HADES experiment.md",
     "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
-    "Quantum Field Theory/Feynman rules.md",
     "Notatki z książki „A Modern Introduction to Quantum Field Theory\".md",
     "Condensed Matter/8. Renormalisation.md",
     "Physics/Partial waves.md",
