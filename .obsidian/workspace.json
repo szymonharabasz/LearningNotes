@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Quantum Field Theory/Green Functions.md",
+                "file": "Condensed Matter/12.  Second quantization.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Green Functions"
+              "title": "12.  Second quantization"
             }
           }
         ],
@@ -200,8 +200,8 @@
   },
   "active": "39985c33f2c2fc19",
   "lastOpenFiles": [
-    "Quantum Field Theory/Feynman rules.md",
     "Quantum Field Theory/Green Functions.md",
+    "Quantum Field Theory/Feynman rules.md",
     "Physics/Quantum Chromodynamics.md",
     "Physics/Transport simulations of Heavy-Ion Collisions.md",
     "Work/Differences between macros.md",
