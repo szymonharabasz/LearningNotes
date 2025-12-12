@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Condensed Matter/12.  Second quantization.md",
+                "file": "Condensed Matter/14. Time-dependent theory.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "12.  Second quantization"
+              "title": "14. Time-dependent theory"
             }
           }
         ],
@@ -200,6 +200,9 @@
   },
   "active": "39985c33f2c2fc19",
   "lastOpenFiles": [
+    "cmp_thermal_usedforchi2_subtr.pdf",
+    "Condensed Matter/12.  Second quantization.md",
+    "Condensed Matter/14. Time-dependent theory.md",
     "Quantum Field Theory/Green Functions.md",
     "Quantum Field Theory/Feynman rules.md",
     "Physics/Quantum Chromodynamics.md",
