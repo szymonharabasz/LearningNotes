@@ -76,7 +76,7 @@ $$
 $$
 Therefore, the correlator at different times is:
 $$
-\langle x(\tau)x(\tau')\rangle=\frac{T}{m}\sum_n\frac{\exp[i\omega_n(\tau-\tau')]}
+G(\tau,\tau')=\langle x(\tau)x(\tau')\rangle=\frac{T}{m}\sum_n\frac{\exp[i\omega_n(\tau-\tau')]}
 {\omega_n^2+\Omega^2}.
 $$
 The explicit form can be calculated as:
@@ -84,6 +84,31 @@ $$
 G(\tau)=\frac{\cosh(\Omega(\tau-\beta/2))}{2m\Omega\sinh(\Omega\beta/2)}
 \xrightarrow[T\rightarrow 0]{}\frac{1}{2m\Omega}e^{-\Omega|\tau|}.
 $$
+#### Anharmonic oscillator
+Additional terms in the potential:
+$$
+\Delta V(x)=gx^2+\lambda x^4.
+$$
+Partition function:
+$$
+Z=\int Dx~e^{-S}=\int Dx~e^{-S_\mathrm{harm}-\Delta S}=\int Dx~e^{-S_\mathrm{harm}}\left[
+1+\left(-\int d\tau\Delta V\right)+
+\frac{1}{2!}\left(-\int d\tau\Delta V\right)^+\dots
+\right]
+$$
+And the additional terms generate correlators that can be represented by Feynman diagrams.
+In the chain of diagram with "bubbles" on a propagator:
+![[Pasted image 20251216153501.png]]
+A bubble is the equal-time amplitude, so:
+$$
+\mathrm{bubble}=G(\tau,\tau)=\langle x^2\rangle=\lambda T\sum_m\frac{1}
+{\Omega^2+(2\pi mT)^2}
+$$
+Because of energy conservation at each vertex, the frequency at each intermediate line is the same as at the beginning and at the end. The bubble can be generalized to a *mass diagram* that has the same property. The above series of diagrams can then be written and summed as a geometric series:
+$$
+G=G_0+G_0MG_0+G_0MG_0MG_0+\dots=\frac{1}{G_0^{-1}+-M}.
+$$
+It introduces **mass renormalization without going through regularization**!
 #### Quantum field theory
 State vector is normalized as:
 $$
