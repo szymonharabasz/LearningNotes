@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Quantum Field Theory/Green Functions.md",
+                "file": "Condensed Matter/15. Complex field Bose-Einstein condensate.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Green Functions"
+              "title": "15. Complex field Bose-Einstein condensate"
             }
           }
         ]
@@ -171,6 +171,8 @@
   },
   "active": "39985c33f2c2fc19",
   "lastOpenFiles": [
+    "Quantum Field Theory/Green Functions.md",
+    "Condensed Matter/15. Complex field Bose-Einstein condensate.md",
     "Pasted image 20251216153501.png",
     "Quantum Field Theory/Feynman rules.md",
     "Condensed Matter/14. Time-dependent theory.md",
@@ -178,7 +180,6 @@
     "Physics/Quantum Chromodynamics.md",
     "Condensed Matter/12.  Second quantization.md",
     "cmp_thermal_usedforchi2_subtr.pdf",
-    "Quantum Field Theory/Green Functions.md",
     "Physics/Transport simulations of Heavy-Ion Collisions.md",
     "Work/Differences between macros.md",
     "Work/HADES safety instructions.md",
