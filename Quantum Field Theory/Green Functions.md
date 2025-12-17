@@ -109,6 +109,10 @@ $$
 G=G_0+G_0MG_0+G_0MG_0MG_0+\dots=\frac{1}{G_0^{-1}+-M}.
 $$
 It introduces **mass renormalization without going through regularization**!
+
+**Note:** 
+- Vacuum diagrams provide corrections to the free energy.
+- Effective mass is: $m^2_\mathrm{eff}=d^2V/d\phi^2$ at the minimum.
 #### Quantum field theory
 State vector is normalized as:
 $$
