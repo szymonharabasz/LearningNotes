@@ -154,6 +154,22 @@ public Response createAccount(Account acount) {
 	return Response.status(201).entity(account).build();
 }
 ```
+#### Vert.x web client
+```java
+@Inject
+public webClient(Vertx vertx) {
+    client = WebClient.create(vertx);
+}
+@PreDestroy
+public void close() { client.close(); }
+```
+public Uni<JsonObject> invokeService() {
+    return client.getAbs(”https://httpbin.org/json”).send()
+        onItem().transform(response -> {
+            if (response.statusCode() == 200) { return response.bodyAsJsonObject(); }
+            else { return new JsonObject().put(”error”, response.statusMessage()); }
+        });
+}
 #### MicroProfile REST client
 Annotate an interface with standard JAX-RS annotations and `@RegisterRestClient`:
 ```java
