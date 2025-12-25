@@ -368,6 +368,10 @@ mp.messaging.outgoing.account-overdrawn.connector=smallrye-kafka
 mp.messaging.outgoing.account-overdrawn.topic=overdrawn
 mp.messaging.outgoing.account-overdrawn.value.serializer=
 	io.quarkus.kafka.client.serialization.JsonSerializer
+%test.mp.messaging.outgoing.account-overdrawn.value.serializer=
+	org.apache.kafka.common.serialization.StringSerializer
+%test.mp.messaging.outgoing.account-overdrawn.value.deserializer=
+	org.apache.kafka.common.serialization.StringDeserializer
 ```
 ```java
 @Inject
@@ -410,12 +414,20 @@ public Message<Overdrawn> overdraftNotification() {
 	return Message.of(...);
 }
 ```
+Adding Kafka metadata:
+```java
+Message.of(…).addMetadata(OutgoingKafkaRecordMetadata.builder().withKey(”light”).build());
+```
 Subscriber method:
 ```java
 @Incoming("overdraft-update")
 public void processOverdraftUpdate(OverdraftLimitUpdate overdraftLimitUpdate) { ... }
 ```
-Tha parameter can also be a `Message`. In the method body, the message should be acked.
+The parameter can also be a `Message`. In the method body, the message should be acked. Reading Kafka metadata:
+```java
+// Message<Person> person
+person.getMetadata(IncomingKafkaRecordMetadata.class).get().getKey();
+```
 One can add `@Blocking` to indicate that the code should be offloaded by the framework to a separate thread. 
 Incoming channel with Mutiny:
 ```java
