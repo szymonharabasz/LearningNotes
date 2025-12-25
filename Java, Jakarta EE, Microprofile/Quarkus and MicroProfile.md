@@ -233,6 +233,38 @@ Example usage:
 @RegisterProvider(AccountRequestFilter.class)
 public interface AccountService { ... }
 ```
+#### RESTEasy Reactive
+An endpoint can be annotated with `@NonBlocking`. They can return `Uni` or `Multi`. One can also directly interact with the Vert.x library
+```java
+@Inject
+Vertx vertx;
+// …
+Uni<String> uni = vertx.fileSystem().readFile(path)
+    .onItem().transform(buffer -> buffer.toString(”UTF-8”));
+```
+Customizing the response:
+```java
+.onItem().transform(content -> Response.ok(content).build())
+.onFailure().recoverWIthItem(Response.status(Response.Status.NOT_FOUND).build());
+```
+Registering an exception mapper:
+```java
+@ServerExceptionMapper
+public Response mapFileSystemException(FileSystemException ex) {
+    return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
+}
+```
+Handling timeouts:
+```java
+return vertx.fileSystem().readFile(”slow.txt”).onItem(…)
+    .ifNotItem().after(Duration.ofSeconds(1)).fail();
+```
+Raw streaming:
+```java
+return vertx.fileSystem().open(”war-and-peace.txt”, new OpenOptions.setRead(true))
+    .onItem().transformToMulti(AsyncFile::toMulti)
+    .onItem().transform(b -> b.toString(”UTF-8”));
+```
 #### Custom health check
 ```java
 @ApplicationScoped
