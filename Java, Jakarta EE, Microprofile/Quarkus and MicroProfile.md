@@ -452,3 +452,27 @@ multi.onItem().transform(user -> user.name.toLowerCase())
 Multi.createFrom().ticks().every(Duration.ofSeconds(1)).onOverflow().drop()
     .onItem().transformToUniAndConcatenate(x -> products.getRecommendedProduct());
 ```
+###### Observing events
+```java
+multi
+    .onSubscribe().invoke(sub -> …)
+    .onCancellation().invoke(() -> …)
+    .onItem().invoke(s -> …)
+    .onFailure().invoke(f -> …)
+    .onCompletion().invoke(() -> …)
+    .subscribe.with(…);
+```
+###### Chaining asynchronous actions
+```java
+uni.onItem().transformToUni(item -> callMyRemoteService(item)).subscribe().with(…);
+uni.onItem().transformToMulti(item -> getMulti(item)).subscribe().with(…);
+
+users.getAllUsers().onItem().transformToMultiAndConcatenate(user ->
+    user -> orders.getOrdersForUser(user));
+users.getAllUsers().onItem().transformToMultiAndMerge(user ->
+    user -> orders.getOrdersForUser(user));
+```
+###### Recovering from failures
+```java
+.onFailure().retry().withBackoff(Duration.ofSeconds(3)).atMost(3);
+```
