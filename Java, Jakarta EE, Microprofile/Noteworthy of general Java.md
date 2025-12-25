@@ -137,3 +137,24 @@ service.greeting(”Luke”)
     .thenAccept(tuple -> System.out.println(tuple.getItem1() + ” ” 
         + tuple.getItem2()));
 ```
+Parallel composition:
+```java
+CompletableFuture<String> luke = service.greeting(”Luke”).toCompletableFuture();
+CompletableFuture<String> leia = service.greeting(”Leia”).toCompletableFuture();
+
+CompletableFuture.allOf(luke, leia).thenAccept(ignored ->
+    System.out.println(luke.join() + ” ” + leia.join())                                              
+);
+```
+Handling exceptions:
+```java
+service.greeting(”Leia”).exceptionally(exception -> ”Hello”);
+```
+#### Virtual threads
+Basic usage:
+```java
+Thread.startVirtualThread(() -> {
+    String response = service.greeting(”Leia”);
+    System.out.println(response);
+});
+```
