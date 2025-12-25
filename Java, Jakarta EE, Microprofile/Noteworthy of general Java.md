@@ -118,3 +118,11 @@ verify(asyncResponse).resume(argumentCaptorResponse.capture());
 final Response response = argumentCaptorResponse.getValue();  
     assertThat(response.getStatusInfo().getFamily()).isEqualTo(Response.Status.Family.SUCCESSFUL);
 ```
+#### Futures
+Consuming a future returned by a service:
+```java
+service.greeting(”Luke”)
+    .thenApply(response -> response.toUpperCase())
+    .thenApply(greeting -> System.out.println(greeting));
+```
+Composing:
