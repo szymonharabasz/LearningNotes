@@ -411,3 +411,44 @@ tracer.activeSpan().setBaggageItem("withdrawalAmount", withdrawalAmount);
 ```
 #### Security
 MicroProfile can `@Inject` a `JsonWebToken`.
+#### Reactive streams with Mutiny
+Subscribing to a stream:
+```java
+stream.subscribe().with(
+    item -> System.out.println(”Received an item ” + item),
+    failure -> System.out.println(”Oh, no! Received a failure ” + failure),
+    () -> System.out.println(”Received a completion”)
+);
+```
+###### Operators
+```java
+stream.onItem().transform(circle -> toSquare(circle))
+    .subscribe().with(…);
+
+stream.onFailure().recoverWIthItem(failure -> getFallbackForFailure(failure))
+    .subscribe.with(…);
+
+Multi.createBy().merging().streams(circles, squares)
+    .subscribe.with(…);
+
+Multi.createFrom().ticks().every(Duration.ofMillis(20))
+    .onOverflow().buffer(250)
+    .emitOn(Infrastructure.getDefaultExecutor());
+    .onItem().transform(BufferingExample::canOnlyConsumeOneItemPerSecond)
+    .subscribe().with(…);
+
+Multi.createFrom().ticks().every(Duration.ofMillis(20))
+    .onOverflow().drop(x -> System.out.println(”Dropping item ” + x))
+    .emitOn(Infrastructure.getDefaultExecutor());
+    .onItem().transform(BufferingExample::canOnlyConsumeOneItemPerSecond)
+    .transform().byTakingFirstItems(10)
+    .subscribe().with(…);
+
+multi.onItem().transform(user -> user.name.toLowerCase())
+    .select().where(name -> name.startsWith(”l”))
+    .collect().asList()
+    .subscribe().with(list -> System.out.println(”User names starting with l ” + list));
+
+Multi.createFrom().ticks().every(Duration.ofSeconds(1)).onOverflow().drop()
+    .onItem().transformToUniAndConcatenate(x -> products.getRecommendedProduct());
+```
