@@ -123,6 +123,17 @@ Consuming a future returned by a service:
 ```java
 service.greeting(”Luke”)
     .thenApply(response -> response.toUpperCase())
-    .thenApply(greeting -> System.out.println(greeting));
+    .thenAccept(greeting -> System.out.println(greeting));
 ```
-Composing:
+Composition:
+```java
+service.greeting(”Luke”)
+    .thenCompose(greetingForLuke -> {
+        return service.greeting(”Leia”)
+            .thenApply(greetingForLeia -> Tuple2.of(
+                greetingForLuke, greetingForLeia 
+            ));
+    })
+    .thenAccept(tuple -> System.out.println(tuple.getItem1() + ” ” 
+        + tuple.getItem2()));
+```
