@@ -110,6 +110,7 @@ public class Account extends PanacheEntity {
 Some methods:
 ```java
 Account.listAll();
+Account.streamAll(); // reactive stream
 
 @POST
 @Transactional
@@ -117,6 +118,19 @@ public Response createAccount(Account acount) {
 	account.persist();
 	return Response.status(201).entity(account).build();
 }
+// Reactive:
+Customer.<Customer>findById(id)
+    .onItem().ifNull().failWIth(new WebApplicationException(”Failed to find customer”, 
+        Response.Status.NOT_FOUND));
+```
+Transaction in this approach:
+````java
+return Panache.withTransaction(customer::persist);
+return Panache.withTransaction(() -> Customer.<Customer>findById(id)
+    .onItem().ifNotNull().invoke(entity -> entity.name = customer.name));
+return Panache.withTransaction(() -> Customer.deleteById(id)
+    .map(deleted -> deleted ? Response.ok().status(Response.Status.NO_CONTENT).build() : 
+        Response.ok().status(Response.Status.NOT_FOUND).build()));
 ```
 ###### Data repository approach
 One creates a "normal" JPA `@Entity` and then a repository:
@@ -265,6 +279,25 @@ return vertx.fileSystem().open(”war-and-peace.txt”, new OpenOptions.setRead(
     .onItem().transformToMulti(AsyncFile::toMulti)
     .onItem().transform(b -> b.toString(”UTF-8”));
 ```
+###### Using Redis
+Configuration:
+```properties
+quarkus.redis.hosts=redis://localhost:6379
+```
+Injecting a client:
+```java
+@Inject
+ReactiveRedisClient redis;
+````
+Retrieving all customers:
+```java
+return redis.keys(”*”).onItem().transformToMulti(response -> {
+    return Multi.createFrom().iterable(response).map(Response::toString);
+}).onItem().transformToUniAndMerge(key -> redis.hgetall(key).map(resp ->
+    constructCustomer(Long.parseLong(key.substring(CUSTOMER_HASH_PREFIX.length())), resp)
+))
+```
+Other command: `hmset`, Mutiny`hdel`.
 #### Custom health check
 ```java
 @ApplicationScoped
@@ -483,6 +516,8 @@ multi.onItem().transform(user -> user.name.toLowerCase())
 
 Multi.createFrom().ticks().every(Duration.ofSeconds(1)).onOverflow().drop()
     .onItem().transformToUniAndConcatenate(x -> products.getRecommendedProduct());
+
+Uni.createFrom.nullItem();
 ```
 ###### Observing events
 ```java
