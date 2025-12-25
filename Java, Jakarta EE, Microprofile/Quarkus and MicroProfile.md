@@ -445,7 +445,7 @@ Multi.createFrom().ticks().every(Duration.ofMillis(20))
     .subscribe().with(…);
 
 multi.onItem().transform(user -> user.name.toLowerCase())
-    .select().where(name -> name.startsWith(”l”))
+    .select().when(name -> name.startsWith(”l”))
     .collect().asList()
     .subscribe().with(list -> System.out.println(”User names starting with l ” + list));
 
@@ -475,4 +475,20 @@ users.getAllUsers().onItem().transformToMultiAndMerge(user ->
 ###### Recovering from failures
 ```java
 .onFailure().retry().withBackoff(Duration.ofSeconds(3)).atMost(3);
+```
+###### Combining items
+```java
+uni.combine.all().unis(uni1, uni2).asTuple().onItem()…
+```
+###### Selecting items
+One example - distinct elements
+```java
+orders.getAllOrders().onItem().transformToIterable(order -> order.products)
+    .select().distinct();
+```
+Mutiny provides a `skip` group which is opposite to `select`.
+###### Collecting items
+```java
+multi.collect().asMap(item -> getKeyFor(item));
+Uni<Long> count = multi.collect().with(Collectors.counting());
 ```
