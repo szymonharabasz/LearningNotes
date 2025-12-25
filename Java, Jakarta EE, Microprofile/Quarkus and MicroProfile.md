@@ -373,6 +373,9 @@ mp.messaging.outgoing.account-overdrawn.value.serializer=
 @Inject
 @Channel("account-overdrawn")
 Emitter<Overdrawn> emitter;
+// or with Quarkus:
+@Channel("account-overdrawn")
+MutinyEmitter<Overdrawn> emitter;
 // ...
 if (accountOverdrawn) {
 	return emitter.send(payload).thenCompose(empty -> 
@@ -412,7 +415,52 @@ Subscriber method:
 @Incoming("overdraft-update")
 public void processOverdraftUpdate(OverdraftLimitUpdate overdraftLimitUpdate) { ... }
 ```
-Tha parameter can also be a `Message`. One can add `@Blocking` to indicate that the code should be offloaded by the framework to a separate thread.
+Tha parameter can also be a `Message`. In the method body, the message should be acked.
+One can add `@Blocking` to indicate that the code should be offloaded by the framework to a separate thread. 
+Incoming channel with Mutiny:
+```java
+@Channel(”my-channel”)
+Multi<Paeson> streamOfPersons;
+void init() {
+    streamOfPersons.subscribe().with(…);
+}
+```
+With messages (ack and nack):
+```java
+Multi<Message<Paeson>> streamOfPersons;
+void init() {
+    streamOfPersons.subscribe().with(message -> 
+        try {
+            // ….
+            message.ack();
+        } catch (Exception ex) {
+            message.nack();
+        }
+     );
+}
+```
+Connecting messages:
+```java
+@Incoming(”ticks”)
+@Outgoing(”hello”)
+public Message<String> hello(Message<String> tick) {
+    return tick.withPayload(”Hello ” + tick.getPayload());
+}
+```
+Handling an overflow:
+```java
+@Channel(”channel”)
+@OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSIze = 100)
+MutinyEmitter<Person> emitter;
+```
+Other strategies: `UNBOUNDED_BUFFER`, `DROP`, `LATEST`, `FAIL`. `THROW_EXCEPTION`.
+Retrying processing a message 
+```java
+@Incoming(…)
+@Outgoing(…)
+@Retry(maxRetries = 10, delay = 1, delayUnits = ChronoUnit.SECONDS)
+public String hello(long tick) { … }
+```
 #### Metrics
 Created with different annotations, for example:
 ```java
@@ -518,6 +566,9 @@ Multi.createFrom().ticks().every(Duration.ofSeconds(1)).onOverflow().drop()
     .onItem().transformToUniAndConcatenate(x -> products.getRecommendedProduct());
 
 Uni.createFrom.nullItem();
+
+stream.onItem().transform(l -> Long.toString(l))
+    .group().intoLists().of(5);
 ```
 ###### Observing events
 ```java
