@@ -101,10 +101,37 @@ var result = switch (day) {
 }  
 ```
 In the arrow notation in single line, the `yield` keyword is not needed
-Pattern matching now works with switch
-
+Pattern matching now works with switch:
+```java
+String formatted = switch (o) {
+    case Integer i when i > 10 -> String.format("a large Integer %d", i);
+    case Integer i             -> String.format("a small Integer %d", i);
+    case Long l                -> String.format("a Long %d", l);
+    default                    -> o.toString();
+};
+```
+There are unnamed variables in patterns:
+```java
+list.stream()
+  .map((_) -> /* ... */) // ignore the parameter
+  .toList();
+  
+if (r instanceof Point(int x, _)) {
+  // work with x, ignore second parameter
+}
+```
+#### String templates 
+```java
+var info = STR."My name is \{name}";
+```
+#### Unnamed classes and instance `main` methods
+This is a complete and runnable program!
+```java
+void main() {
+  System.out.println("Hello, World!");
+}
+```
 #### JUnit and Mockito
-
 Useful for `then`:
 ```Java
 verify(myMock, times(0)).myMethod(anyInt());
