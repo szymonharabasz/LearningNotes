@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Condensed Matter/15. Complex field Bose-Einstein condensate.md",
-                "mode": "source",
+                "file": "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "15. Complex field Bose-Einstein condensate"
+              "title": "Notes from \"A Modern Introduction to Quantum Field Theory\""
             }
           }
         ]
@@ -171,9 +171,9 @@
   },
   "active": "39985c33f2c2fc19",
   "lastOpenFiles": [
-    "Quantum Field Theory/Green Functions.md",
-    "Condensed Matter/15. Complex field Bose-Einstein condensate.md",
     "Pasted image 20251216153501.png",
+    "Condensed Matter/15. Complex field Bose-Einstein condensate.md",
+    "Quantum Field Theory/Green Functions.md",
     "Quantum Field Theory/Feynman rules.md",
     "Condensed Matter/14. Time-dependent theory.md",
     "NN reference analysis.md",

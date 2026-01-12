@@ -34,9 +34,8 @@ $$\left( \left( \psi_{L} \right)_{\alpha} , \left( \psi_{R} \right)_{\beta} \rig
 
 #### Field representations
 
-The representation $$\delta \phi = \phi^{'} \left( x^{'} \right) - \phi ( x )$$ is one-dimensional, the infinite-dimensional representation is , where .$$\delta_{0} \phi = \phi^{'} ( x ) - \phi ( x ) = - \delta x^{\mu} \partial_{\mu} \phi ( x ) = {\frac{i}{2} \omega^{\mu \nu} \left( J_{\mu \nu} \right)_{\  \  \  \sigma}^{\rho} \delta x^{\sigma} \  \partial_{\rho} \phi \equiv - \frac{i}{2} \omega^{\mu \nu} \  L_{\mu \nu}} L^{\mu \nu} = i \left( x^{\mu} \partial^{\nu} - x^{\nu} \partial^{\mu} \right)$$
-
-###### Weyl and Dirac Field
+The representation $$\delta \phi = \phi^{'} \left( x^{'} \right) - \phi ( x )$$ is one-dimensional, the infinite-dimensional representation is $\delta_{0} \phi = \phi^{'} ( x ) - \phi ( x ) = - \delta x^{\mu} \partial_{\mu} \phi ( x ) = {\frac{i}{2} \omega^{\mu \nu} \left( J_{\mu \nu} \right)_{\  \  \  \sigma}^{\rho} \delta x^{\sigma} \  \partial_{\rho} \phi \equiv - \frac{i}{2} \omega^{\mu \nu} \  L_{\mu \nu}}$, where $L^{\mu \nu} = i \left( x^{\mu} \partial^{\nu} - x^{\nu} \partial^{\mu} \right)$.
+###### Weyl and Dirac Fields
 
 $$
 \psi_{L} ( x ) \rightarrow \psi_{L}^{'} \left( x^{'} \right) = \Lambda_{L} \psi_{L} ( x )
@@ -46,10 +45,11 @@ $$
 \delta_{0} \psi_{L} = \left( \Lambda_{L} - 1 \right) \psi_{L} ( x ) - \delta x^{\rho} \partial_{\rho} \psi_{L} ( x ) = \left( e^{- {\frac{i}{2} \ } \omega_{\mu \nu} S^{\mu \nu}} - 1 \right) \psi_{L} ( x ) - {\frac{i}{2} \ } \omega_{\mu \nu} L^{\mu \nu} \psi_{L} ( x ) - {\frac{i}{2} \ } \omega_{\mu \nu} \left( S^{\mu \nu} + L^{\mu \nu} \right) \psi_{L} ( x ) = - {\frac{i}{2} \ } \omega_{\mu \nu} J^{\mu \nu} \psi_{L} ( x )
 $$
 
-Under the influence of parity transformation:
+Under the parity transformation:
 
-$$\overrightarrow{J} \rightarrow \overrightarrow{J} , \  \  \  \overrightarrow{K} \rightarrow - \overrightarrow{K} , \  \  \  \overrightarrow{J}^{+} \rightarrow \overrightarrow{J}^{-} , \  \left( j_{-} , j_{+} \right) \rightarrow \left( j_{+} \  , j_{-} \right) \neq \left( j_{-} , j_{+} \right)$$, so the Weyl field does not represent parity. It is represented by the Dirac field: . The Lorentz transform is represented by:$$\Psi = \begin{pmatrix}\psi_{L} \\ \psi_{R}\end{pmatrix}$$
-
+$$\overrightarrow{J} \rightarrow \overrightarrow{J} , \  \  \  \overrightarrow{K} \rightarrow - \overrightarrow{K} , \  \  \  \overrightarrow{J}^{+} \rightarrow \overrightarrow{J}^{-} , \  \left( j_{-} , j_{+} \right) \rightarrow \left( j_{+} \  , j_{-} \right) \neq \left( j_{-} , j_{+} \right),$$so the Weyl field does not represent parity. It is represented by the Dirac field:
+$$\Psi = \begin{pmatrix}\psi_{L} \\ \psi_{R}\end{pmatrix}.$$
+The Lorentz transform is represented by:
 $$
 \Lambda_{D} = \begin{pmatrix}\Lambda_{L} & 0 \\ 0 & \Lambda_{R}\end{pmatrix} ,
 $$
@@ -60,175 +60,139 @@ $$
 \Psi ( x ) \rightarrow \begin{pmatrix}0 & 1 \\ 1 & 0\end{pmatrix} \Psi \left( x^{'} \right) , \  \  \  x^{'} = \left( t , - \overrightarrow{x} \right) .
 $$
 
-Load join is defined as:
-
+Charge conjugations is defined as:
 $$
 \Psi^{C} = - i \begin{pmatrix}0 & \sigma^{2} \\ - \sigma^{2} & 0\end{pmatrix} \Psi^{*}
 $$
-
 ###### Majorana Field
-
 $$
 \Psi_{M} = \begin{pmatrix}\psi_{L} \\ i \sigma^{2} \psi_{L}^{*}\end{pmatrix}
 $$
+Perhaps it describes neutrinos. It is neutral in the sense that $\Psi_{M}^{C} = \Psi_{M}$ (the condition $\Psi_{M}^{*} = \Psi$ would not be Lorentzian invariant).
 
-Perhaps it describes neutrinos. It is neutral in the sense that (the condition would not be Lorentzian invariant). $$\Psi_{M}^{C} = \Psi_{M} \Psi_{M}^{*} = \Psi$$
+##### Vector Field
+It belongs to the representation $\left( \frac{1}{2} , \frac{1}{2} \right)$, so it represents parity. $$
 
-Vector Field
-
-It belongs to the representation, so it represents parity. $$\left( \frac{1}{2} , \frac{1}{2} \right)$$
-
-$$
 V^{\mu} ( x ) \rightarrow V^{' \mu} \left( x^{'} \right) = \Lambda_{\  \  \nu}^{\mu} V^{\nu} ( x )
 $$
-
-We assume that all fields are scalar with respect to translation, i.e., i.e. .$$\delta_{0} \phi = - \epsilon^{\mu} \partial_{\mu} \phi ( x ) = i \epsilon^{\mu} P_{\mu} \phi ( x ) P_{\mu} = i \partial_{\mu}$$
-
-Representations on states from Hilbert space
-
+We assume that all fields are scalar with respect to translation, i.e., $\epsilon^{\mu} \partial_{\mu} \phi ( x ) = i \epsilon^{\mu} P_{\mu} \phi ( x )$, which means $\delta_{0} \phi = - P_{\mu} = i \partial_{\mu}$.
+##### Representations on states from Hilbert space
 Wigner's theorem states that symmetries are represented by unitary operators. Representations are numbered by the eigenvalues of Casimir operators, e.g.:
-
 $$
 P_{\mu} P^{\mu} \rightarrow - m^{2} , \  W_{\mu} W^{\mu} , \  W^{\mu} = - \frac{1}{2} \epsilon^{\mu \nu \rho \sigma} J_{\nu \rho} P_{\sigma}
 $$
-
 It is a Lorentz-invariant Pauli-Lubański vector.
-
 ###### Massive representation
-
-Select the resting system and . The representation is numbered by the mass and spin of the particle, and the states differ in the spin roll.$$W_{\mu} W^{\mu} = - m^{2} j ( j + 1 )$$
-
-Massless representation
-
-We select and the small group is SU(2). Representations are numbered by an operator's eigenvalue called torsion. An algebraic proof that it doesn't work, because there is no , but a certain topological proof works.$$P^{\mu} = ( \omega , 0 , 0 , \omega ) h J_{3} h = 0 , \pm \frac{1}{2} . \pm 1 , \ldots J_{1} , J_{2}$$
-
-#### Symmetries and laws of conservation
-
+Select the rest frame and $W_{\mu} W^{\mu} = - m^{2} j ( j + 1 )$. The representation is numbered by the mass and spin of the particle, and the states differ in the spin projection.
+###### Massless representation
+We select $P^{\mu} = ( \omega , 0 , 0 , \omega )$ and the small group is SU(2). Representations are numbered by an eigenvalue $h$ of the operator $J_3$ called *helicity*. An algebraic proof that $h = 0 , \pm \frac{1}{2} . \pm 1 , \ldots$ doesn't work, because there is no $ J_{1} , J_{2}$, but a certain topological proof works.
+#### Symmetries and laws conservation laws
 $$
-x^{\mu} \rightarrow x^{'}^{\mu} = x^{\mu} + \epsilon^{\alpha} A_{\alpha}^{\mu} ( x )\phi_{i} ( x ) \rightarrow \phi^{'}_{i} \left( x^{'} \right) = \phi_{i} ( x ) + \epsilon^{\alpha} F_{i \alpha} ( \phi , \partial \phi )
+x^\mu\rightarrow x'^\mu=x^\mu+\epsilon^\alpha A^\mu_\alpha(x),
+$$
+$$
+\phi_i(x)\rightarrow\phi'_i(x')=
+\phi_i(x)+\epsilon^\alpha F_{i\alpha}(\phi,\partial\phi)
 $$
 
-If the transformation is only a global symmetry, then assuming that the parameter is not a constant, but changes slowly:$$\epsilon$$
-
+If the transformation is only a global symmetry, then assuming that the parameter $\epsilon$ is not a constant, but changes slowly:
 $$
 S \left( \phi^{'} \right) = S ( \phi ) + \int_{}^{} {d^{4} x} \left\lbrack \epsilon^{\alpha} K_{\alpha} ( \phi ) - \left( \partial_{\mu} \epsilon^{\alpha} j_{\alpha}^{\mu} ( \phi ) \right) + O ( \partial \  \partial \epsilon ) \right\rbrack + O ( \epsilon^{2} )
 $$
-
-In the case where it is constant, we have symmetry and . And when :$$\epsilon S \left( \phi^{'} \right) = S ( \phi ) , \  K = 0 \epsilon \rightarrow 0 , \  x \rightarrow \infty$$
+In the case where it is constant, we have symmetry and $S \left( \phi^{'} \right) = S ( \phi ) , \  K = 0$. And when $\epsilon \rightarrow 0 , \  x \rightarrow \infty$, then:
 
 $$
 S \left( \phi^{'} \right) = S ( \phi ) + \int_{}^{} {d^{4} x \epsilon^{\alpha} \partial_{\mu} j_{\alpha}^{\mu} ( x )} + O ( \partial \partial \epsilon ) + O ( \epsilon^{2} )
 $$
-
-By converting the integration variable in the operation of the mother and . The last term is a variation of the same as in the calculation of equations of motion and tends to zero when . If it is a solution to classical equations of motion, then the integral marked in green must disappear regardless of the parameter and:$$x^{\mu} \rightarrow x^{\mu} \phi_{i} ( x ) \rightarrow \phi_{i} \left( x - \epsilon^{\alpha} A_{\alpha} \right) + \epsilon^{\alpha} F_{i \alpha} = \phi_{i} ( x ) - \epsilon^{\alpha} \partial_{\mu} \phi_{i} A_{\alpha}^{\mu} + \epsilon^{\alpha} F_{i \alpha} = \phi_{i} ( x ) + \delta \phi_{i} ( x ) x \rightarrow \infty \phi_{i} ( x ) \epsilon$$
-
+By change of variables in the action we have $x^{\mu} \rightarrow x^{\mu}$ and $\phi_{i} ( x ) \rightarrow \phi_{i} \left( x - \epsilon^{\alpha} A_{\alpha} \right) + \epsilon^{\alpha} F_{i \alpha} = \phi_{i} ( x ) - \epsilon^{\alpha} \partial_{\mu} \phi_{i} A_{\alpha}^{\mu} + \epsilon^{\alpha} F_{i \alpha} = \phi_{i} ( x ) + \delta \phi_{i} ( x )$. The last term is the same variation as when solving the equations of motions and goes to zero when $x \rightarrow \infty$.  If $\phi_{i} ( x )$ solves classical equations of motion, the integral must vanish independently of  $\epsilon$ and so:
 $$
 \partial_{\mu} j_{\alpha}^{\mu} \left( \phi^{c l} \right) = 0 .
 $$
 
-A change in action under the shallow transformation contains a term proportional to equal:$$\epsilon^{\alpha}$$
-
+The variation of the action under the transformation contains a term proportional to $\epsilon^\alpha$ equal:
 $$
 j_{\alpha}^{\mu} = \frac{\partial L}{\partial \left( \partial_{\mu} \phi_{i} \right)} \left\lbrack A_{\alpha}^{\nu} \partial_{\nu} \phi_{i} - F_{i \alpha} ( \phi , \partial \phi ) \right\rbrack - A_{\alpha}^{\mu} L .
 $$
 
-If now $$\epsilon$$**is not global symmetry**, then , but , where under the influence of global $$K_{\alpha} ( \phi ) \neq 0 K_{\alpha} ( \phi ) = \left( \delta_{\alpha} L \right)_{g l o b a l} ( \delta L )_{g l o b a l} = {\epsilon^{\alpha} \left( \delta_{\alpha} L \right)}_{g l o b a l}$$**transformation**. Then:
-
+If now $\epsilon$ **is not global symmetry**, then $K_{\alpha} ( \phi ) \neq 0$, but $K_{\alpha} ( \phi ) = \left( \delta_{\alpha} L \right)_{g l o b a l}$ where $( \delta L )_{g l o b a l} = {\epsilon^{\alpha} \left( \delta_{\alpha} L \right)}_{g l o b a l}$, under the of global  **transformation**. Then:
 $$
 \partial_{\mu} j_{\alpha}^{\mu} \left( \phi^{c l} \right) = - \left( \delta_{\alpha} L \right)_{g l o b a l} .
 $$
-
-Under the influence of translation, all fields are scalars (it becomes a Lorentz index). Then with and it follows that . The energy-momentum tensor defined as:$$\alpha x^{\mu} \rightarrow x^{' \mu} + \epsilon^{\nu} \delta_{\nu}^{\mu} \phi_{i} ( x ) \rightarrow \phi_{i}^{'} \left( x^{'} \right) = \phi_{i} ( x ) A_{\nu}^{\mu} = \delta_{\nu}^{\mu} , \  F_{i \nu} = 0 \theta_{\  \  \  \nu}^{\mu} = j_{( \nu )}^{\mu}$$
-
+Under the translation, all fields are scalars ($\alpha$ becomes a Lorentz index). Then from  $x^{\mu} \rightarrow x^{' \mu} + \epsilon^{\nu} \delta_{\nu}^{\mu}$ and $\phi_{i} ( x ) \rightarrow \phi_{i}^{'} \left( x^{'} \right) = \phi_{i} ( x ) A_{\nu}^{\mu} = \delta_{\nu}^{\mu}$ it follows that $F_{i \nu} = 0$
+The energy-momentum tensor, defined as $\theta_{\  \  \  \nu}^{\mu} = j_{( \nu )}^{\mu}$, is equal:
 $$
 \theta^{\mu \nu} = \frac{\partial L}{\partial \left( \partial_{\mu} \phi_{i} \right)} \partial^{\nu} \phi_{i} - \eta^{\mu \nu} L .
 $$
 
-The load associated with the symmetry transformation is the average value of the generator expressed as an operator acting on the field between states. For example, for U(1) and $$j_{\mu} = i \phi^{*} \overset{\overleftrightarrow{}}{\partial}_{\mu} \phi Q_{U ( 1 )} = \int_{}^{} {d^{3} x j^{0} = i \int_{}^{} {d^{3} x \phi^{*} \overset{\overleftrightarrow{}}{\partial}_{0} \phi \equiv \left\langle \phi | \phi \right\rangle} = \left\langle \phi | I | \phi \right\rangle}$$
+The charge associated with the symmetry transformation is the average value of the generator expressed as an operator acting on the field between states. For example, for U(1) $j_{\mu} = i \phi^{*} \overset{\overleftrightarrow{}}{\partial}_{\mu} \phi$ and $$Q_{U ( 1 )} = \int_{}^{} {d^{3} x j^{0} = i \int_{}^{} {d^{3} x \phi^{*} \overset{\overleftrightarrow{}}{\partial}_{0} \phi \equiv \left\langle \phi | \phi \right\rangle} = \left\langle \phi | I | \phi \right\rangle}$$
 
-#### Classic Fields
+#### Classical Fields
+For the Weyl field, $\mathcal{L}_{L} = i \psi_{L}^{\dagger} \overline{\sigma}^{\mu} \partial_{\mu} \psi_{L}$ and the plane-wave solution $\psi_{L} = u_{L} e^{- i p x}$ has $h = - \frac{1}{2}$
 
-For Weyl's field, the solution of a flat wave has .$$\mathcal{L}_{L} = i \psi_{L}^{\dagger} \overline{\sigma}^{\mu} \partial_{\mu} \psi_{L} \psi_{L} = u_{L} e^{- i p x} h = - \frac{1}{2}$$
+For the Dirac field $\mathcal{L}_{D} = i \psi_{L}^{\dagger} \overline{\sigma}^{\mu} \partial_{\mu} \psi_{L} + i \psi_{R}^{\dagger} \sigma^{\mu} \partial_{\mu} \psi_{R} - m ( \psi_{L}^{\dagger} \psi_{R} + \psi_{R}^{\dagger} \psi_{L} )$. 
+Chiral representation: $$ \psi = \begin{pmatrix}\psi_{L} \\ \psi_{R}\end{pmatrix} , \  \gamma^{\mu} = \begin{pmatrix}0 & \sigma^{\mu} \\ \overline{\sigma}^{\mu} & 0\end{pmatrix} , \  \overline{\psi} \equiv \psi^{\dagger} \gamma^{0} = ( \psi_{R}^{\dagger} , \psi_{L}^{\dagger} ) $$
+and
+$$
+\mathcal{L}_{D} = \overline{\psi} ( i \partial - m ) \psi 
+$$
+Other relate to the chiral one by $\psi^{'} = U \psi$, where $U$ is a unitary operator, e.g. for a standard representation $U = \frac{1}{\sqrt{2}} \begin{pmatrix}1 & 1 \\ - 1 & 1\end{pmatrix}$. 
 
-For the field of Dirac. Chiral representation and . Other representations bind to chiral by , is a unitary operator, e.g. for a standard representation $$\mathcal{L}_{D} = i \psi_{L}^{\dagger} \overline{\sigma}^{\mu} \partial_{\mu} \psi_{L} + i \psi_{R}^{\dagger} \sigma^{\mu} \partial_{\mu} \psi_{R} - m ( \psi_{L}^{\dagger} \psi_{R} + \psi_{R}^{\dagger} \psi_{L} ) \psi = \begin{pmatrix}\psi_{L} \\ \psi_{R}\end{pmatrix} , \  \gamma^{\mu} = \begin{pmatrix}0 & \sigma^{\mu} \\ \overline{\sigma}^{\mu} & 0\end{pmatrix} , \  \overline{\psi} \equiv \psi^{\dagger} \gamma^{0} = ( \psi_{R}^{\dagger} , \psi_{L}^{\dagger} ) \mathcal{L}_{D} = \overline{\psi} ( i \partial - m ) \psi \psi^{'} = U \psi U U = \frac{1}{\sqrt{2}} \begin{pmatrix}1 & 1 \\ - 1 & 1\end{pmatrix}$$
-
-Operators (Dirac's algebra: gives a reducible representation of a Lorentz group.$$J^{\mu \nu} = \frac{\sigma^{\mu \nu}}{2} , \  \sigma^{\mu \nu} = \frac{1}{2} \left\lbrack \gamma^{\mu} , \gamma^{\nu} \right\rbrack \left\{ \gamma^{\mu} , \gamma^{\nu} \right\} = 2 \eta^{\mu \nu}$$
-
+Operators $J^{\mu \nu} = \frac{\sigma^{\mu \nu}}{2} , \  \sigma^{\mu \nu} = \frac{1}{2} \left\lbrack \gamma^{\mu} , \gamma^{\nu} \right\rbrack$ (Dirac algebra: $\left\{ \gamma^{\mu} , \gamma^{\nu} \right\} = 2 \eta^{\mu \nu}$ gives a reducible representation of the Lorentz group).
 #### Chiral symmetry
-
-We are introducing a global transformation for the Dirac field:
-
+Introduce a global transformation of the Dirac field:
 $$
 \psi_{L} \rightarrow e^{i \theta_{L}} \psi_{L} , \  \psi_{R} \rightarrow e^{i \theta_{R}} \psi_{R} ,
 $$
-
-Which for is the vector transform U(1) and for is the chiral transformation Both are symmetries for Noether currents are:$$\theta_{R} = \theta_{L} = \alpha \psi \rightarrow e^{i \alpha} \psi \theta_{R} = - \theta_{L} = \beta \psi \rightarrow e^{i \beta \gamma_{5}} \psi , \  \gamma_{5} = i \gamma^{0} \gamma^{1} \gamma^{2} \gamma^{3} . m = 0 .$$
-
+Which for $\theta_{R} = \theta_{L} = \alpha$ is a vector transform U(1) $\psi \rightarrow e^{i \alpha} \psi$ and for $\theta_{R} = - \theta_{L} = \beta$ is the chiral transformation $\psi \rightarrow e^{i \beta \gamma_{5}} \psi   , \  \gamma_{5} = i \gamma^{0} \gamma^{1} \gamma^{2} \gamma^{3}$. Both are symmetries for $m=0$. Noether currents are:
 $$
 j_{V}^{\mu} = \overline{\psi} \gamma^{\mu} \psi , \  j_{A}^{\mu} = \overline{\psi} \gamma^{\mu} \gamma_{5} \psi .
 $$
-
-For symmetry is broken:$$m \neq 0$$
-
+For $m\neq 0$, the symmetry is broken:
 $$
-\partial_{\mu} j_{A}^{\mu} = 2 i m \overline{\psi} \gamma_{5} \psi
+\partial_{\mu} j_{A}^{\mu} = 2 \mathrm{Im} \overline{\psi} \gamma_{5} \psi
 $$
-
 #### LZS reduction formula
-
 $$
 \left( 2 E_{\mathbf{k}} \right)^{\frac{1}{2}} a_{\mathbf{k}}^{\dagger \left( \frac{i n}{o u t} \right)} = - i Z^{- \frac{1}{2}} \lim_{t \rightarrow \mp \infty} {\int_{}^{} {d^{3} x} e^{- i k x} \overset{\overleftrightarrow{}}{\partial}_{0}} \phi
 $$
-
 $$
 \left( 2 E_{\mathbf{k}} \right)^{\frac{1}{2}} \left( a_{\mathbf{k}}^{\dagger ( i n )} - a_{\mathbf{k}}^{\dagger ( o u t )} \right) = i Z^{- \frac{1}{2}} \int_{}^{} {d^{4} x} \partial_{0} \left( e^{- i k x} \overset{\overleftrightarrow{}}{\partial}_{0} \phi \right) = i Z^{- \frac{1}{2}} \int_{}^{} {d^{4} x} e^{- i k x} \left( \blacksquare_{x} + m^{2} \right) \phi
 $$
-
-(the last equality with the caveat of convolution into a wave pack). Same:
-
+(the last equality is valid if convoluted with a wave package). Similarly:
 $$
 \left( 2 E_{\mathbf{p}} \right)^{\frac{1}{2}} \left( a_{\mathbf{p}}^{( o u t )} - a_{\mathbf{p}}^{( i n )} \right) = i Z^{- \frac{1}{2}} \int_{}^{} {d^{4} y} e^{i p y} \left( \blacksquare_{y} + m^{2} \right) \phi
 $$
-
 $$
 \left\langle \mathbf{p}_{1} , \ldots , \mathbf{p}_{n} ; T_{f} | \mathbf{k}_{1} , \ldots , \mathbf{k}_{m} ; T_{i} \right\rangle = \left( i Z^{- \frac{1}{2}} \right)^{n + m} \int_{}^{} {\prod_{i = 1}^{m} {d^{4} x_{i}} \prod_{j = 1}^{n} {d^{4} y_{j}} \exp \left( i \sum_{j = 1}^{n} {p_{j} y_{j}} - i \sum_{i = 1}^{m} {k_{i} x_{i}} \right)} \left( \blacksquare_{x_{1}} + m^{2} \right) \times \ldots \times \left( \blacksquare_{y_{n}} + m^{2} \right) \left\langle 0 \left| T \left( \phi \left( x_{1} \right) \ldots \phi \left( y_{n} \right) \right) \right| 0 \right\rangle = \left\langle \mathbf{p}_{1} , \ldots , \mathbf{p}_{n} | S | \mathbf{k}_{1} , \ldots , \mathbf{k}_{m} \right\rangle_{S c h r o e d i n g e r} = \left\langle \mathbf{p}_{1} , \ldots , \mathbf{p}_{n} | i T | \mathbf{k}_{1} , \ldots , \mathbf{k}_{m} \right\rangle_{S c h r o e d i n g e r}
 $$
-
-(The last equality is correct assuming that there are no spectators.) Temporal Evolution Operator:
-
+(The last equality is correct assuming that there are no spectators.) Temporal evolution operator:
 $$
 U \left( t , t_{0} \right) \equiv e^{i H_{0} \left( t - t_{0} \right)} e^{- i H \left( t - t_{0} \right)}
 $$
-
 $$
 \phi_{H} \left( t , \mathbf{x} \right) \mathbf{=} e^{i H \tau} \phi_{S} \left( t_{0} , \mathbf{x} \right) e^{- i H \tau} {= e}^{i H \tau} e^{- i H_{0} \tau} \left\lbrack e^{i H_{0} \tau} \phi_{S} \left( t_{0} , \mathbf{x} \right) e^{- i H_{0} \tau} \right\rbrack e^{i H_{0} \tau} e^{- i H \tau} \equiv e^{i H \tau} e^{- i H_{0} \tau} \phi_{I} \left( t , \mathbf{x} \right) e^{i H_{0} \tau} e^{- i H \tau} = U^{\dagger} \left( t , t_{0} \right) \phi_{I} \left( t , \mathbf{x} \right) U \left( t , t_{0} \right) .
 $$
-
-The penultimate equality is the definition of the evolution of the operator in the interaction image, .$$\tau = t - t_{0}$$
-
+The penultimate equality is the definition of the evolution of the operator in the interaction picture, $\tau = t - t_{0}$.
 $$
 H_{I} \equiv e^{i H_{0} \tau} H_{i n t} e^{- i H_{0} \tau}
 $$
-
 $$
 U \left( t , t_{0} \right) = T \exp \left( - i \int_{t_{0}}^{t} {d t^{'} H_{I} ( t ' )} \right)
 $$
-
 $$
 \left\langle 0 | \phi \left( x_{1} \right) \ldots \phi \left( x_{n} \right) | 0 \right\rangle = \left\langle 0 | U^{\dagger} \left( t_{1} , t_{0} \right) \phi_{I} \left( x_{1} \right) U ( t_{1} , t_{0} ) \ldots U^{\dagger} \left( t_{n} , t_{0} \right) \phi_{I} \left( x_{n} \right) U ( t_{n} , t_{0} ) | 0 \right\rangle = \left\langle 0 | U^{\dagger} \left( t_{1} , t_{0} \right) \phi_{I} \left( x_{1} \right) U ( t_{1} , t_{2} ) \phi_{I} \left( x_{2} \right) \ldots U \left( t_{n - 1} , t_{n} \right) \phi_{I} \left( x_{n} \right) U ( t_{n} , t_{0} ) | 0 \right\rangle = \left\langle 0 | U^{\dagger} \left( t , t_{0} \right) \left\lbrack {U \left( t , t_{1} \right) \phi}_{I} \left( x_{1} \right) U ( t_{1} , t_{2} ) \phi_{I} \left( x_{2} \right) \ldots U \left( t_{n - 1} , t_{n} \right) \phi_{I} \left( x_{n} \right) U ( t_{n} , - t ) \right\rbrack U ( - t , t_{0} ) | 0 \right\rangle = \left\langle 0 | U^{\dagger} \left( t , t_{0} \right) T \left\{ \phi_{I} \left( x_{1} \right) \ldots \phi ( x_{n} ) U ( t , - t ) \right\} U ( - t , t_{0} ) | 0 \right\rangle \overset{t_{0} = - t , \  t \rightarrow \infty}{\rightarrow} \left\langle 0 | U^{\dagger} ( \infty , - \infty ) T \left\{ \phi_{I} \left( x_{1} \right) \ldots \phi \left( x_{n} \right) \exp \left( - i \int_{}^{} {d^{4} x \mathcal{H}_{I} ( x )} \right) \right\} | 0 \right\rangle = \frac{\left\langle 0 \left| T \left\{ \phi_{I} \left( x_{1} \right) \ldots \phi \left( x_{n} \right) \exp \left( - i \int_{}^{} {d^{4} x \mathcal{H}_{I} ( x )} \right) \right\} \right| 0 \right\rangle}{\left\langle 0 \left| T \exp \left( - i \int_{}^{} {d^{4} x \mathcal{H}_{I} ( x )} \right) \right| 0 \right\rangle} \  .
 $$
-
-Also, because , then . From the distribution of fields into the creating and annihilating parts:$$H_{i n t} = \frac{\lambda}{4 !} \phi^{4} H_{I} ( t ) = \frac{\lambda}{4 !} \phi_{I}^{4} ( x )$$
-
-$$D ( x - y ) = \left\langle 0 | T \left\{ \phi ( x ) \phi ( y ) \right\} | 0 \right\rangle = \int_{}^{} {\frac{d^{4} p}{( 2 \pi )^{4}} \frac{i e^{- i p ( x - y )}}{p^{2} - m^{2} + i \epsilon}}$$ is the Greene function of the differential operator in the Klein–Gordon equation. Different of the four ways of circumventing the poles give different Green functions that meet different boundary conditions.
-
+Also, because $H_{i n t} = \frac{\lambda}{4 !} \phi^{4}$ , so $H_{I} ( t ) = \frac{\lambda}{4 !} \phi_{I}^{4} ( x )$. From splitting the fields into the creating and annihilating parts:
+$$D ( x - y ) = \left\langle 0 | T \left\{ \phi ( x ) \phi ( y ) \right\} | 0 \right\rangle = \int_{}^{} {\frac{d^{4} p}{( 2 \pi )^{4}} \frac{i e^{- i p ( x - y )}}{p^{2} - m^{2} + i \epsilon}}$$is the Greene function of the differential operator in the Klein–Gordon equation. The four ways of circumventing the poles give different Green functions that meet different boundary conditions.
 ## Amputation of the outer legs
+Bypass factors related to the outer propagators of the diagram that cancel out with the corresponding factors of the LZS formula. Then we immediately get a matrix element.
 
-Bypass factors related to the outer branches of the diagram that shorten with the corresponding factors of the LZS pattern. Then we immediately get a matrix element,
-
-#### Feynman's rules for $\phi^4$ theory 
-###### Vertex: (coupling constant)$$- i \lambda$$
-###### Loop (integral after slow momentum variable)$$\int_{}^{} \frac{d^{4} k \ }{( 2 \pi )^{4}}$$
+## Feynman's rules 
+#### $\phi^4$ theory 
+###### Vertex 
+$- i \lambda$: (coupling constant)
+###### Loop
+$\int_{}^{} \frac{d^{4} k \ }{( 2 \pi )^{4}}$ (integral over free momentum variable)
 #### QED
 ###### Dirac field
 $$
@@ -256,13 +220,12 @@ $$
 |---------|--------------------------------|------------------------------|------------------------------|
 | Initial | $$ \epsilon_{\mu} ( k ) $$     | $$ u^{s} ( p ) $$            | $$ \overline{v}^{s} ( p ) $$ |
 | Final   | $$ \epsilon_{\mu}^{*} ( k ) $$ | $$ \overline{u}^{s} ( p ) $$ | $$ v^{s} ( p ) $$            |
-
 $$
 \psi ( x ) = \int_{}^{} {\frac{d^{3} p}{( 2 \pi )^{3} \sqrt{2 E_{\mathbf{p}}}} \left( \sum_{s = 1 , 2}^{} \left( a_{\mathbf{p} , s} u^{s} ( p ) e^{- i p x} + b_{\mathbf{p} , s}^{\dagger} v^{s} ( p ) e^{i p x} \right) \right)}
 $$
 ###### Loops
 Additional minus on integration
-#### Path integrals
+## Path integrals
 
 $$
 \left\langle q_{f} , T_{f} | q_{i} , T_{i} \right\rangle = \int_{q \left( T_{i} \right) = q_{i}}^{q \left( T_{f} \right) = q_{f}} {[ d q ] \exp {\left( \frac{i}{\hslash} S \right) .}}
@@ -307,14 +270,14 @@ Z [ J ] = \ln {W [ J ] = Z [ 0 ] + \frac{1}{2} \int_{}^{} {d^{4} x d^{4} y J ( x
 $$
 generates **connected** Green functions.
 #### Renormalization of the theory $\mathbf{\phi}^{\mathbf{4}}$
-When applying ultraviolet cutoff $\Lambda$, the sum of a series of double-loop diagrams is:
+When applying an ultraviolet cutoff $\Lambda$, the sum of a series of double-loop diagrams is:
 $$
 \frac{i}{A \left( \Lambda , p^{2} \right) p^{2} - m^{2} - B ( \Lambda )} , \  A \left( \Lambda , p^{2} \right) = 1 + \lambda^{2} \left( c_{1} \ln \frac{\Lambda^{2}}{p^{2}} + c_{2} \right) , \  B ( \Lambda ) = \frac{\lambda}{32 \pi^{2}} \left( \Lambda^{2} - m^{2} \ln \frac{\Lambda^{2} + m^{2}}{m^{2}} \right)
 $$
 
-Here, $\lambda = \lambda_{0} ( \Lambda ) , \  m = m_{0} ( \Lambda )$ etc. At the single-loop level, $A = 1 m_{R}^{2} = m_{0}^{2} ( \Lambda ) + B ( \Lambda )$ and we choose $m_{0} ( \Lambda )$ so that the divergencies are eliminated and the propagator has a pole in the real, observed mass.
+Here, $\lambda = \lambda_{0} ( \Lambda ) , \  m = m_{0} ( \Lambda )$ etc. At the one-loop level, $A = 1$,  $m_{R}^{2} = m_{0}^{2} ( \Lambda ) + B ( \Lambda )$ and we choose $m_{0} ( \Lambda )$ so that the divergencies are eliminated and the propagator has a pole in the real, observed mass.
 
-At the two-loop level.$\int_{}^{} {d^{4} x e^{i p x} \left\langle 0 \left| T \left\{ \phi_{0} ( x , \Lambda ) , \phi_{0} ( 0 , \Lambda ) \right\} \right| 0 \right\rangle_{C} = \frac{i Z}{p^{2} - m_{R}^{2}} + \ldots}$, where the remaining terms are finite, when, $p^{2} = m_{R}^{2} Z = Z \left( \lambda_{0} ( \Lambda ) , \frac{\Lambda}{m_{R}} \right) = \left\lbrack \left( \frac{d}{d \left( p^{2} \right)} A \left( \Lambda , p^{2} \right) p^{2} \right)_{p^{2} = m_{R}^{2}} \right\rbrack^{- 1}$.
+At the two-loop level.$\int_{}^{} {d^{4} x e^{i p x} \left\langle 0 \left| T \left\{ \phi_{0} ( x , \Lambda ) , \phi_{0} ( 0 , \Lambda ) \right\} \right| 0 \right\rangle_{C} = \frac{i Z}{p^{2} - m_{R}^{2}} + \ldots}$, where the remaining terms are finite, when $p^{2} = m_{R}^{2}$,  $Z = Z \left( \lambda_{0} ( \Lambda ) , \frac{\Lambda}{m_{R}} \right) = \left\lbrack \left( \frac{d}{d \left( p^{2} \right)} A \left( \Lambda , p^{2} \right) p^{2} \right)_{p^{2} = m_{R}^{2}} \right\rbrack^{- 1}$.
 
 We assume that $m_R$ is such that $\left\lbrack A \left( \Lambda , p^{2} \right) p^{2} - m_{0}^{2} ( \Lambda ) - B ( \Lambda ) \right\rbrack_{p^{2} = m_{R}^{2}} = 0$. We define the renormalized wave function: $\phi_{0} = Z^{\frac{1}{2}} \left( \lambda_{0} , \frac{\Lambda}{m^{R}} \right) \phi_{R}$. If in the LZS formula we use $\phi_{R} , m_{R}$ instead of $\phi_{0} , m_{0}$. Then we get a finite expression for the Green function.
 
