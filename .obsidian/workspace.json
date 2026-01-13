@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Java, Jakarta EE, Microprofile/Quarkus and MicroProfile.md",
+                "file": "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Quarkus and MicroProfile"
+              "title": "Notes from \"A Modern Introduction to Quantum Field Theory\""
             }
           },
           {
@@ -185,9 +185,9 @@
   },
   "active": "39985c33f2c2fc19",
   "lastOpenFiles": [
+    "Java, Jakarta EE, Microprofile/Quarkus and MicroProfile.md",
     "Spring and Spring Boot/Spring Security/Spring Boot Security.md",
     "Java, Jakarta EE, Microprofile/Security.md",
-    "Java, Jakarta EE, Microprofile/Quarkus and MicroProfile.md",
     "Knative.md",
     "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
     "Java, Jakarta EE, Microprofile/Java Persistence API.md",

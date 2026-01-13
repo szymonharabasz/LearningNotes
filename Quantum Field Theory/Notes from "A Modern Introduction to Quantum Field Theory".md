@@ -298,16 +298,227 @@ $$
 i \mathcal{M}_{2 \rightarrow 2} \left( q^{2} \right) = - i \lambda_{0} ( \Lambda ) \left\lbrack 1 - \lambda_{0} ( \Lambda ) \left( \frac{\beta_{0}}{2} \ln \frac{\Lambda^{2}}{q^{2}} + \mathrm{finite} \right) \right\rbrack + O \left( \lambda_{0}^{3} \right) = - i \lambda_{R} \left\lbrack 1 + \lambda_{R} \frac{\beta_{0}}{2} \ln \frac{q^{2}}{m_{R}^{2}} \right\rbrack + O \left( \lambda_{R}^{3} \right) = - i \lambda_{e f f} ( q^{2} )
 $$
 And it is finite at every energy scale.
-###### Renormalization Group
+# Renormalization Group
+
 N-point function:
+
 $$
 \Gamma_{R} \left( p_{i} ; g_{R} , \mu \right) = Z^{- \frac{n}{2}} \left( g_{0} ( \Lambda ) , \frac{\Lambda}{\mu} \right) \Gamma_{0} \left( p_{i} ; g_{0} ( \Lambda ) , \Lambda \right) .
 $$
+
 Renormalization group equation:
+
 $$
 \left\lbrack \Lambda \frac{\partial}{\partial \Lambda} + \beta \left( g_{0} \right) \frac{\partial}{\partial g_{0}} - n \eta \left( g_{0} \right) \right\rbrack \Gamma_{0} \left( p_{i} ; g_{0} , \Lambda \right) = 0 ,
 $$
+
 $$
 \beta \left( g_{0} \right) = \Lambda \frac{d g_{0}}{d \Lambda} , \  \eta \left( g_{0} \right) = \frac{1}{2} \Lambda \frac{d}{d \Lambda} \ln Z
 $$
+
+The solution of the equation is of the form (this is the so-called expansion joint parameter):$$u$$
+
+$$
+\Gamma_{0} \left( p_{i} ; g_{0} , \frac{\Lambda}{u} \right) = Z_{e f f}^{- \frac{n}{2}} ( u ) \Gamma_{0} \left( p_{i} ; g_{e f f} ( u ) , \Lambda \right) , \  \  \Lambda \rightarrow \infty \Leftrightarrow u \rightarrow 0
+$$
+
+$$
+u \frac{d g_{e f f} ( u )}{d u} = \beta \left( g_{e f f} ( u ) \right) , \  g_{e f f} ( 1 ) = g_{0}
+$$
+
+and hence it is divergent for , that is, the null place of the function . Next:$$\int_{g_{0}}^{g_{e f f} ( u )} {\frac{d g '}{\beta ( g^{'} )} = \ln u} u \rightarrow 0 g_{e f f} ( u \rightarrow 0 ) \rightarrow \beta$$
+
+$$
+\frac{1}{2} u \frac{d}{d u} \ln {Z_{e f f} = \eta \left( g_{e f f} ( u ) \right) , \  \  Z_{e f f} ( 1 ) = 1 .}
+$$
+
+Because , this is also the reason why $$g_{R} = g_{0} - \beta_{0} g_{0}^{2} \ln {\Lambda + O \left( g_{0}^{3} \right)} g_{0} = g_{R} + \beta_{0} g_{R}^{2} \ln {\Lambda + O ( g_{R}^{3} )} \beta \left( g_{0} \right) \equiv \frac{d g_{0}}{d \ln \Lambda} = \beta_{0} g_{0}^{2} + O ( g_{0}^{3} )$$
+
+Callan-Symanzik equation
+
+$$
+\left\lbrack \mu \frac{\partial}{\partial \mu} + \beta \left( g_{R} \right) \frac{\partial}{\partial g_{R}} + \eta \gamma \left( g_{R} \right) \right\rbrack \Gamma_{R} \left( p_{i} ; g_{R} , \mu \right) = 0 ,
+$$
+
+$$
+\beta \left( g_{R} \right) = \mu \frac{d g_{R}}{d \mu} , \  \gamma \left( g_{R} \right) = \frac{1}{2} \mu \frac{d}{d \mu} \ln Z .
+$$
+
+Solution:
+
+$$
+\Gamma_{R} \left( p_{i} ; g_{R} , \frac{\mu}{u} \right) = Z_{e f f}^{- \frac{n}{2}} \Gamma_{R} \left( p_{i} ; g_{e f f} ( u ) , \mu \right) ,
+$$
+
+$$
+u \frac{d g_{e f f} ( u )}{d u} = \beta \left( g_{e f f} ( u ) \right) , \  g_{e f f} ( 1 ) = g_{R}
+$$
+
+$$
+\frac{1}{2} u \frac{d}{d u} \ln {Z_{e f f} = - \gamma \left( g_{e f f} ( u ) \right) , \  \  Z_{e f f} ( 1 ) = 1 .}
+$$
+
+Dimensionality:
+
+$$
+\Gamma_{R} \left( p_{i} ; g_{R} , \mu \right) = \mu^{d} F \left( g_{R} , \frac{p_{i}}{\mu} \right) \Rightarrow \Gamma_{R} \left( p_{i} ; g_{R} , \frac{\mu}{u} \right) = \frac{\mu^{d}}{u^{d}} F \left( g_{R} , \frac{u p_{i}}{\mu} \right) = \frac{1}{u^{d}} \Gamma_{R} \left( {u p}_{i} ; g_{R} , \mu \right) .
+$$
+
+Hence:
+
+$$
+\Gamma_{R} \left( {u p}_{i} ; g_{R} , \frac{\mu}{u} \right) = {u^{d} Z}_{e f f}^{- \frac{n}{2}} \Gamma_{R} \left( p_{i} ; g_{e f f} ( u ) , \mu \right) = u^{d} {\exp \left( n \int_{0}^{\ln u} {\gamma \left( g_{e f f} ( u ' ) \right) d \ln {u '}} \right) \Gamma}_{R} \left( p_{i} ; g_{e f f} ( u ) , \mu \right) .
+$$
+
+In the above equation, there is an anomalous dimension and a floating coupling constant. In theory:$$\phi^{4}$$
+
+$$
+\lambda_{e f f} ( E ) = \frac{\lambda_{*}}{1 - \beta_{0} \lambda_{*} \ln \frac{E}{\mu}} , \  E = u \mu , \  \lambda_{e f f} ( u ) = \lambda_{*} , \  \beta_{0} = \frac{3}{16 \pi^{2}} .
+$$
+
+# Non-abelian featuring theories
+
+Abelian Marking:
+
+$$
+A_{\mu} \rightarrow A_{\mu} + i \left( \partial_{\mu} U \right) U^{\dagger} , \  U = e^{i \theta ( x )}
+$$
+
+$$
+\psi ( x ) \rightarrow e^{i q \theta ( x )} \psi ( x )
+$$
+
+$$
+D_{\mu} \psi ( x ) = \left( \partial_{\mu} + i q A_{\mu} ( x ) \right) \psi ( x ) \rightarrow {e^{i q \theta ( x )} D}_{\mu} \psi ( x ) .
+$$
+
+For non-abelian featuring:
+
+$$
+\psi \rightarrow U_{R} \psi , \  \  U_{R} = \exp {\left( i g \theta^{a} ( x ) T_{R}^{a} \right) , \  \  T_{R}^{a}} - g e n e r a t o r \  S U ( N ) .
+$$
+
+We define and specify that .$$A_{\mu} \equiv A_{\mu}^{a} ( x ) T^{a} A_{\mu} ( x ) \rightarrow U A_{\mu} U^{\dagger} - \frac{i}{g} \left( \partial_{\mu} U \right) U^{\dagger}$$
+
+Hence:
+
+$$
+A_{\mu}^{a} ( x ) \rightarrow A_{\mu}^{a} ( x ) + \partial_{\mu} \theta^{a} - g f^{a b c} \theta^{b} A_{\mu}^{c} + O ( \theta^{2} )
+$$
+
+$$
+D_{\mu} = \partial_{\mu} - i g A_{\mu}^{a} T_{R}^{a}
+$$
+
+$$
+F_{\mu \nu} = \partial_{\mu} A_{\nu} - \partial_{\nu} A_{\mu} - i g \left\lbrack A_{\mu} , A_{\nu} \right\rbrack = F_{\mu \nu}^{a} T^{a} \rightarrow U ( x ) F_{\mu \nu} ( x ) U^{\dagger} ( x )
+$$
+
+$$
+F_{\mu \nu}^{a} = \partial_{\mu} A_{\nu}^{a} - \partial_{\nu} A_{\mu}^{a} + g f^{a b c} A_{\mu}^{b} A_{\nu}^{c} .
+$$
+
+For example:
+
+$$
+\mathcal{L}_{Y a n g - M i l l s} = \overline{\psi} ( i D - m ) \psi + \frac{1}{2} T r F_{\mu \nu} F^{\mu \nu}
+$$
+
+It contains triple and quadruple vertices where boson propagators meet. If the field belongs to an attached representation, then ( is $$\phi \  \Phi = \phi^{a} T^{a} \rightarrow U ( x ) \Phi ( x ) U^{\dagger} ( x ) T^{a}$$*the generator of any* representation). Then:
+
+$$
+\left( D_{\mu} \phi \right)^{a} = \partial_{\mu} \phi^{a} - g f^{a b c} \phi^{b} A_{\mu}^{c}
+$$
+
+$$
+{\partial_{\mu} \Phi - i g \left\lbrack A_{\mu} , \Phi \right\rbrack = D}_{\mu} \Phi \equiv \left( D_{\mu} \phi \right)^{a} T^{a} \rightarrow \  U ( x ) \left( D_{\mu} \Phi \right) U^{\dagger} ( x )
+$$
+
+$$
+\mathcal{L} = T r D_{\mu} \Phi D^{\mu} \Phi
+$$
+
+Spontaneous symmetry breaking (choice from many possible vacuum states) causes the appearance of a massive Goldstone boson. There are as many of them as there are generators that break symmetry, i.e. such that $$T^{a} | 0 \right\rangle \neq 0 :$$
+
+$$
+H T^{a} | 0 \right\rangle = T^{0} H | 0 \rangle
+$$
+
+(because if we are dealing with symmetry, then ).$$\left\lbrack H , t^{a} \right\rbrack = 0$$
+
+# Higgs mechanism
+
+$$
+\mathcal{L}_{S U ( 2 ) , H i g g s} = \left( D_{\mu} \phi \right)^{\dagger} D^{\mu} \phi - V \left( \phi^{\dagger} \phi \right) - \frac{1}{4} F_{\mu \nu}^{a} F^{a \mu \nu} .
+$$
+
+$$
+V \left( \phi^{\dagger} \phi \right) = \frac{1}{2} \lambda^{2} \left( \phi^{\dagger} \phi - \eta^{2} \right)^{2} .
+$$
+
+We use gauge symmetry to eliminate 3 out of 4 degrees of freedom:
+
+$$
+\phi = \begin{pmatrix}0 \\ \eta + \frac{1}{\sqrt{2}} \chi\end{pmatrix} , \  \chi \mathbb{\in R .}
+$$
+
+We define:
+
+$$
+\sigma^{+} = \frac{1}{\sqrt{2}} \left( \sigma^{1} + i \sigma^{2} \right) = \sqrt{2} \begin{pmatrix}0 & 1 \\ 0 & 0\end{pmatrix}
+$$
+
+$$
+\sigma^{-} = \frac{1}{\sqrt{2}} \left( \sigma^{1} - i \sigma^{2} \right) = \sqrt{2} \begin{pmatrix}0 & 0 \\ 1 & 0\end{pmatrix}
+$$
+
+$$
+A_{\mu}^{\pm} = \frac{1}{\sqrt{2}} \left( A_{\mu}^{1} \pm A_{\mu}^{2} \right) .
+$$
+
+Hence:
+
+$$
+D_{\mu} \phi = \begin{pmatrix}0 \\ \frac{1}{\sqrt{2}} \partial_{\mu} \chi\end{pmatrix} - \frac{i g}{2} \left( \eta + \frac{\chi}{2} \right) \begin{pmatrix}\sqrt{2} A_{\mu}^{-} \\ - A_{\mu}^{3} \ \end{pmatrix} ,
+$$
+
+How does it follow that fields gain mass . As massive fields, they now have three degrees of freedom instead of two:$$A_{\mu}^{\pm} , A_{\mu}^{3} m_{A} = \frac{g \eta}{\sqrt{2}}$$
+
+1.  From the equations of motion for gauge fields: .$$\partial_{\nu} A^{\nu} = 0 \Rightarrow k_{\nu} \epsilon^{\nu} ( k ) = 0$$
+
+2.  There can be no polarization , because .$$\epsilon^{\nu} ( k ) \propto k^{\nu} k_{\nu} \epsilon^{\nu} ( k ) \propto k^{2} = m_{A}^{2} \neq 0$$
+
+3.  In the resting system and the polarization eliminated is $$k_{\nu} = m_{A} ( 1 , 0 , 0 , 0 ) \epsilon^{\nu} = ( 1 , 0 , 0 , 0 ) .$$
+
+4.  The other three polarities are three degrees of freedom.
+
+In the standard model:
+
+$$
+D_{\mu} = \partial_{\mu} - i g T^{a} A_{\mu}^{a} - i g^{'} S B_{\mu} = \partial_{\mu} - i g \frac{\sigma^{a}}{2} A_{\mu}^{a} - i g^{'} \frac{1}{2} B_{\mu} .
+$$
+
+We define: , where – Weinberg angle.$$\overline{g} = \sqrt{g^{2} + g^{' 2}} , \  g = \overline{g} \cos \theta_{W} , \  g^{'} = \overline{g} \sin \theta_{W} \theta_{W}$$
+
+$$W_{\mu}^{\pm} = A_{\mu}^{\pm} , \  Z_{\mu}^{0} = A_{\mu}^{3} \cos \theta_{W} + B_{\mu} \sin \theta_{W}$$ – W and Z bosons, their masses are .$$m_{W} = \frac{1}{\sqrt{2}} g \eta , \  m_{Z} = \frac{1}{\sqrt{2}} \overline{g} \eta$$
+
+$$A_{\mu} = A_{\mu}^{3} \sin {\theta_{W} + B_{\mu} \cos \theta_{W}}$$ – a massless photon.
+
+# Gupt-Bleuler quantization
+
+$$
+\mathcal{L =} \frac{1}{4} F_{\mu \nu} F^{\mu \nu} + \frac{1}{2} \left( \partial_{\mu} A^{\mu} \right)^{2} \Rightarrow \blacksquare A_{\mu} = 0 .
+$$
+
+$$
+A_{\mu} ( x ) = \int_{}^{} {\frac{d^{3} p}{( 2 \pi )^{3} \sqrt{2 \omega_{\mathbf{p}}}} \sum_{\lambda = 0}^{3} {\left\lbrack \epsilon_{\mu} \left( \mathbf{p} , \lambda \right) a_{\mathbf{p ,} \lambda} e^{- i p x} + h . c . \right\rbrack .}}
+$$
+
+For example: .$$\epsilon_{\mu} \left( \mathbf{p} , \lambda \right) = \delta_{\mu}^{\lambda}$$
+
+$$
+\left\lbrack a_{\mathbf{p ,} \lambda} , a_{\mathbf{q ,} \lambda^{'}}^{\dagger} \right\rbrack = - ( 2 \pi )^{3} \delta^{( 3 )} \left( \mathbf{p - q} \right) \eta_{\lambda \lambda^{'}} ,
+$$
+
+Which causes a problem with probabilistic interpretation for . We define the physical state: , from where . A state is a physical state if and only if . It follows that it is a physical state and it is . But it does not contribute to the scalar product of physical states and values of expected energy, momentum, and angular momentum between physical states. Therefore, the equivalence relation is introduced and $$\lambda = \lambda^{'} = 0 \left\langle p h y s | \partial_{\mu} A^{\mu} | p h y s \right\rangle = 0 \left( \partial_{\mu} A^{\mu} \right)^{+} | p h y s \right\rangle = 0 | \psi \right\rangle = \sum_{\lambda}^{} c_{\lambda} a_{\mathbf{q} \mathbf{,} \lambda}^{\dagger} | 0 \rangle c_{0} + c_{3} = 0 | \psi \right\rangle = \left( a_{\mathbf{q} \mathbf{,} 0}^{\dagger} - a_{\mathbf{q} \mathbf{,} 3}^{\dagger} \right) | 0 \right\rangle \left| \psi_{T} \right\rangle + c | \psi \rangle | \psi \rangle \left| \psi_{T}^{'} \right\rangle \sim \left| \psi_{T} \right\rangle : \  \left| \psi_{T}^{'} \right\rangle \sim \left| \psi_{T} \right\rangle + c | \psi \rangle$$ the purely transversal state is taken as a representative of the equivalence class.
 
