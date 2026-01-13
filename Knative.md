@@ -14,6 +14,22 @@ minikube stop
 minikube start
 kn quickstart minikube
 ```
+Other Minikube commands:
+```shell
+minikube dashboard
+
+minikube config set memory 8192
+minikube config set cpus 4
+minikube config set kubernetes-version 1.16.2
+minikube config set vm-driver kvm2
+minikube config set container-runtime crio
+minikube config view
+
+minikube addons enable ingress
+
+minikube delete
+```
+
 As informed by the output of the `quickstart` plugin, one has to open in a separate terminal a tunnel to the cluster:
 ```Shell
 minikube tunnel --profile knative

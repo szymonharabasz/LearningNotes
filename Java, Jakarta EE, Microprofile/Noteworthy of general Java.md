@@ -1,3 +1,19 @@
+Maybe good `equals` and `hashCode`:
+```java
+@Override
+public boolean equals(Object o) {
+	if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Category category = (Category) o;
+    return Objects.equals(name, category.name) &&
+	    Objects.equals(description, category.description);
+}
+
+@Override
+public int hashCode() {
+	return Objects.hash(name, description);
+}
+```
 Try with resources:  
 ```Java
 try (InputStream in = Files.newInputStream(path)) { … }  

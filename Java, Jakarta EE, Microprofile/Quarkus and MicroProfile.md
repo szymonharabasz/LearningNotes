@@ -1,6 +1,82 @@
-	Running an application in development mode:
+Running an application in development mode:
 ```shell
 mvn quarkus:dev
+```
+Building a native executable in a container, without having GraalVM installed on a local host:
+```shell
+mvn package -Pnative -Dquarkus.native.container-build=true
+```
+Creating a Docker image based on a native binary:
+```shell
+mvn clean install -Pnative -Dquarkus.native.container-build=true \
+	-Dquarkus.container-image.build=true
+```
+Tagging a built image:
+```shell
+docker tag image username/repository:tag
+```
+Pushing image to registry:
+```shell
+docker push username/repository:tag
+```
+To build images with Jib instead of Docker:
+```shell
+./mvnw quarkus:add-extension -Dextensions="container-image-jib
+```
+Removing containers related to a given app:
+```shell
+docker ps -a | awk '{ print $1,$2 }' | grep username/sample-jvm | awk '{print $1 }' | xargs -I {} docker rm {}
+```
+Removing images related to a given app:
+```shell
+docker images | awk '{ print $1":"$2 }' | grep username/sample-jvm | xargs -I {} docker rmi {}
+```
+Properties to customize image building:
+```
+quarkus.container-image.group
+quarkus.container-image.name
+quarkus.container-image.tag
+quarkus.container-image.registry
+quarkus.container-image.username
+quarkus.container-image.password
+```
+Simplest docker-compose.yml
+```yaml
+version: "3"
+services:
+  web:
+    image: nebrass/sample-jvm:1.0.0-Final
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - webnetwork
+networks:
+  webnetwork:
+```
+Running Postgres in a Docker container:
+```shell
+docker run -d --name demo-postgres \
+        -e POSTGRES_USER=developer \
+        -e POSTGRES_PASSWORD=someCrazyPassword \
+        -e POSTGRES_DB=demo \
+        -p 5432:5432 \
+        -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data \
+        postgres:13
+```
+Running Keycloak in a Docker container:
+```shell
+docker run -d --name docker-keycloak \
+          -e KEYCLOAK_USER=admin \        
+          -e KEYCLOAK_PASSWORD=admin \    
+          -e DB_VENDOR=h2 \               
+          -p 9080:8080 \                  
+          -p 8443:8443 \                  
+          -p 9990:9990 \                  
+          jboss/keycloak:11.0.0
 ```
 #### MicroProfile configuration
 Programmatic access:
@@ -79,6 +155,42 @@ inject BankSupportConfigMapping configMapping;
 // ...
 configMapping.business().email();
 ```
+#### Useful configuration properties
+```properties
+quarkus.http.root-path=/api
+quarkus.flyway.migrate-at-start=true
+quarkus.smallrye-health.ui.always-include=true
+
+### Security
+quarkus.http.cors=true  
+
+# MP-JWT Config
+mp.jwt.verify.issuer=http://localhost:9080/auth/realms/quarkushop-realm   
+mp.jwt.verify.publickey.location=http://localhost:9080/auth/realms/quarkushop-realm/protocol/openid-connect/certs   
+
+# Keycloak Configuration
+keycloak.credentials.client-id=quarkushop
+
+### REST Client
+product-service.url=http://product:8080/api
+com.example.order.client.ProductRestClient/mp-rest/url=${product-service.url}     
+com.example.order.client.ProductRestClient/mp-rest/scope=javax.inject.Singleton   
+
+### Disable Kubernetes support in tests:
+%test.quarkus.kubernetes-config.enabled=false
+quarkus.test.native-image-profile=test
+
+###Indexing common package for injectable objects
+quarkus.index-dependency.commons.group-id=com.example
+quarkus.index-dependency.commons.artifact-id=myapp-commons
+
+### Getting some properties as environment variables in Kubernetes
+quarkus.kubernetes.env.vars.quarkus-datasource-jdbc-url=jdbc:postgresql://postgres:5432/demo
+quarkus.kubernetes.env.vars.mp-jwt-verify-publickey-location=http://keycloak-http.keycloak/auth/realms/quarkushop-realm/protocol/openid-connect/certs
+quarkus.kubernetes.env.vars.mp-jwt-verify-issuer=http://keycloak-http.keycloak/auth/realms/quarkushop-realm
+
+quarkus.http.test-port=9999
+```
 #### Database access with Quarkus and Panache
 Simplified configuration
 ```
@@ -124,13 +236,14 @@ Customer.<Customer>findById(id)
         Response.Status.NOT_FOUND));
 ```
 Transaction in this approach:
-````java
+```java
 return Panache.withTransaction(customer::persist);
 return Panache.withTransaction(() -> Customer.<Customer>findById(id)
     .onItem().ifNotNull().invoke(entity -> entity.name = customer.name));
 return Panache.withTransaction(() -> Customer.deleteById(id)
     .map(deleted -> deleted ? Response.ok().status(Response.Status.NO_CONTENT).build() : 
         Response.ok().status(Response.Status.NOT_FOUND).build()));
+
 ```
 ###### Data repository approach
 One creates a "normal" JPA `@Entity` and then a repository:
@@ -162,7 +275,7 @@ public webClient(Vertx vertx) {
 }
 @PreDestroy
 public void close() { client.close(); }
-```
+
 public Uni<JsonObject> invokeService() {
     return client.getAbs(”https://httpbin.org/json”).send()
         onItem().transform(response -> {
@@ -170,6 +283,7 @@ public Uni<JsonObject> invokeService() {
             else { return new JsonObject().put(”error”, response.statusMessage()); }
         });
 }
+```
 #### MicroProfile REST client
 Annotate an interface with standard JAX-RS annotations and `@RegisterRestClient`:
 ```java
@@ -551,7 +665,108 @@ tracer.activeSpan().setTag("accountNumber", accountNumber);
 tracer.activeSpan().setBaggageItem("withdrawalAmount", withdrawalAmount);
 ```
 #### Security
-MicroProfile can `@Inject` a `JsonWebToken`.
+MicroProfile can `@Inject` a `JsonWebToken`. One can see all the claims in the token:
+```java
+@GET
+@Path("/current/info/claims")
+public Map<String, Object> getCurrentUserInfoClaims() {     ③
+    return jwt.getClaimNames()
+        .stream()
+        .map(name -> Map.entry(name, jwt.getClaim(name)))
+        .collect(Collectors.toMap(
+            entry -> entry.getKey(),
+            entry -> entry.getValue())
+    );
+}
+```
+Principal can also be extracted from the security context:
+```java
+@GET
+@Path("/current/info-alternative")
+public Principal getCurrentUserInfoAlternative(@Context SecurityContext ctx) {
+    return ctx.getUserPrincipal();
+}
+```
+Methods can be annotated with `@Authenticated` or `@RolesAllowed`
+
+Making Swagger UI include the access token in all REST API requests:
+```java
+@SecurityScheme(
+    securitySchemeName = "jwt",             ①
+    description = "JWT authentication with bearer token",
+    type = SecuritySchemeType.HTTP,         ①
+    in = SecuritySchemeIn.HEADER,           ①
+    scheme = "bearer",                      ①
+    bearerFormat = "Bearer [token]")        ①
+@OpenAPIDefinition(
+    info = @Info(                           
+	    title = "MyApp API",
+        description = "Sample application",
+        contact = @Contact(name = "John Doe", email = "johndoe@gmail.com", 
+	        url = "https://blog.john.doe"),
+		version = "1.0.0-SNAPSHOT"
+
+    ),
+    security = @SecurityRequirement(name = "JWT") ③
+)
+public class OpenApiConfig extends Application { }
+```
+A test resource for a Keycloak:
+```java
+public static DockerComposeContainer KEYCLOAK = new DockerComposeContainer(
+    new File("src/main/docker/keycloak-test.yml"))
+       .withExposedService("keycloak_1", 9080,
+           Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(30)));
+
+public class KeycloakRealmResource implements 
+	QuarkusTestResourceLifecycleManager {
+    @ClassRule
+    public static DockerComposeContainer KEYCLOAK = new DockerComposeContainer(
+        new File("src/main/docker/keycloak-test.yml"))
+	        .withExposedService("keycloak_1", 9080,
+				Wait.forListeningPort()
+					.withStartupTimeout(Duration.ofSeconds(30)));
+
+    @Override
+	public Map<String, String> start() {
+		KEYCLOAK.start();
+		String jwtIssuerUrl = String.format(
+			"http://%s:%s/auth/realms/quarkus-realm",
+			KEYCLOAK.getServiceHost("keycloak_1", 9080),
+			KEYCLOAK.getServicePort("keycloak_1", 9080)
+		);
+		TokenService tokenService = new TokenService();
+		Map<String, String> config = new HashMap<>();
+
+		try {
+			String adminAccessToken = tokenService.getAccessToken(jwtIssuerUrl,
+				"admin", "test", "quarkus-client", "mysecret"
+			);
+			String testAccessToken = tokenService.getAccessToken(jwtIssuerUrl,
+				"test", "test", "quarkus-client", "mysecret"
+
+            );
+			config.put("quarkus-admin-access-token", adminAccessToken);
+			config.put("quarkus-test-access-token", testAccessToken);
+			
+```
+Using it:
+```java
+@QuarkusTest
+@QuarkusTestResource(TestContainerResource.class)
+@QuarkusTestResource(KeycloakRealmResource.class)
+class CategoryResourceTest {
+    static String ADMIN_BEARER_TOKEN;
+	static String USER_BEARER_TOKEN;
+
+	@BeforeAll
+	static void init() {
+		ADMIN_BEARER_TOKEN = System.getProperty("quarkus-admin-access-token");
+		USER_BEARER_TOKEN = System.getProperty("quarkus-test-access-token");
+    }
+    ...
+}
+```
 #### Reactive streams with Mutiny
 Subscribing to a stream:
 ```java
@@ -637,4 +852,14 @@ Mutiny provides a `skip` group which is opposite to `select`.
 ```java
 multi.collect().asMap(item -> getKeyFor(item));
 Uni<Long> count = multi.collect().with(Collectors.counting());
+```
+#### Other GraalVM aspects
+Creating a test that is run in a native image:
+```java
+@NativeImageTest
+class CartResourceIT extends CartResourceTest { }
+```
+To disable a given parent test class in native mode:
+```java
+@DisabledOnNativeImage
 ```

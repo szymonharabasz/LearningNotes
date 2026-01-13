@@ -75,7 +75,7 @@ fetch = FetchType.EAGER 
 Field of the type of a non-entity class can be annotated with `@Embedded` to embed it in the table corresponding to the enity class
 Similarly, we can annotate a superclass of entities with `@MappedSuperclass` to add its fields to the tables corresponding to classes that will inherit from this superclass.
 One-to-one:  
-  ```Java
+```Java
 @OneToOne // on the non-owning side  
 @JoinColumn(name="CUSTOMER_ID)  
 private Customer customer;  
@@ -136,9 +136,25 @@ private MovieId movieId;
 ```
 Callback methods: `@PrePersist`, `@PreUpdate`, `@PostLoad`, `@PostRemove`. On entity methods - `void` and no parameter. On entity listener methods - `void` and take parameter of `final Object` entity. The listener is registered with entity class using (on the entity class):  
 ```Java
-@EntityListeners({AbstractEntityListener.class})
+@EntityListeners({AuditingEntityListener.class})
 ```
+Example of a listener:
+```java
+public class AuditingEntityListener {
+    @PrePersist
+    void preCreate(AbstractEntity auditable) {
+        Instant now = Instant.now();
+        auditable.setCreatedDate(now);
+        auditable.setLastModifiedDate(now);
+    }
 
+    @PreUpdate
+    void preUpdate(AbstractEntity auditable) {
+        Instant now = Instant.now();
+        auditable.setLastModifiedDate(now);
+    }
+}
+```
 Java Persistence Query Language (JPQL) - Read operation (inside a transaction and a` try-catch` block):
 Dynamic query:  
 ```Java
