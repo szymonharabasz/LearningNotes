@@ -190,6 +190,12 @@ quarkus.kubernetes.env.vars.mp-jwt-verify-publickey-location=http://keycloak-htt
 quarkus.kubernetes.env.vars.mp-jwt-verify-issuer=http://keycloak-http.keycloak/auth/realms/quarkushop-realm
 
 quarkus.http.test-port=9999
+
+### Define the custom banner
+quarkus.banner.path=banner.txt
+
+### Swagger UI
+quarkus.swagger-ui.always-include=true
 ```
 #### Database access with Quarkus and Panache
 Simplified configuration
@@ -711,44 +717,73 @@ Making Swagger UI include the access token in all REST API requests:
 )
 public class OpenApiConfig extends Application { }
 ```
-A test resource for a Keycloak:
+A test resource for a database:
 ```java
-public static DockerComposeContainer KEYCLOAK = new DockerComposeContainer(
-    new File("src/main/docker/keycloak-test.yml"))
-       .withExposedService("keycloak_1", 9080,
-           Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(30)));
-
-public class KeycloakRealmResource implements 
-	QuarkusTestResourceLifecycleManager {
-    @ClassRule
-    public static DockerComposeContainer KEYCLOAK = new DockerComposeContainer(
-        new File("src/main/docker/keycloak-test.yml"))
-	        .withExposedService("keycloak_1", 9080,
-				Wait.forListeningPort()
-					.withStartupTimeout(Duration.ofSeconds(30)));
+public class TestContainerResource implements QuarkusTestResourceLifecycleManager {
+    private static final PostgreSQLContainer<?> DATABASE =
+	    new PostgreSQLContainer<>("postgres:13");   ②
 
     @Override
 	public Map<String, String> start() {
-		KEYCLOAK.start();
-		String jwtIssuerUrl = String.format(
+        DATABASE.start();
+        Map<String, String> confMap = new HashMap<>();
+        confMap.put("quarkus.datasource.jdbc.url", DATABASE.getJdbcUrl()); 
+        confMap.put("quarkus.datasource.username", 
+		    DATABASE.getUsername());    
+        confMap.put("quarkus.datasource.password", DATABASE.getPassword());     
+        return confMap;    
+    }
+    
+    @Override
+    public void stop() {
+        DATABASE.close();   ⑤
+    }
+ }
+```
+
+A test resource for a Keycloak:
+```java
+public class KeycloakRealmResource implements QuarkusTestResourceLifecycleManager {
+
+     @ClassRule
+     public static ==DockerComposeContainer KEYCLOAK== = 
+	     new DockerComposeContainer(
+
+	         new File("src/main/docker/keycloak-test.yml"))
+				 .withExposedService("keycloak_1", 9080,
+					Wait.forListeningPort()
+						.withStartupTimeout(Duration.ofSeconds(30)));
+
+	@Override
+	public Map<String, String> start() {
+	    KEYCLOAK.start();
+        String jwtIssuerUrl = String.format(
 			"http://%s:%s/auth/realms/quarkus-realm",
 			KEYCLOAK.getServiceHost("keycloak_1", 9080),
 			KEYCLOAK.getServicePort("keycloak_1", 9080)
 		);
 		TokenService tokenService = new TokenService();
 		Map<String, String> config = new HashMap<>();
-
 		try {
 			String adminAccessToken = tokenService.getAccessToken(jwtIssuerUrl,
-				"admin", "test", "quarkus-client", "mysecret"
-			);
+				"admin", "test", "quarkus-client", "mysecret");
 			String testAccessToken = tokenService.getAccessToken(jwtIssuerUrl,
-				"test", "test", "quarkus-client", "mysecret"
-
-            );
+				"test", "test", "quarkus-client", "mysecret");
 			config.put("quarkus-admin-access-token", adminAccessToken);
 			config.put("quarkus-test-access-token", testAccessToken);
-			
+        } catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+		config.put("mp.jwt.verify.publickey.location", jwtIssuerUrl + 
+			"/protocol/openidconnect/certs");
+		config.put("mp.jwt.verify.issuer", jwtIssuerUrl);
+		return config;
+    }
+    @Override
+	public void stop() {
+		KEYCLOAK.stop();
+	}
+}
 ```
 Using it:
 ```java
