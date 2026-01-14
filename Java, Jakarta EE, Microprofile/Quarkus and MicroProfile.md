@@ -78,6 +78,33 @@ docker run -d --name docker-keycloak \
           -p 9990:9990 \                  
           jboss/keycloak:11.0.0
 ```
+#### Useful Maven packages
+```xml
+<groupId>io.quarkus</groupId>
+<artifactId>quarkus-smallrye-opentracing</artifactId>
+
+<groupId>io.quarkus</groupId>
+<artifactId>quarkus-logging-gelf</artifactId>
+
+<groupId>io.quarkus</groupId>
+<artifactId>quarkus-smallrye-fault-tolerance</artifactId>
+
+<!-- Code coverage reports -->
+<groupId>io.quarkus</groupId>
+<artifactId>quarkus-jacoco</artifactId>
+<scope>test</scope>
+
+<!-- Test containers -->
+<groupId>org.testcontainers</groupId>
+<artifactId>junit-jupiter</artifactId>
+<version>1.15.3</version>
+<scope>test</scope>
+
+<groupId>org.testcontainers</groupId>
+<artifactId>postgresql</artifactId>
+<version>1.15.3</version>
+<scope>test</scope>
+```
 #### MicroProfile configuration
 Programmatic access:
 ```java
