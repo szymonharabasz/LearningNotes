@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Java, Jakarta EE, Microprofile/Quarkus and MicroProfile.md",
+                "file": "Java, Jakarta EE, Microprofile/JAX-RS.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Quarkus and MicroProfile"
+              "title": "JAX-RS"
             }
           }
         ]
@@ -171,9 +171,11 @@
   },
   "active": "f1d4242415523c67",
   "lastOpenFiles": [
+    "Java, Jakarta EE, Microprofile/Serialization and deserialization of XML and JSON.md",
+    "Java, Jakarta EE, Microprofile/JAX-RS.md",
+    "Java, Jakarta EE, Microprofile/Quarkus and MicroProfile.md",
     "Knative.md",
     "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
-    "Java, Jakarta EE, Microprofile/Quarkus and MicroProfile.md",
     "Spring and Spring Boot/Spring Security/Spring Boot Security.md",
     "Java, Jakarta EE, Microprofile/Security.md",
     "Java, Jakarta EE, Microprofile/Java Persistence API.md",
@@ -196,8 +198,6 @@
     "Physics/Partial waves.md",
     "Physics/Maximum momentum from accelerator rigidity.md",
     "AdS_CFT/Primary fields.md",
-    "AdS_CFT/Free scalar field in 2D.md",
-    "AdS_CFT/General Relativity.md",
-    "Quantum Field Theory/Density operator.md"
+    "AdS_CFT/Free scalar field in 2D.md"
   ]
 }
