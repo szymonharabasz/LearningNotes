@@ -78,8 +78,48 @@ docker run -d --name docker-keycloak \
           -p 9990:9990 \                  
           jboss/keycloak:11.0.0
 ```
+**Note.** Since MicroProfile JWT has two more claims over JWT, `upn` (with optional alternatives, `sub` and `preferred_username`) and `group`, these claims need to be manually added as custom claims in the OpenID Connect providers such as Keycloak, Okta, and others.
+#### Kubernetes
+Simlple ceation of a `ConfigMap` and `Secret`:
+```shell
+kubectl create configmap app-port --from-literal port=9081
+kubectl create secret generic app-credentials --from-literal username=Bob --from-literal password=TheBuilder
+```
+Referencing in YAML:
+```yaml
+env:
+	- name: PORT
+      valueFrom:
+	      configMapKeyRef:
+              name: app-port
+              key: port
+              optional: true
+    - name: APP_USERNAME
+      valueFrom:
+	      secretKeyRef:
+              name: app-credentials
+              key: username
+```
 #### Useful Maven packages
 ```xml
+<!-- Pure MicroProfile -->
+<groupId>org.eclipse.microprofile.config</groupId>
+<artifactId>microprofile-config-api</artifactId>
+<version>2.0</version>
+
+<groupId>org.eclipse.microprofile.jwt</groupId>
+<artifactId>microprofile-jwt-auth-api</artifactId>
+<version>1.2</version>
+
+<groupId>org.eclipse.microprofile.openapi</groupId>
+<artifactId>microprofile-openapi-api</artifactId>
+<version>2.0</version>
+
+<groupId>org.eclipse.microprofile.fault.tolerance</groupId>
+<artifactId>microprofile-fault-tolerance-api</artifactId>
+<version>3.0</version>
+
+<!-- Quarkus -->
 <groupId>io.quarkus</groupId>
 <artifactId>quarkus-smallrye-opentracing</artifactId>
 
@@ -113,7 +153,7 @@ String greeting = config.getValue("myapp.greeting", String.class);
 ```
 Annotation access:
 ```java
-@Incject
+@Inject
 @ConfigProperty(name="myapp.greeting", defaultValue="Hello, Default")
 String greeting;
 ```
@@ -147,19 +187,90 @@ Sources (those with higher ordinal take precedence):
 - `application.properties` - ordinal **250**
 - `microprofile-config.properties` - ordinal **100**
 
-###### Configuration features added in Quarkus
 Config profiles:
 ```
 myapp.greeting=Hello, World!
 %dev.myapp.greeting=Hello, Dev!
 %prod.myapp.greeting=Hello, User!
-%myprof.myapp.greeting=Hello, welocme in a custom profile!
+%myprof.myapp.greeting=Hello, welcolme in a custom profile!
+```
+One can also use specific files for different profiles:
+```
+microprofile-config-<profile name>.properties
 ```
 Expressions in properties:
 ```
 support.email=support@defaultbank.com
 bank-support.email=${support.email}
 ```
+###### Implementing a custom config source
+```java
+public interface ConfigSource {
+    String CONFIG_ORDINAL = "config_ordinal";
+    int DEFAULT_ORDINAL = 100;
+    default Map<String, String> getProperties() {
+        Map<String, String> props = new HashMap<>();
+        getPropertyNames().forEach((prop) -> props.put(prop, getValue(prop)));
+        return props;
+    }
+
+    Set<String> getPropertyNames();
+
+    default int getOrdinal() {
+        String configOrdinal =             getValue(CONFIG_ORDINAL);
+        if (configOrdinal != null) {
+	        try {
+				return Integer.parseInt(configOrdinal);
+            } catch (NumberFormatException ignored) { }
+        }
+        return DEFAULT_ORDINAL;
+    }
+
+    String getValue(String propertyName);
+    String getName();
+}
+```
+The implementation is registered by either creating a file:
+```
+META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource
+```
+with a fully qualified name of the implementation class, or using:
+```java
+ConfigBuider.withSources(ConfigSource… configSource)
+```
+###### Implementing a custom config property converter
+Implement the interface:
+```java
+org.eclipse.microprofile.config.spi.Converter
+```
+The implementation is registered by either creating a file:
+```
+META-INF/services/org.eclipse.microprofile.config.spi.Converter
+```
+with a fully qualified name of the implementation class, or using:
+```java
+ConfigBuider.withConverters(Converter… converter)
+```
+Checking from which source a property actually comes
+```java
+@Inject @ConfigProperty(name="host") ConfigValue   configValueHost;
+
+String configSourceForHost = configValueHost.getSourceName();
+String valueOfHost = configValueHost.getValue();
+```
+Manually building a config instance
+```java
+ConfigProviderResolver resolver =   ConfigProviderResolver.instance();
+ConfigBuilder builder = resolver.getBuilder();
+
+Config = builder.addDefaultSources().withSources(aSource)
+	.withConverters(aConverter).build();
+
+resolver.registerConfig(config, classloader);
+
+resolver.registerConfig(config, classloader);
+```
+###### Configuration features added in Quarkus
 Config Mapping:
 ```Java
 @ConfigMapping(prefix="bank-support-mapping)
@@ -191,6 +302,7 @@ quarkus.smallrye-health.ui.always-include=true
 ### Security
 quarkus.http.cors=true  
 
+org.eclipse.microprofile.rest.client.propagateHeaders=[Authorization|Cookie]
 # MP-JWT Config
 mp.jwt.verify.issuer=http://localhost:9080/auth/realms/quarkushop-realm   
 mp.jwt.verify.publickey.location=http://localhost:9080/auth/realms/quarkushop-realm/protocol/openid-connect/certs   
@@ -481,8 +593,9 @@ Instead of `@Liveness` there can be `@Readines` or, in Quarkus, `@HealthGroup("c
 **Making a long running method call asynchronous:**
 ```java
 @Asynchornous
-public String invokeLongRunningOperation() { 
-	callLongRunningRemoteService();
+public CompletionStage<String> serviceA() {
+	longRunningTask();
+	return CompletableFuture.completedFuture("service a");
 }
 ```
 **Limiting the number of concurrent invocations:**
@@ -522,7 +635,19 @@ Annotations can be enabled or disabled and their parameter values can be changed
 # [[CLASS]/METHOD]/<annotation>/enabled=false
 io.quarkus.transactions.TransactionResource/Timeout/enabled=false
 io.quarkus.transactions.TransactionResource/getBalance/Timeout/value=150
-
+```
+###### Disabling policies
+All except Fallback (useful if other patterns are implemented externally to the application, for example, using Istio):
+```
+MP_Fault_Tolerance_NonFallback_Enabled=false
+```
+Specific policy on a specific method
+```
+cloudnative.sample.fault.tolerance.FaultToleranceDemo/invokeService/Timeout/enabled=false
+```
+###### Configuring policy parameters outside of annotations
+```
+cloudnative.sample.fault.tolerance.FaultToleranceDemo/invokeService/Timeout/value=300
 ```
 #### Reactive messaging
 Channel configuration:
@@ -720,6 +845,12 @@ public Principal getCurrentUserInfoAlternative(@Context SecurityContext ctx) {
     return ctx.getUserPrincipal();
 }
 ```
+JWT claims can be injected directly
+```java
+@Inject @Claim("iat") private Long dupIssuedAt;
+@Inject @Claim("sub") private ClaimValue<Optional<String>> optSubject;
+```
+The wrapper class `ClaimValue` allows the claim to be updated each time when it is needed in the case that the bean is with a wider scope than the `@RequestScope`.
 Methods can be annotated with `@Authenticated` or `@RolesAllowed`
 
 Making Swagger UI include the access token in all REST API requests:
@@ -924,4 +1055,22 @@ class CartResourceIT extends CartResourceTest { }
 To disable a given parent test class in native mode:
 ```java
 @DisabledOnNativeImage
+```
+#### Simple OpenAPI example
+```java
+@APIResponses(value = {
+	@APIResponse(
+		responseCode = "404",
+		description = "The Mongo database cannot be found. ", 
+		content = @Content(mediaType = "text/plain")),
+	@APIResponse(
+        responseCode = "200",
+		description = "The latest trade has been retrieved successfully.",
+	    content = @Content(mediaType = "application/json", 
+		    schema = @Schema(implementation = Quote.class)))})
+@Operation(
+	summary = "Shows the latest trade.",
+	description = "Retrieve the latest record from the mongo database."
+)
+public String latestBuy() { }
 ```
