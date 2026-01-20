@@ -345,7 +345,7 @@ setSearchParams(params, {replace: true});
 ```
 Here `params` is an object, `replace` causes the browser to replace the current URL in the browser history (and not create a new history entry.)
 ###### Hooks related to React Query
-Wrap components in Reqct Query provider:
+Wrap components in React Query provider:
 ```js
 import {QueryClient, QueryClientProvider} from "react-query";
 
