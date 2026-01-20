@@ -40,6 +40,20 @@ quarkus.container-image.registry
 quarkus.container-image.username
 quarkus.container-image.password
 ```
+Multistage Dockerfile
+```Dockerfile
+FROM maven as BUILD
+COPY myBuild /build
+RUN mvn package
+WORKDIR build
+FROM open-liberty:full-java11-openj9
+COPY /target/myapp.war /config/apps/ --from=BUILD
+```
+Copying  files so they have a given owning user in the container
+```Dockerfile
+ADD --chown=1001:0 src/main/config/liberty/server.xml/config
+```
+(this is the user and the group defied in  the Open Liberty base image).
 Simplest docker-compose.yml
 ```yaml
 version: "3"
@@ -573,7 +587,8 @@ return redis.keys(”*”).onItem().transformToMulti(response -> {
 ))
 ```
 Other command: `hmset`, Mutiny`hdel`.
-#### Custom health check
+#### Health checks
+A custom implementation
 ```java
 @ApplicationScoped
 @Liveness
@@ -588,7 +603,43 @@ public Always HealthyLovenessCheck implements HealthCheck {
 	}
 }
 ```
+Or using a CDI producer:
+```java
+@Produces
+@Liveness
+HealthCheck livenessCDIMethodProducer() {
+    return () -> HealthCheckResponse.named("cdiMemUsage")
+	    .status(getMemUsage() < 0.9).build();
+}
+```
 Instead of `@Liveness` there can be `@Readines` or, in Quarkus, `@HealthGroup("custom")`.
+###### Configuring MicroProfile health checks to be probed by Kubernetes
+```YAML
+apiVersion: apps/v1
+kind: Deployment
+[...]
+spec:
+  [...]
+  readinessProbe:
+    httpGet:
+      path: /health/ready
+      port: 9080
+    initialDelaySeconds: 60
+    periodSeconds: 15
+    failureThreshold: 2
+  livenessProbe:
+    httpGet:
+      path: /health/live
+      port: 9080
+    periodSeconds: 15
+    failureThreshold: 3
+  startupProbe:
+    httpGet:
+      path: /health/started
+      port: 9080
+    periodSeconds: 30
+    failureThreshold: 4
+```
 #### Resilience patterns
 **Making a long running method call asynchronous:**
 ```java
