@@ -1,3 +1,47 @@
+Vector components in tangent space:
+$$
+V=V^\mu\partial_\mu.
+$$
+Cotangent space - linear maps from $T_p(M)$ to $\mathbb R$. The basis in the cotangent space dual to $\partial_\mu$:
+$$
+W=W_\nu dx^\nu
+$$
+with
+$$
+dx^\nu(\partial_\mu)=\delta^\nu_\mu.
+$$
+General tensor is a mapping:
+$$
+T^{(r,s)}:\underbrace{T^*_p(M)\times...\times T^*_p(M)}_{r~\mathrm{times}}\times
+\underbrace{T_p(M)\times...\times T_p(M)}_{s~\mathrm{times}}\rightarrow\mathbb{R}.
+$$
+and has components:
+$$
+T^{(r,s)}={T^{\mu_1...\mu_r}}_{\nu_1...\nu_s}
+\partial_{\mu_1}\otimes...\otimes\partial_{\mu_r}\otimes
+dx^{\nu_1}\otimes...\otimes dx^{\nu_s}.
+$$
+Sometimes it is convenient to define a **non-coordinate basis** $e_a$ by
+$$
+g(e_a,e_b)=\eta_{ab}
+$$
+or, in components,
+$$
+g_{\mu\nu}e^\mu_ae^\nu_b=\eta_{ab}.
+$$
+The set of such basis vectors is called **vielbein** and can be seen as a square-root of the metric.
+This condition can be satisfied by different orthonormal sets that are connectd by **local Lorentz transformations**,
+$$
+e'_a(x)={\Lambda_a}^b e_b(x)
+$$
+with matrices $\Lambda$ that satisfy
+$$
+{\Lambda_a}^c(x){\Lambda_b}^d(x)\eta^{ab}=\eta^{cd}.
+$$
+Vector components, $V=V^ae_a$, transform as
+$$
+V'^a={\Lambda^a}_b(x)V^b.
+$$
 Action of a relativistic particle:
 $$
 S=-m\int d\tau
@@ -33,6 +77,13 @@ $$
 $$
 $$
 \nabla_\mu V_\nu=\partial_\mu V_\nu-V_\alpha{\Gamma^\alpha}_{\mu\nu}.
+$$
+For Latin indices:
+$$
+\nabla_\mu V^a=\partial_\mu V^a+V^\nu{{\omega_\mu}^a}_\nu,
+$$
+$$
+\nabla_\mu V_a=\partial_\mu V_a-V_b{{\omega_\mu}^b}_a.
 $$
 A useful formula for covariant divergence:
 $$
@@ -92,3 +143,8 @@ $$
 S=\frac{A}{4G\hbar}k_\mathrm{B}c^3=\frac{1}{4}\frac{A}{l^2_\mathrm{Planck}}k_\mathrm{B},
 $$
 where the Planck length $l_\mathrm{Planck}=\sqrt{G\hbar/c^3}\approx10^{-35}~\mathrm{m}$. 
+###### de Sitter metric 
+Describes accelerated expansion of the Universe in the inflationary phase
+$$
+ds^2=-dt^2+e^{2Ht}(dx^2+dy^2+dx^2).
+$$
