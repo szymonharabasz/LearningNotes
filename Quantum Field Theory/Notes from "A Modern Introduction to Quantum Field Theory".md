@@ -504,7 +504,7 @@ $$W_{\mu}^{\pm} = A_{\mu}^{\pm} , \  Z_{\mu}^{0} = A_{\mu}^{3} \cos \theta_{W} +
 
 $$A_{\mu} = A_{\mu}^{3} \sin {\theta_{W} + B_{\mu} \cos \theta_{W}}$$ – a massless photon.
 
-# Gupt-Bleuler quantization
+# Gupta-Bleuler quantization
 
 $$
 \mathcal{L =} \frac{1}{4} F_{\mu \nu} F^{\mu \nu} + \frac{1}{2} \left( \partial_{\mu} A^{\mu} \right)^{2} \Rightarrow \blacksquare A_{\mu} = 0 .
