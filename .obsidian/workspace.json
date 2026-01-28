@@ -33,8 +33,7 @@
               "title": "Release Notes 1.11.5"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -182,7 +181,7 @@
       "bases:Create new base": false
     }
   },
-  "active": "f6702806547de55b",
+  "active": "5802fe4d8896a2d1",
   "lastOpenFiles": [
     "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
     "AdS_CFT/General Relativity.md",

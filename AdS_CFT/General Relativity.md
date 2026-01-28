@@ -85,6 +85,10 @@ $$
 $$
 \nabla_\mu V_a=\partial_\mu V_a-V_b{{\omega_\mu}^b}_a.
 $$
+The condition $\nabla_\mu e^\mu_a=0$ leads to an equation for the spin connection,
+$$
+{{\omega_\mu}^a}_b=e^a_\lambda e^\nu_b\Gamma^\lambda_{\mu\nu}-e^\nu_b\partial_\mu e^a_\nu.
+$$
 A useful formula for covariant divergence:
 $$
 \nabla_\mu V^\mu=\frac{1}{\sqrt{-g}}\partial_\mu\left(\sqrt{-g}V^\mu\right),
@@ -148,3 +152,25 @@ Describes accelerated expansion of the Universe in the inflationary phase
 $$
 ds^2=-dt^2+e^{2Ht}(dx^2+dy^2+dx^2).
 $$
+#### Lie derivative
+The Lie derivative along the vector field $V=V^\mu(x)\partial_\mu$ acts on a scalar as follows:
+$$
+L_V\phi(x)=V^\rho(x)\partial_\rho\phi(x),
+$$on vectors or one forms as follows:
+$$
+L_VU^\mu=V^\rho\partial_\rho U^\mu-(\partial_\rho V^\mu)U^\rho\equiv[V,U]^\mu
+$$
+$$
+L_VW_\mu=V^\rho\partial_\rho W_\mu+(\partial_\mu V^\rho)W_\rho.
+$$
+For an infinitesimal transformation, $x^\mu\rightarrow x'^\mu=x^\mu+\xi^\mu$, an arbitrary tensor transforms as, up to terms linear in $\xi$, 
+$$
+\delta {T^{\mu_1...\mu_r}}_{\nu_1...\nu_s}\equiv
+{T'^{\mu_1...\mu_r}}_{\nu_1...\nu_s} - {T^{\mu_1...\mu_r}}_{\nu_1...\nu_s}
+=L_\xi{T^{\mu_1...\mu_r}}_{\nu_1...\nu_s}
+$$
+Vectors for which
+$$
+L_Vg_{\mu\nu}=\nabla_\mu V_\nu+\nabla_\nu V_\mu=0
+$$
+	are called **Killing vectors**. A spacetime is **stationary** if it has a timelike Killing vector field, at least asymptotically at large distances.
