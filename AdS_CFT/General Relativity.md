@@ -173,4 +173,34 @@ Vectors for which
 $$
 L_Vg_{\mu\nu}=\nabla_\mu V_\nu+\nabla_\nu V_\mu=0
 $$
-	are called **Killing vectors**. A spacetime is **stationary** if it has a timelike Killing vector field, at least asymptotically at large distances.
+are called **Killing vectors**. A spacetime is **stationary** if it has a timelike Killing vector field, at least asymptotically at large distances.
+#### DIfferential forms
+They are antisymmetric $(0,p)$ tensors and can be written as
+$$
+\omega^{(p)}=
+\frac{1}{p!}\omega_{\mu_1...\mu_p}dx^{\mu_1}~\wedge...\wedge~dx^{\mu_p},
+$$
+where the wedge product is defined as
+$$
+dx^{\mu_1}~\wedge...\wedge~dx^{\mu_p}=\sum_{\sigma\in S_p}\mathrm{sgn}(\sigma)
+dx^{\mu_{\sigma(1)}}~\otimes...\otimes~dx^{\mu_{\sigma(p)}}.
+$$
+In the non-coordinate basis:
+$$
+\omega^{(p)}=
+\frac{1}{p!}\omega_{a_1...a_p}e^{a_1}~\wedge...\wedge~e^{a_p},
+$$
+**Exterior derivative** acts as:
+$$
+\mathrm{d}\omega^{(p)}=\frac{1}{p!}(\partial_\mu\omega_{\mu_1...\mu_p})
+dx^\mu\wedge dx^{\mu_1}\wedge...\wedge dx^{\mu_p}.
+$$
+One can write
+$$
+\mathrm{d}e^a+{\omega^a}_b\wedge e^b=0,
+$$
+where
+$$
+{\omega^a}_b={{\omega_\mu}^a}_bdx^\mu.
+$$
+This allows to calculate the spin connection in the torsion-free case without calculating first $\Gamma^\lambda_{\mu\nu}$.
