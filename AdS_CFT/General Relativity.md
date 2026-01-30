@@ -204,3 +204,31 @@ $$
 {\omega^a}_b={{\omega_\mu}^a}_bdx^\mu.
 $$
 This allows to calculate the spin connection in the torsion-free case without calculating first $\Gamma^\lambda_{\mu\nu}$.
+
+**Canonical volume form** is a 1-form and is unique up to a multiplication by arbitray function. It is defined as
+$$
+\mathrm{dVol}=e^0\wedge...\wedge e^{d-1}
+$$
+The totally antisymmetric Levi-Civita symbol in the local frame basis is defined as:
+$$
+\epsilon_{a_1...a_d}=\left\{
+\begin{split}
++1~:&~(a_1...a_d)~\mathrm{is~an~even~permutation~of}~(1,0,...,d-1)\\
+-1~:&~(a_1...a_d)~\mathrm{is~an~odd~permutation~of}~(1,0,...,d-1)\\
+0~:&~\mathrm{otherwise}
+\end{split}
+\right.
+$$
+For consistency, to define the symbol in the coordinate basis, one has to insert factors of $e\equiv\det(e^a_\mu)=\sqrt{-\det g}$:
+$$
+\epsilon_{\mu_1...\mu_d}=\frac{1}{e}\epsilon_{a_1...a_d}e^{a_1}_{\mu_1}...e^{a_d}_{\mu_d},
+$$
+$$
+\epsilon^{\mu_1...\mu_d}=e\epsilon^{a_1...a_d}e_{a_1}^{\mu_1}...e_{a_d}^{\mu_d}.
+$$
+Then the canonical volume can be written as
+$$
+\mathrm{dVol}=
+\frac{1}{d!}\epsilon_{a_1...a_d}e^{a_1}\wedge...\wedge e^{a_d}=
+\frac{1}{d!}e\epsilon_{\mu_1...\mu_d}dx^{\mu_1}\wedge...\wedge e^{\mu_d}=edx^0\wedge...\wedge dx^{d-1}\equiv d^dx\sqrt{-g}.
+$$
