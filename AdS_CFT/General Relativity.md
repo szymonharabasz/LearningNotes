@@ -106,7 +106,20 @@ Term of the energy-momentum tensor with *cosmological constant* $\Lambda$:
 $$
 T_{\mu\nu}=-\frac{\Lambda}{8\pi G}g_{\mu\nu}.
 $$
-The Riemann curvature tensor can be defined with:
+###### Parallel transport
+The parallel transport of a vector $V$ along the path $x^\mu(\lambda)$ is defined by a vanishing covariant derivative:
+$$
+0=\frac{dx^\rho}{d\lambda}\nabla_\rho V^\mu=\frac{dV^\mu}{d\lambda}+
+\Gamma^{\mu}_{\rho\sigma}\frac{dx^\rho}{d\lambda}V^\sigma.
+$$
+A geodesic is the curve along which the tangent vector $V^\mu=dx^\mu/d\lambda$, which leads to the geodesic equation that is the equation of motion for the action defined before (it can be considered as a motivation for such an action).
+
+The Riemann curvature tensor can be defined using the difference between the results of parallel transporting a vector $V$ along the two "edges" of a "paralllogram": first along $A^\alpha$ and then along $B^\beta$. In general such a difference will not be zero in a curved spacetime and it should be proportional to $V$, $A$, and $B$:
+$$
+\delta V^\rho={R^\rho}_{\mu\alpha\beta}V^\mu A^\alpha B^\beta.
+$$
+
+
 $$
 {R^\lambda}_{\mu\nu\rho}=
 \partial_\nu{\Gamma^\lambda}_{\mu\rho}-
@@ -114,7 +127,7 @@ $$
 {\Gamma^\sigma}_{\mu\rho}{\Gamma^\lambda}_{\sigma\nu}-
 {\Gamma^\sigma}_{\mu\\nu}{\Gamma^\lambda}_{\sigma\rho}.
 $$
-Its contractioon is the Ricci tensor:
+Its contraction is the Ricci tensor:
 $$
 R_{\mu\nu}={R^\lambda}_{\mu\lambda\nu}.
 $$
@@ -231,4 +244,20 @@ $$
 \mathrm{dVol}=
 \frac{1}{d!}\epsilon_{a_1...a_d}e^{a_1}\wedge...\wedge e^{a_d}=
 \frac{1}{d!}e\epsilon_{\mu_1...\mu_d}dx^{\mu_1}\wedge...\wedge e^{\mu_d}=edx^0\wedge...\wedge dx^{d-1}\equiv d^dx\sqrt{-g}.
+$$
+**Hodge dual** is defined in the local frame basis:
+$$
+*(e^{a_1}\wedge...\wedge e^{a_p})=
+\frac{1}{(d-p)!}{\epsilon_{b_1...b_{d-p}}}^{a_1...a_p}
+e^{b_1}\wedge...\wedge e^{b_{d-p}},
+$$
+which is easily generalized to any p-form:
+$$
+*\omega^{(p)}=\frac{1}{p!}\omega_{a_1...a_p}*(e^{a_1}\wedge...\wedge e^{a_p}).
+$$
+In the coordinate basis:
+$$
+*(dx^{\mu_1}\wedge...\wedge dx^{\mu_p})=
+\frac{1}{(d-p)!}e\epsilon_{\nu_1...\nu_{d-p}\sigma_1...\sigma_p}
+g^{\mu_1\sigma_1}...g^{\mu_p\sigma_p}dx^{\nu_1}\wedge...\wedge dx^{\nu_{d-p}}.
 $$
