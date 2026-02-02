@@ -118,6 +118,11 @@ The Riemann curvature tensor can be defined using the difference between the res
 $$
 \delta V^\rho={R^\rho}_{\mu\alpha\beta}V^\mu A^\alpha B^\beta.
 $$
+This defines the Riemann curvature tensor. The parallel transport around a closed can be viewed as a commutator of covariant derivatives, which allows to write:
+$$
+[\nabla_\alpha,\nabla_\beta]V^\rho\equiv {R^\rho}_{\mu\alpha\beta}V^{\mu}-
+{T^\sigma}_{alpha\beta}\nabla_\sigma V^\rho.
+$$ This allows to write the Riemann tensor and the **torsion tensor**:
 
 
 $$
@@ -127,7 +132,10 @@ $$
 {\Gamma^\sigma}_{\mu\rho}{\Gamma^\lambda}_{\sigma\nu}-
 {\Gamma^\sigma}_{\mu\\nu}{\Gamma^\lambda}_{\sigma\rho}.
 $$
-Its contraction is the Ricci tensor:
+$$
+{T^\sigma}_{\mu\nu}=-2\Gamma^\sigma_{[\mu\nu]}
+$$
+Contraction of the Riemann tensor is the **Ricci tensor**:
 $$
 R_{\mu\nu}={R^\lambda}_{\mu\lambda\nu}.
 $$
