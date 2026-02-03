@@ -137,3 +137,57 @@ $$
 \right)
 \frac{-1}{k^2-m^2+i\eta}.
 $$
+# Spontaneous symmetry breaking
+If the S-matrix element is:
+$$
+S_{\alpha\beta}=
+\langle\beta|T\exp\left(
+i\int d^4x{\cal L}_\mathrm{int}(\phi_n)
+\right)
+|\alpha\rangle,
+$$
+then the generating functional in the presence of an external classical field,
+$$
+Z[h]=\langle 0|T\exp\left(
+i\int d^4x\h_n(x)\phi_n(x)
+\right)|0\rangle,
+$$
+is the vaccum-to-vacuum amplitude in the presence of the field:
+$$
+Z[h]=\langle 0,\mathrm{out}|0,\mathrm{in}\rangle_h.
+$$
+We can expand the exponential:
+$$
+Z[h]=\sum_{r=0}^\infty\frac{1}{r!}
+\int d^4x_1....d^4x_rh_{n_1}(x_1)h_{n_2}(x_2)...h_{n_r}(x_r)
+\langle 0|T\phi_{n_2}(x_2)\phi_{n_1}(x_1)...\phi_{n_r}(x_r)|0\rangle.
+$$
+The fields are in the Heisenberg representation, the full original Hamiltonian gives their time evolution. The coefficients can be expressed in the interaction representation:
+$$
+\langle 0|T\phi_{n_2}(x_2)\phi_{n_1}(x_1)...\phi_{n_r}(x_r)|0\rangle=
+\langle 0|T\phi^I_{n_2}(x_2)\phi^I_{n_1}(x_1)...\phi^I_{n_r}(x_r)
+\exp\left(
+i\int d^4x{\cal L}_\mathrm{int}(x)
+\right)|0\rangle.
+$$
+If we write
+$$
+Z[h]=e^{iW[h]},
+$$
+then $W[h]$ generates only connected diagrams.
+We define the classical field $\phi^c_n(x)$ as the vacuum expectation value of the quantum field in the presence of external fields:
+$$
+\phi^c_n(x)=
+\frac{\langle 0,\mathrm{out}|\phi_n(x)|0,\mathrm{in}\rangle_h}
+{\langle 0,\mathrm{out}|0,\mathrm{in}\rangle_h}=
+\frac{-i}{Z[h]}\frac{\delta Z[h]}{\delta h_n(x)}=
+\frac{\delta W[h]}{\delta h_n(x)}
+$$
+The effective action is the Legendre transform of $W[h]$:
+$$
+\Gamma[\phi^c]=W[h]-\int d^4x\phi^c_n(x)h_n(x).
+$$
+It generates **one-particle irreducible** diagrams. It fulfills the relation:
+$$
+\frac{\delta\Gamma}{\delta\phi^c_n(x)}=-h_n(x).
+$$
