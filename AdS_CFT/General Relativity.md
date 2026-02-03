@@ -85,6 +85,10 @@ $$
 $$
 \nabla_\mu V_a=\partial_\mu V_a-V_b{{\omega_\mu}^b}_a.
 $$
+The condition $\nabla_\mu e^\mu_a=0$ leads to an equation for the spin connection,
+$$
+{{\omega_\mu}^a}_b=e^a_\lambda e^\nu_b\Gamma^\lambda_{\mu\nu}-e^\nu_b\partial_\mu e^a_\nu.
+$$
 A useful formula for covariant divergence:
 $$
 \nabla_\mu V^\mu=\frac{1}{\sqrt{-g}}\partial_\mu\left(\sqrt{-g}V^\mu\right),
@@ -102,7 +106,25 @@ Term of the energy-momentum tensor with *cosmological constant* $\Lambda$:
 $$
 T_{\mu\nu}=-\frac{\Lambda}{8\pi G}g_{\mu\nu}.
 $$
-The Riemann curvature tensor can be defined with:
+###### Parallel transport
+The parallel transport of a vector $V$ along the path $x^\mu(\lambda)$ is defined by a vanishing covariant derivative:
+$$
+0=\frac{dx^\rho}{d\lambda}\nabla_\rho V^\mu=\frac{dV^\mu}{d\lambda}+
+\Gamma^{\mu}_{\rho\sigma}\frac{dx^\rho}{d\lambda}V^\sigma.
+$$
+A geodesic is the curve along which the tangent vector $V^\mu=dx^\mu/d\lambda$, which leads to the geodesic equation that is the equation of motion for the action defined before (it can be considered as a motivation for such an action).
+
+The Riemann curvature tensor can be defined using the difference between the results of parallel transporting a vector $V$ along the two "edges" of a "paralllogram": first along $A^\alpha$ and then along $B^\beta$. In general such a difference will not be zero in a curved spacetime and it should be proportional to $V$, $A$, and $B$:
+$$
+\delta V^\rho={R^\rho}_{\mu\alpha\beta}V^\mu A^\alpha B^\beta.
+$$
+This defines the Riemann curvature tensor. The parallel transport around a closed can be viewed as a commutator of covariant derivatives, which allows to write:
+$$
+[\nabla_\alpha,\nabla_\beta]V^\rho\equiv {R^\rho}_{\mu\alpha\beta}V^{\mu}-
+{T^\sigma}_{alpha\beta}\nabla_\sigma V^\rho.
+$$ This allows to write the Riemann tensor and the **torsion tensor**:
+
+
 $$
 {R^\lambda}_{\mu\nu\rho}=
 \partial_\nu{\Gamma^\lambda}_{\mu\rho}-
@@ -110,7 +132,10 @@ $$
 {\Gamma^\sigma}_{\mu\rho}{\Gamma^\lambda}_{\sigma\nu}-
 {\Gamma^\sigma}_{\mu\\nu}{\Gamma^\lambda}_{\sigma\rho}.
 $$
-Its contractioon is the Ricci tensor:
+$$
+{T^\sigma}_{\mu\nu}=-2\Gamma^\sigma_{[\mu\nu]}
+$$
+Contraction of the Riemann tensor is the **Ricci tensor**:
 $$
 R_{\mu\nu}={R^\lambda}_{\mu\lambda\nu}.
 $$
@@ -147,4 +172,100 @@ where the Planck length $l_\mathrm{Planck}=\sqrt{G\hbar/c^3}\approx10^{-35}~\mat
 Describes accelerated expansion of the Universe in the inflationary phase
 $$
 ds^2=-dt^2+e^{2Ht}(dx^2+dy^2+dx^2).
+$$
+#### Lie derivative
+The Lie derivative along the vector field $V=V^\mu(x)\partial_\mu$ acts on a scalar as follows:
+$$
+L_V\phi(x)=V^\rho(x)\partial_\rho\phi(x),
+$$on vectors or one forms as follows:
+$$
+L_VU^\mu=V^\rho\partial_\rho U^\mu-(\partial_\rho V^\mu)U^\rho\equiv[V,U]^\mu
+$$
+$$
+L_VW_\mu=V^\rho\partial_\rho W_\mu+(\partial_\mu V^\rho)W_\rho.
+$$
+For an infinitesimal transformation, $x^\mu\rightarrow x'^\mu=x^\mu+\xi^\mu$, an arbitrary tensor transforms as, up to terms linear in $\xi$, 
+$$
+\delta {T^{\mu_1...\mu_r}}_{\nu_1...\nu_s}\equiv
+{T'^{\mu_1...\mu_r}}_{\nu_1...\nu_s} - {T^{\mu_1...\mu_r}}_{\nu_1...\nu_s}
+=L_\xi{T^{\mu_1...\mu_r}}_{\nu_1...\nu_s}
+$$
+Vectors for which
+$$
+L_Vg_{\mu\nu}=\nabla_\mu V_\nu+\nabla_\nu V_\mu=0
+$$
+are called **Killing vectors**. A spacetime is **stationary** if it has a timelike Killing vector field, at least asymptotically at large distances.
+#### DIfferential forms
+They are antisymmetric $(0,p)$ tensors and can be written as
+$$
+\omega^{(p)}=
+\frac{1}{p!}\omega_{\mu_1...\mu_p}dx^{\mu_1}~\wedge...\wedge~dx^{\mu_p},
+$$
+where the wedge product is defined as
+$$
+dx^{\mu_1}~\wedge...\wedge~dx^{\mu_p}=\sum_{\sigma\in S_p}\mathrm{sgn}(\sigma)
+dx^{\mu_{\sigma(1)}}~\otimes...\otimes~dx^{\mu_{\sigma(p)}}.
+$$
+In the non-coordinate basis:
+$$
+\omega^{(p)}=
+\frac{1}{p!}\omega_{a_1...a_p}e^{a_1}~\wedge...\wedge~e^{a_p},
+$$
+**Exterior derivative** acts as:
+$$
+\mathrm{d}\omega^{(p)}=\frac{1}{p!}(\partial_\mu\omega_{\mu_1...\mu_p})
+dx^\mu\wedge dx^{\mu_1}\wedge...\wedge dx^{\mu_p}.
+$$
+One can write
+$$
+\mathrm{d}e^a+{\omega^a}_b\wedge e^b=0,
+$$
+where
+$$
+{\omega^a}_b={{\omega_\mu}^a}_bdx^\mu.
+$$
+This allows to calculate the spin connection in the torsion-free case without calculating first $\Gamma^\lambda_{\mu\nu}$.
+
+**Canonical volume form** is a 1-form and is unique up to a multiplication by arbitray function. It is defined as
+$$
+\mathrm{dVol}=e^0\wedge...\wedge e^{d-1}
+$$
+The totally antisymmetric Levi-Civita symbol in the local frame basis is defined as:
+$$
+\epsilon_{a_1...a_d}=\left\{
+\begin{split}
++1~:&~(a_1...a_d)~\mathrm{is~an~even~permutation~of}~(1,0,...,d-1)\\
+-1~:&~(a_1...a_d)~\mathrm{is~an~odd~permutation~of}~(1,0,...,d-1)\\
+0~:&~\mathrm{otherwise}
+\end{split}
+\right.
+$$
+For consistency, to define the symbol in the coordinate basis, one has to insert factors of $e\equiv\det(e^a_\mu)=\sqrt{-\det g}$:
+$$
+\epsilon_{\mu_1...\mu_d}=\frac{1}{e}\epsilon_{a_1...a_d}e^{a_1}_{\mu_1}...e^{a_d}_{\mu_d},
+$$
+$$
+\epsilon^{\mu_1...\mu_d}=e\epsilon^{a_1...a_d}e_{a_1}^{\mu_1}...e_{a_d}^{\mu_d}.
+$$
+Then the canonical volume can be written as
+$$
+\mathrm{dVol}=
+\frac{1}{d!}\epsilon_{a_1...a_d}e^{a_1}\wedge...\wedge e^{a_d}=
+\frac{1}{d!}e\epsilon_{\mu_1...\mu_d}dx^{\mu_1}\wedge...\wedge e^{\mu_d}=edx^0\wedge...\wedge dx^{d-1}\equiv d^dx\sqrt{-g}.
+$$
+**Hodge dual** is defined in the local frame basis:
+$$
+*(e^{a_1}\wedge...\wedge e^{a_p})=
+\frac{1}{(d-p)!}{\epsilon_{b_1...b_{d-p}}}^{a_1...a_p}
+e^{b_1}\wedge...\wedge e^{b_{d-p}},
+$$
+which is easily generalized to any p-form:
+$$
+*\omega^{(p)}=\frac{1}{p!}\omega_{a_1...a_p}*(e^{a_1}\wedge...\wedge e^{a_p}).
+$$
+In the coordinate basis:
+$$
+*(dx^{\mu_1}\wedge...\wedge dx^{\mu_p})=
+\frac{1}{(d-p)!}e\epsilon_{\nu_1...\nu_{d-p}\sigma_1...\sigma_p}
+g^{\mu_1\sigma_1}...g^{\mu_p\sigma_p}dx^{\nu_1}\wedge...\wedge dx^{\nu_{d-p}}.
 $$

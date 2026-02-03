@@ -35,8 +35,7 @@
               "title": "Heavy-ion collisions"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -184,7 +183,7 @@
       "bases:Create new base": false
     }
   },
-  "active": "f6702806547de55b",
+  "active": "5802fe4d8896a2d1",
   "lastOpenFiles": [
     "Quantum Field Theory/Feynman rules.md",
     "Quantum Field Theory/Green Functions.md",
