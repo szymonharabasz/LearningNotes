@@ -25,12 +25,14 @@
             "id": "f6702806547de55b",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
+              "type": "markdown",
               "state": {
-                "currentVersion": "1.11.5"
+                "file": "Physics/Heavy-ion collisions.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-book-up",
-              "title": "Release Notes 1.11.5"
+              "icon": "lucide-file",
+              "title": "Heavy-ion collisions"
             }
           }
         ],
@@ -184,6 +186,9 @@
   },
   "active": "f6702806547de55b",
   "lastOpenFiles": [
+    "Quantum Field Theory/Feynman rules.md",
+    "Quantum Field Theory/Green Functions.md",
+    "Condensed Matter/6. Quantum field theory.md",
     "Quantum Field Theory/Notes from \"A Modern Introduction to Quantum Field Theory\".md",
     "AdS_CFT/General Relativity.md",
     "React et Co_/React.md",
@@ -201,16 +206,13 @@
     "Java, Jakarta EE, Microprofile/Noteworthy of general Java.md",
     "Pasted image 20251216153501.png",
     "Condensed Matter/15. Complex field Bose-Einstein condensate.md",
-    "Quantum Field Theory/Green Functions.md",
-    "Quantum Field Theory/Feynman rules.md",
     "Condensed Matter/14. Time-dependent theory.md",
     "NN reference analysis.md",
     "Physics/Quantum Chromodynamics.md",
     "Condensed Matter/12.  Second quantization.md",
     "cmp_thermal_usedforchi2_subtr.pdf",
-    "Physics/Transport simulations of Heavy-Ion Collisions.md",
+    "Physics/Heavy-ion collisions.md",
     "Work/Differences between macros.md",
-    "Work/HADES safety instructions.md",
-    "Work/Studying properties of hot and dense baryonic matter with the  HADES experiment.md"
+    "Work/HADES safety instructions.md"
   ]
 }
