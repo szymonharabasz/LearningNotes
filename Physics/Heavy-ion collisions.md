@@ -231,3 +231,106 @@ Since $\epsilon_\alpha$ are arbitrary, this must hold separately for each genera
 $$
 \frac{\partial V}{\partial\phi_n}[l_\alpha]_{mn}\phi_n=0.
 $$
+Taking the second derivative at minimum ($\partial V/\partial\phi^c_n|_{\phi^c=\bar\phi}=0$) one gets:
+$$
+\left.\frac{\partial^2V}{\partial\phi^c_n\partial\phi^c_m}\right|(l_\alpha\bar\phi_\alpha)_n=0.
+$$
+If $l_\alpha$ is a generator of the unbroken symmetry subgroup, then $(l_\alpha\bar\phi_\alpha)_n=0$, because in this case:
+$$
+g(\theta_\alpha)=\exp(i\theta_\alpha l_\alpha) = 1.
+$$
+Otherwise, if it is a generator of a broken symmetry, then $(l_\alpha\bar\phi_\alpha)_n=0$ is an eigenvector of the mass matrix with eigenvalue zero. For every independent broken generator of a symmetry group of the Lagrangian, there is one massless boson - a **Goldstone boson**.
+## Second derivation of the Goldstone theorem
+A $g\in G$ is represented by an unitary transformation:
+$$
+|\psi\rangle\rightarrow|\psi'\rangle={\cal U}(g)|\psi\rangle.
+$$
+Let the matrix elements of the field multiplet transform according to a representation $D(g)$ of $G$:
+$$
+\langle\psi|\phi_n(x)|\chi\rangle\rightarrow
+\langle\psi'|\phi_n(x)|\chi'\rangle=
+D_{nm}(g)\langle\psi|\phi_m(x)|\chi\rangle.
+$$
+Therefore:
+$$
+{\cal U}^\dagger(g)\phi_n(x){\cal U}(g)=D_{nm}(g)\phi_m(x).
+$$
+For group elements with coordinates $\omega_1,\omega_2,...$ infinitisemally close to unity:
+$$
+\begin{split}
+{\cal U}(1+\omega)=&1+i\omega_\alpha Q_\alpha+{\cal O}(omega^2)\\
+D(1+\omega)=&1+i\omega_\alpha l_\alpha + {\cal O}(\omega^2).
+\end{split}
+$$
+Here the charges $Q_\alpha$ are quantum generators and matrices $l_\alpha$ are group generators. Now, the commutator is:
+$$
+[Q_\alpha,\phi_n(x)]=-[l_\alpha]_{nm}\phi_m(x).
+$$
+One can compute:
+$$
+\langle 0|J^\mu_\alpha(y)\phi_n(x)|0\rangle=
+\int\frac{d^4p}{(2\pi)^3}e^{-ip(y-x)}i\rho^\mu_{\alpha,n}(p)
+$$
+with the spectral density of the form:
+$$
+(2\pi)^3\sum_N\langle 0|J^\mu_\alpha(0)|N\rangle\langle N|\phi_n(0)|0\rangle
+\delta^4(p-p_N)=
+i\rho^\mu_{\alpha,n}(p)=ip^\mu\rho_{\alpha,n}(p^2)\theta(p_0),
+$$
+where the sum is over complete set of states chosen to be eigenstates of momenta, and the last equality takes into account the Lorentz invariance (four-vector depending only on momentum must be proportional to it) and the fact that energy is positive.
+Introducing $1=\int ds\delta(s-p^2)$, one gets:
+$$
+\langle 0|J^\mu_\alpha(y)\phi_n(x)|0\rangle=
+-\frac{\partial}{\partial y_\mu}\int ds \rho_{alpha,n}(s)\Delta_+(y-x,s)
+$$
+Calculating similarly and defining:
+$$
+(2\pi)^3\sum_N\langle 0|\phi_n(0)|N\rangle\langle N|J^\mu_\alpha(0)|0\rangle
+\delta^4(p-p_N)=
+i\tilde\rho^\mu_{\alpha,n}(p)=ip^\mu\tilde\rho_{\alpha,n}(p^2)\theta(p_0),
+$$
+we get for the commutator:
+$$
+\langle 0|[J^\mu_\alpha(y),\phi_n(x)]|0\rangle=
+-\frac{\partial}{\partial y_\mu}\int ds[\rho_{\alpha,n}(s)\Delta_+(y-x,s)+
+\tilde\rho_{\alpha,n}(s)\Delta_+(x-y,s)].
+$$
+The two spectral functions are not independent, for the spacelike separations $\Delta_+(x-y,s)$ becomes an even function of $x-y$, and the commutator vanishes in this region. Therefore
+$$
+\rho_{\alpha,n}(s)+\tilde\rho_{\alpha,n}(s)=0,
+$$
+and for general $x-y$:
+$$
+\langle 0|[J^\mu_\alpha(y),\phi_n(x)]|0\rangle=-\frac{\partial}{\partial y_\mu}
+\int ds \rho_{\alpha,n}(s)\Delta(y-x,s).
+$$
+Taking $\partial/\partial y_\mu$ on both sides, using the fact that $J^\mu_\alpha(y)$ is conserved, and that $\Delta(y-x,s)$ is a Green function, one gets for any $x-y$:
+$$
+0=\int dss\rho_{\alpha,n}(s)\Delta(x-y,s)
+$$
+which leads to 
+$$
+s\rho_{\alpha,n}(s)=0.
+$$
+The general solution is
+$$
+\rho_{\alpha,n}(s)=c_{\alpha,n}\delta(s)
+$$
+with $c_{\alpha, n}$ being constants. Inserting this solution, choosing $\mu=0$, and using the equality:
+$$
+\partial_l\Delta(x-x')|_{t=t'}=-i\delta^3({\bf x}-{\bf x}'),
+$$
+one arrives at
+$$
+\langle 0|[J^\mu_\alpha({\bf y},y),\phi_n({\bf x},t)]|0\rangle=
+ic_{\alpha,n}\delta^3({\bf x}-{\bf y}).
+$$
+Integrating over $\bf y$ and using the commutator derived above, one gets:
+$$
+-[l_\alpha]_{nm}\langle 0|\phi_m|0\rangle=ic_{\alpha,n},
+$$
+so the *constants are indeed non-vanishing in theories with spontaneous symmetry breaking*. Finally, for the broken generators $s_\alpha$:
+$$
+\rho_{\alpha,n}=i\delta(s)(s_\alpha\bar\phi)_n\neq0.
+$$
+The delta function means that the modes are massless and are again **Goldstone bosons**.
