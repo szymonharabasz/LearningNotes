@@ -138,6 +138,7 @@ $$
 \frac{-1}{k^2-m^2+i\eta}.
 $$
 # Spontaneous symmetry breaking
+## First derivation of the Goldstone theorem, effective potential
 If the S-matrix element is:
 $$
 S_{\alpha\beta}=
@@ -187,7 +188,46 @@ The effective action is the Legendre transform of $W[h]$:
 $$
 \Gamma[\phi^c]=W[h]-\int d^4x\phi^c_n(x)h_n(x).
 $$
-It generates **one-particle irreducible** diagrams. It fulfills the relation:
+It generates **one-particle irreducible** diagrams,
+$$
+\Gamma[\psi^c]=\sum_r\frac{1}{r!}
+\int d^4x_1....d^4x_r\Gamma^{(r)}_{n_1...n_r}(x_1...x_r)
+\phi^c_{n_1}(x_1)...\phi^c_{n_r}(x_r),
+$$
+with $r$ external lines, from which propagators were removed. In particular, $\Gamma^{(2)}(x_1,x^2)$ *is the inverse propagator*.
+The effective action fulfills the relation:
 $$
 \frac{\delta\Gamma}{\delta\phi^c_n(x)}=-h_n(x).
+$$
+Alternatively to 1PI diagrams, one can also expand $\Gamma[\psi^c]$ in powers of external momenta:
+$$
+\Gamma[\phi^c]=
+\int d^4x\{-V(\phi^c)+Z_{n_1n_2}\partial_\mu\phi^c_{n_1}\partial_\mu\phi^c_{n_2}+...\},
+$$
+where the ordinary function $V(\phi^c)$ is called **effective potential**, and a the tree level it is equal the usual potential.
+When to the 1PI expansion one inserts Fourier transform $\tilde \Gamma^{(r)}(p_1,...,p_r)$ of  $\Gamma^{(r)}(x_1,...,x_r)$, and then specializes to constant $\phi^c(x)$, then the position integrals give $\delta(p)$, which remove the momentum integrals and give:
+$$
+\Gamma[\phi^c]=\sum_r\frac{1}{r!}\tilde\Gamma^{(r)}_{n_1...n_r}
+(p_1=0,...,p_r=0)\phi^c_{n_1}(0)...\phi^c_{n_r}(0).
+$$
+Comparing the last two expressions for $\Gamma[\phi^c]$, we can see that the n-th derivative of $V$ (coefficient in its expansion in powers of $\phi^c$) is a sum of all 1PI diagrams with n external momenta equal zero, up to a multiplicative factor dependent on four-dimensional volume. In particular, the second derivative is the **mass matrix**.
+
+If the symmetry is spontaneously broken, $\phi^c$ has a non-zero expectation value for vanishing external field, which in addition is constant, so
+$$
+0=\frac{\delta\Gamma}{\delta\phi^c_n}\rightarrow
+\left.\frac{\partial V}{\partial\phi^c_n}\right|_{\phi^c=\bar\phi\neq0}.
+$$
+
+An infinitesimal symmetry transformation can be written as:
+$$
+\delta\phi_n=i\epsilon_\alpha[l_\alpha]_{mn}\phi_n.
+$$
+The group is also a symmetry group of the effective potential, so
+$$
+0=\delta V=\frac{\partial V}{\partial \phi_m}\delta\phi_m=
+i\frac{\partial V}{\partial \phi_m}\epsilon_\alpha[l_\alpha]_{mn}\phi_n.
+$$
+Since $\epsilon_\alpha$ are arbitrary, this must hold separately for each generator:
+$$
+\frac{\partial V}{\partial\phi_n}[l_\alpha]_{mn}\phi_n=0.
 $$
