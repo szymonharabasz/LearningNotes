@@ -334,3 +334,61 @@ $$
 \rho_{\alpha,n}=i\delta(s)(s_\alpha\bar\phi)_n\neq0.
 $$
 The delta function means that the modes are massless and are again **Goldstone bosons**.
+# Effective field theories
+If the symmetry group $G$ Is broken spontaneously to some subgroup $H$, elements of which leave the VEV of the field $\psi_m(x)$, that is, $\bar\psi_m=\langle 0|\psi_m|0\rangle$, invariant:
+$$
+h_{nm}\bar\psi_m=\psi_n,~~~h\in H.
+$$
+One expresses $\psi$ as a position-dependent transformation of fields $\tilde\psi$, *from which Goldstone fields were removed*:
+$$
+\psi_n(x)=\gamma_{nm}(x)\tilde\psi_m(x),~~~\gamma\in G.
+$$
+At the end of the first derivation of the Goldstone theorem, it was stated, that the Goldstone modes are represented by vectors $s_\alpha\bar\phi$, with broken generators $s_\alpha$. That "Goldstone fields were removed" means the orthogonality between the states:
+$$
+\tilde\psi_n[s_\alpha]_{nm}\bar\phi_m=0.
+$$
+Matrices $\gamma$ can always be chosen to satisfy this condition. Define namely in a real representation of a compact group $G$:
+$$
+V_\psi(g)=\psi_ng_{nm}\bar\phi_m.
+$$
+$V(g)$ is real and continuous function of $g$, so it is bounded and at each $x$ reaches a maximum for some $g=\gamma(x)$.  If $g$ is written as:
+$$
+g=\exp(il_\alpha\theta_\alpha),
+$$
+then an infinitesimal change is:
+$$
+\delta g=i\epsilon_\alpha gl_\alpha.
+$$
+Close to the maximum, $V$ is stationary, so:
+$$
+0=\delta V(\gamma(x))=
+i\epsilon_\alpha\psi_n(x)[\gamma(x)]_{np}[s_\alpha]_{pm}\bar\phi_m.
+$$
+It must be fulfilled for every $\epsilon_\alpha$. Furthermore, for a compact group we can choose a unitary representation, which in real case is orthogonal, that is, $\gamma\gamma^T=1$, so $[\gamma]_{np}=[\gamma^{-1}]_{pn}$, so:
+$$
+[\gamma^{-1}(x)\psi(x)]_pi(s_\alpha\bar\phi)_p=0.
+$$
+This shows that $\gamma$ indeed fulfills the orthogonality relation.
+But because $h_{nm}\bar\psi_m=\psi_n$, if $\gamma$ maximizes $V(g)$, so does $\gamma h$. The set of all such elements defines an equivalence class - **a right coset of $G$ with respect to $H$**. The space of right cosets is the **quotient space** $G/H$.
+All elements $g\in G$ can be sorted into right cosets. If we choose one $\gamma$ from each coset, we can parametrize each group element:
+$$
+g=\gamma h\equiv\exp(i\xi_\alpha s_\alpha)\exp(i\theta_it_i),
+$$
+where we take $\xi_\alpha=\xi_\alpha(x)$ as *fields proportional to Goldstone bosons*.
+Now, under the action of general $g\in G$ the field transforms as:
+$$
+\psi(x)\rightarrow\psi'(x)=g\psi(x)=g\gamma(\xi(x))\tilde\psi(x).
+$$
+But $g\gamma(\xi(x))$ is another group elements, so it must belong to some coset represented by another $\gamma(\xi'(x))$. Then:
+$$
+g\gamma(\xi(x))=\gamma(\xi'(x))h(x,g).
+$$
+This gives the transformation rule $\xi(x)\rightarrow\xi'(x)$ for Goldstone fields under the action of $g$. Inserting this decomposition into the transformation $\psi\rightarrow\psi'$ we get:
+$$
+\psi'(x)=\gamma(\xi'(x))\tilde\psi'(x),
+$$
+where
+$$
+\tilde\psi'(x)=h(\xi,g)\tilde\psi(x).
+$$
+This gives the transformation rule for non-Goldstone fields.
