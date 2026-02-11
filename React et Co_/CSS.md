@@ -83,12 +83,84 @@ Defining the layout:
 ```css
 .container {
     display: grid;
-    grid-template-columns: 100px 200px 1fr;  ①
-    grid-template-rows: 100px 150px;           ①
+    grid-template-columns: 100px 200px 1fr repeat(3, 200px);  
+    grid-template-rows: 100px 150px;           
+    /* Justification in the row direction */
+    justify-content: start|end|center|stretch|space-between|space-
+➥around|space-evenly;
+	/* Justification in the column direction */
+    align-content: start|end|center|stretch|space-between|space-
+➥around|space-evenly;
+	/* Alignment within columns */
+    justify-items: start|end|center|stretch;
+    /* Alignment  within rows */
+    align-items: start|end|center|stretch;
 }
 ```
 Additional gaps: `column-gap`, `row-gap`.
-Instead of specific values for rows and columns there can be also `max-content`. `fr` - proportional to a fraction
+Instead of specific values for rows and columns there can be also `max-content`. `fr` - proportional to a fraction.
+Configuring grid items:
+```CSS
+.itemb {
+    grid-column-start: 3;     
+    grid-column-end: span 3; /* span */
+    grid-row-start: 1;        
+    grid-row-end: 1; /* why end is the same as start? */
+}
+
+.itemd {
+    grid-column-start: 2;     
+    grid-column-end: 4;       
+    grid-row-start: 2;        
+    grid-row-end: end; /* until the last column */
+    justify-self: start|end|center|stretch;
+    align-self:  start|end|center|stretch;
+}
+```
+Named areas:
+```CSS
+.container {
+...
+    grid-template-areas:                           
+        'header header header header header'       
+        'nav nav nav nav nav                  
+        'main   main   main   main   sidebar'
+        'footer footer footer footer footer';
+}
+.itema {
+    ...
+    grid-area: header;                             ②
+}
+...
+```
+
+# Responsive design
+Configuring browser's default viewport size:
+```HTML
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+Showing something only on a large enough screen:
+```CSS
+.quotation {
+    display: none;                                ②
+}
+@media (min-width: 750px) {
+	.quotation {
+	    display: block;
+	    grid-area: quotation                                ②
+	}
+}
+```
+Images
+```HTML
+<img 
+    src="/images/img-small.png"                
+    sizes="(max-width: 700px) 100vw, 75vw"     
+    srcset="/images/img-small.png 450w,        
+            /images/img-medium.png 900w,       
+            /images/img-large.png 1450w">      
+```
+```
 # Special selectors:
 ```css
 .elem:first-letter
