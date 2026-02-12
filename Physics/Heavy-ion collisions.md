@@ -227,14 +227,18 @@ $$
 0=\delta V=\frac{\partial V}{\partial \phi_m}\delta\phi_m=
 i\frac{\partial V}{\partial \phi_m}\epsilon_\alpha[l_\alpha]_{mn}\phi_n.
 $$
-Since $\epsilon_\alpha$ are arbitrary, this must hold separately for each generator:
+Since $\epsilon_\alpha$ are arbitrary, this must hold separately for each generator:  ^eq-eff-pot
 $$
 \frac{\partial V}{\partial\phi_n}[l_\alpha]_{mn}\phi_n=0.
 $$
-Taking the second derivative at minimum ($\partial V/\partial\phi^c_n|_{\phi^c=\bar\phi}=0$) one gets:
+Taking the second derivative at minimum ($\partial V/\partial\phi^c_n|_{\phi^c=\bar\phi}=0$) one gets: 
 $$
-\left.\frac{\partial^2V}{\partial\phi^c_n\partial\phi^c_m}\right|(l_\alpha\bar\phi_\alpha)_n=0.
+\left.\frac{\partial^2V}{\partial\phi^c_n\partial\phi^c_m}\right|_{\phi=\bar\phi}
+(l_\alpha\bar\phi_\alpha)_n=0,~~~\bar\phi=\langle 0|\phi|0\rangle.
 $$
+
+^bf858c
+
 If $l_\alpha$ is a generator of the unbroken symmetry subgroup, then $(l_\alpha\bar\phi_\alpha)_n=0$, because in this case:
 $$
 g(\theta_\alpha)=\exp(i\theta_\alpha l_\alpha) = 1.
@@ -266,6 +270,10 @@ Here the charges $Q_\alpha$ are quantum generators and matrices $l_\alpha$ are g
 $$
 [Q_\alpha,\phi_n(x)]=-[l_\alpha]_{nm}\phi_m(x).
 $$
+
+^04feb9
+
+^eq-comm-1
 One can compute:
 $$
 \langle 0|J^\mu_\alpha(y)\phi_n(x)|0\rangle=
@@ -434,4 +442,40 @@ $$
 which is the same as for $U$, therefore:
 $$
 U=u^2.
+$$
+# Explicit symmetry breaking
+If the total potential is a sum of symmetric part and small perturbation that breaks the symmetry:,
+$$
+V(\phi)=V_0(\phi)+V_1(\phi),
+$$
+the [[#^eq-eff-pot|equation with effective potential]] still holds for the unperturbed part. If the minimum of $V_0$ is at $\phi_0$,
+$$
+\left.\frac{\partial V_0(\phi)}{\partial\phi_n}\right|_{\phi=\phi_0}=0,
+$$
+then the perturbation shifts the minimum to some $\bar\phi$:
+$$
+\left.\frac{\partial V(\phi)}{\partial\phi_n}\right|_{\phi=\bar\phi}=0.
+$$
+Writing $\bar\phi=\phi_0+\phi_1$, the $\phi_1$ is small and one can expand this to the first order around $\phi_0$:
+$$
+\left.\frac{\partial V_0(\phi)}{\partial\phi_n}\right|_{\phi_0}+
+\left.\frac{\partial^2 V_0(\phi)}{\partial\phi_n\partial\phi_m}\right|_{\phi=\phi_0}\phi_{1m}+
+\left.\frac{\partial V_1(\phi)}{\partial\phi_n}\right|_{\phi_0}=0,
+$$
+The first term vanishes because of a minimum, the second because of an [[#^bf858c|earlier derived equation]], so one gets:
+$$
+(l_\alpha\phi_0)_n
+\left.\frac{\partial V_1(\phi)}{\partial\phi_n}\right|_{\phi_0}=0.
+$$
+It is called a **vacuum alignment condition**, because it brings the direction of spontaneously broken vacuum into alignment with the perturbing potential, for example if $V_1(\phi)=u_n\phi_n$, then:
+$$
+u_n(l_\alpha\phi)_n=0.
+$$
+To write it in the operator form, suppose that the symmetry-breaking perturbation has the following form in the Hamiltonian:
+$$
+H_I=\sum u_n\Phi_n,
+$$
+where the operators $\Phi_n$ belong to a representation of the symmetry group $G$. With the equation [[#^04feb9|derived earlier]], by making a sum and using the alignment condition, one can obtain:
+$$
+\langle 0|[Q_\alpha,H_1]|0\rangle=0.
 $$
