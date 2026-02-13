@@ -443,6 +443,12 @@ which is the same as for $U$, therefore:
 $$
 U=u^2.
 $$
+One can show that the most general lowest order Lagrangian obeying the chiral symmetry is:
+$$
+{\cal L}^{(2)}_\mathrm{eff}=
+\frac{F^2}{4}\mathrm{tr}(\partial_\mu U\partial^\mu U^\dagger),
+$$
+where it can be also shown (by calculating matrix elements of the axial-vector current between vacuum and pion states) that $F$ is the pion decay constant.
 # Explicit symmetry breaking
 If the total potential is a sum of symmetric part and small perturbation that breaks the symmetry:,
 $$
