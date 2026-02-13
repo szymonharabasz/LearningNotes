@@ -448,7 +448,26 @@ $$
 {\cal L}^{(2)}_\mathrm{eff}=
 \frac{F^2}{4}\mathrm{tr}(\partial_\mu U\partial^\mu U^\dagger),
 $$
-where it can be also shown (by calculating matrix elements of the axial-vector current between vacuum and pion states) that $F$ is the pion decay constant.
+where it can be also shown (by calculating matrix elements of the axial-vector current between vacuum and pion states) that $F$ is the pion decay constant. 
+# Divergencies
+For a general term:
+$$
+{\cal L}^{(i)}=g_i\partial^{d_i}\phi^{n_i},
+$$
+the dimension of the coupling constant is:
+$$
+\Delta_i\equiv4-d_i-n_i.
+$$
+For a general 1PI amplitude with internal $\{k\}$ and external $\{q\}$ momenta,
+$$
+F(\{q\})=\int\{d^4k\}G(\{q\},\{k\}),
+$$
+the superficial degree of divergence (the actual degree of divergence coming from integration region where all $\{k\}\rightarrow\infty$ together) is
+$$
+D=-2l+\sum_iV_id^i+4L
+$$
+with $I$ internal lines, $L$ loops, and $V_i$ vertices of type $i$. 
+
 # Explicit symmetry breaking
 If the total potential is a sum of symmetric part and small perturbation that breaks the symmetry:,
 $$
