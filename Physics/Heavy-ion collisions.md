@@ -449,7 +449,7 @@ $$
 \frac{F^2}{4}\mathrm{tr}(\partial_\mu U\partial^\mu U^\dagger),
 $$
 where it can be also shown (by calculating matrix elements of the axial-vector current between vacuum and pion states) that $F$ is the pion decay constant. 
-# Divergencies
+# Renormalizable and non-renormalizable theories
 For a general term:
 $$
 {\cal L}^{(i)}=g_i\partial^{d_i}\phi^{n_i},
@@ -466,8 +466,46 @@ the superficial degree of divergence (the actual degree of divergence coming fro
 $$
 D=-2l+\sum_iV_id^i+4L
 $$
-with $I$ internal lines, $L$ loops, and $V_i$ vertices of type $i$. 
+with $I$ internal lines, $L$ loops, and $V_i$ vertices of type $i$.
+One can prove identities:
+$$
+L=I-(\sum_iV_i-1)
+$$
+from which:
+$$
+D=\sum_iV_i(d_i-2)+2L+2;
+$$
+$$
+D=2I+\sum_iV_i(d_i-4)+4;
+$$
+$$
+2I+E=\sum_iV_in_i;
+$$
+$$
+D=4-E-\sum_iV_i\Delta_i.
+$$
+If a graph of $E$ external lines has a divergence $D\geq0$, we can split $F(\{q\})$ by Taylor expanding the integrand around $\{q\}=\{0\}$:
+$$
+G(\{q\},\{k\})=G(\{k\})+\{q\}\frac{\partial G}{\partial\{q\}}(\{k\})+...+
+\frac{1}{D!}\{q\}^D\frac{\partial^D G}{\partial\{q\}^D}(\{k\})+
+G_c(\{q\},\{k\}).
+$$
+Inserting it into $F(\{q\})$:
+$$
+F(\{q\})=F^{0}+\{q\}F^{(1)}+...+\{q\}^DF^{(D)}+F_c(\{q\}),
+$$
+where $F^{(0)},...,F^{(D)}$ are divergent integrals and $F_c(\{q\})$ is expressed in terms of non-divergent integrals. Therefore the amplitude is expressed in terms of a polynomial of degree $D$ in external momenta with divergent coefficients and a non-polynomial convergent part.
+It has the same form as it would come from different $i$ interactions with $n_i=E$ fields and $d_i\leq D$ derivatives. So the divergent parts simply add "corrections" to bare coupling constants $g_I$.
+The *idea of* **renormalization** amounts to adding a suitable infinite term already in $g_i$, so the "corrected" values can be set to measured results.
+Divergences in graphs with no external lines are removed by bare mass and bare field.
 
+If all the interactions have $\Delta_i\geq0$, then there is an upper limit for $D$:
+$$
+D\leq4-E.
+$$
+The divergences arise from graphs with few enough external lines and thus they can be eliminated with a finite number of interaction terms such theories are called **renormalizable**.
+
+In constrast, i$\Delta_i<0$ for any of the interactions, then $D$ becomes larger when we insert more and more of vertices of type  $i$ and eventually it will be positive no matter how large will be $E$. Therefore one will need an infinite number of coupling constants to absorb all the infinities. Such theories are called **non-renormalizable**.
 # Explicit symmetry breaking
 If the total potential is a sum of symmetric part and small perturbation that breaks the symmetry:,
 $$
