@@ -282,3 +282,55 @@ public void beforeEnter(BeforeEnterEvent event) {
   setValue(value.orElse("(no value)"))
 }
 ```
+Optional parameter
+```java
+@Route("template-parameter/:value?")
+```
+Match any path
+```java
+@Route("api/:path*")
+```
+Match with regular expression
+```java
+@Route("companies/:companyId?([0-9]/edit")
+```
+One can also use `getInteger(String)`, `getLong(String)`.
+Typed parameters
+```java
+@Route("typed-parameter")
+
+public class TypedParameterView extends Composite<Component>
+    implements HasUrlParameter<Integer> {
+    @Override
+    @OptionalParameter // if it is indeed optional
+	public void setParameter(BeforeEvent beforeEvent,
+		Integer number) {
+		text.setText("" + number);
+	}
+}
+```
+Query parameters
+```java
+@Override
+public void beforeEnter(BeforeEnterEvent event) {
+	Location location = event.getLocation();
+	Map<String, List<String>> list = 
+		location.getQueryParameters().getParameters();
+    List<String> userIds = list.get("userId");
+}
+```
+Setting browser title bar
+```java
+@PageTitle("This is the title")
+```
+Dynamic title
+```java
+@Route("dynamic-page-title")
+public class DynamicPageTitleView extends Composite<Component>
+	implements HasDynamicTitle {
+	@Override
+	public String getPageTitle() {
+	    return "Title at " + LocalDateTime.now();
+	 }
+}
+```
