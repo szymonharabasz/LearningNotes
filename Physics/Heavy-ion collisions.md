@@ -585,3 +585,106 @@ Eliminating $B$, one obtains the formula:
 $$
 F^2M^2=-(m_u+m_d)\langle0|\bar uu|0\rangle.
 $$
+The power counting rule is modified if $m_i$ factors of $M^2$ (or quark mass) appear in the interaction $i$, then
+$$
+\nu=\sum_i V_i(d_i+2m_i-2)+2L+2.
+$$
+## Calculating observables
+The $S$-matrix is related to the effective interaction Lagrangian:
+$$
+S=T\exp\left(i\int d^4x{\cal L}_\mathrm{int}(x)\right)=1+iT.
+$$
+For example, for the pion scattering,
+$$
+\langle|\pi_c(k')\pi_d(q')|S-1|\pi_a(k),\pi_b(q)\rangle=
+i(2\pi)^4\delta^4(k'+q'-k-q)M_{cd,ab}(k'q'\rightarrow kq),
+$$
+where $M_{cd,ab}$ is invariant amplitude. It can be shown to equal
+$$
+M_{cd,ab}=\frac{1}{F^2}[\delta_{ab}\delta_{cd}(s-M^2)+
+\delta_{ac}\delta_{bd}(t-M^2)+
+\delta_{ad}\delta_{bd}(u-M^2)]
+$$
+## External fields
+One introduces coupling of quark densities and currents to external fields:
+$$
+{\cal L}_\mathrm{QCD}\rightarrow{\cal L}_\mathrm{ext}=
+{\cal L}_\mathrm{QCD}^{(0)}+
+\bar q\gamma^\mu(v_\mu+a_\mu\gamma^5)q-\bar q(s-ip\gamma^5)q,
+$$
+where
+$$
+v_\mu=\vec v_\mu\cdot\frac{\vec\tau}{2},~~~
+a_\mu=\vec a_\mu\cdot\frac{\vec\tau}{2},~~~
+s=s^0\mathbb{1}+\vec s\cdot\vec\tau,~~~
+p=p^0\mathbb{1}+\vec p\cdot\vec\tau,
+$$
+and they couple to scalar and pseudo-scalar densities defined by
+$$
+S^0=\bar qq,~~~
+\vec S=\bar q\vec\tau q,~~~
+P^0=\bar qi\gamma^5q,~~~
+\vec P=\bar qi\gamma^5\vec\tau q.
+$$
+The Lagrangian is then written as:
+$$
+{\cal L}_\mathrm{ext}=
+{\cal L}_\mathrm{QCD}^{(0)}+v_{\mu i}V^\mu_i+a_{\mu i}A^\mu_i-
+s^0S^0-\vec s\cdot\vec S+p^0P^0-\vec p\cdot\vec P
+$$
+We again imagine that the mass is a matrix field and *promote the gauge transformation to a local one*.
+The external fields then transform as:
+$$
+\begin{align}
+v_\mu+a_\mu\rightarrow &v'_\mu+a'_\mu=
+V_R(v_\mu+a_\mu)V_R^\dagger+iV_R\partial_\mu V_R^\dagger,\\
+v_\mu-a_\mu\rightarrow &v'_\mu-a'_\mu=
+V_L(v_\mu-a_\mu)V_L^\dagger+iV_L\partial_\mu V_L^\dagger,\\
+s+ip\rightarrow &s'+ip'=V_R(s+ip)V_L^\dagger.
+\end{align}
+$$
+This makes the Lagrangian invariant. The infinitesimal transformations are
+$$
+\begin{align}
+\delta v_\mu=&\partial_\mu\theta_V-i[v_\mu,\theta_V]-i[a_\mu,\theta_A],\\
+\delta a_\mu=&\partial_\mu\theta_A-i[v_\mu,\theta_A]-i[a_\mu,\theta_V],\\
+\delta s=&-i[s,\theta_V]-\{p,\theta_A\},\\
+\delta p=&-i[p,\theta_V]+\{s,\theta_A\}.
+\end{align}
+$$
+On equating real and imaginary parts on both sides of last two equations. one finds that
+$$
+h^+\equiv(s^0,\vec p),~~~h^-\equiv(p_0,-\vec s)
+$$
+transform as two independent $O(4)$ four-vectors. The matrices $s$ and $p$ mix them and one can remove the mixing by defining
+$$
+\chi\equiv2B(s^0\mathbb{1}+i\vec p\cdot\vec\tau),~~~
+\tilde\chi\equiv2B(p^0\mathbb{1}-i\vec s\cdot\vec\tau).
+$$
+They transform independently as
+$$
+(\chi,\tilde\chi)\rightarrow V_R(\chi.\tilde\chi)V_R^\dagger.
+$$
+In the effective theory, the external fields appear in the covariant derivative of $U$:
+$$
+D\mu U=\partial_\mu U-i(v_\mu+a_\mu)U+iU(v_\mu-a_\mu).
+$$
+The field strength has the form:
+$$
+F^{\mu\nu}_{R,L}=\partial^\mu(v^\nu\pm a^\nu)-\partial^\nu(v^\mu\pm a^\mu)-
+i[v^\mu\pm a^\mu,v^\nu\pm a^\nu].
+$$
+Taking into account independent invariants, the Lagrangian takes the form:
+$$
+{\cal L}^{(2)}_\mathrm{eff}=
+\frac{F^2}{4}\mathrm{tr}(D_\mu U\D^\mu U^\dagger+
+\chi U^\dagger+U\chi^\dagger).
+$$
+WIth four vectors:
+$$
+\Phi^+\equiv(S_0,\vec -P),~~~\Phi^-\equiv(P_0,\vec S)
+$$
+one can write a symmetry-breaking part of the Hamiltonian as
+$$
+H_1=2\int d^3x(h^+\Phi^+-h^-\Phi^-).
+$$
