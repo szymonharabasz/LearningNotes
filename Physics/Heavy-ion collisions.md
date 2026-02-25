@@ -542,3 +542,46 @@ where the operators $\Phi_n$ belong to a representation of the symmetry group $G
 $$
 \langle 0|[Q_\alpha,H_1]|0\rangle=0.
 $$
+## Gell-Mann—Oakes—Renner formula
+In QCD, chiral (and isospin $SU(2)_V$) symmetry is broken explicitly by the mass term:
+$$
+{\cal L}_\mathrm{sb}=\bar q{\cal M}q=
+\bar q_R{\cal M}q_L+\bar q_L{\cal M}^\dagger q_R=
+\frac{1}{2}(m_u+m_d)\bar qq+\frac{1}{2}(m_u-m_d)\bar q\tau_3q,~~~
+{\cal M}=\left(
+\begin{matrix}
+m_u & 0 \\
+0 & m_d
+\end{matrix}
+\right).
+$$
+Like the magnetic field in the ferromagnet, mass term plays a role of external parameter. One pretends that it is a matrix field and set it to constant at the end. It is demanded to transform as
+$$
+{\cal M}\rightarrow V_R{\cal M}V_L^\dagger.
+$$
+We demand the Lagrangian to be invariant under simultaneous transformation of the above and
+$$
+U\rightarrow V_R UV_L^\dagger.
+$$
+We expand the Lagrangian in terms of $\cal M$. The first term is ${\cal L}^{(2)}_\mathrm{eff}=\frac{F^2}{4}\mathrm{tr}(\partial_\mu U\partial^\mu U^\dagger)$, discussed earlier. The second is linear in $\cal M$, which can be expanded in powers of derivatives/momenta. Such a double Taylor expansion comes from the explicit symmetry breaking and is called **chiral expansion**. The leading term of this will contain no derivatives. There are two available independent invariants, so
+$$
+{\cal L}_\mathrm{sb}=\frac{F^2}{2}
+\mathrm{tr}(B{\cal M}U^\dagger+B^*U{\cal M}^\dagger).
+$$
+We get a new low energy constant in the theory, $B$, which comes from the symmetry breaking. Because of how the field and the mass matrix transform under parity, $B$ must be real. Specializing also to $\cal M$ real and diagonal one gets
+$$
+{\cal L}_\mathrm{sb}=\frac{F^2B}{4}(m_u+m_d)
+\mathrm{tr}(U+U^\dagger).
+$$
+The derivative of effective QCD Hamiltonian with respect to $m_q$ is $\bar qq$, where $q$ is $u$ or $d$. The respective derivative of the vacuum energy is $\langle0|\bar qq|0\rangle$. Expanding the exponential in $U$, we get a new constant term, which corresponds to vacuum energy and appears because of the symmetry breaking. Equating it to the quark condensate, we get
+$$
+\langle0|\bar uu|0\rangle=\langle0|\bar dd|0\rangle=-F^2B
+$$
+The $\vec\phi\cdot\vec\phi$ term in the same expansion gives the mass of the pion triplet
+$$
+m^2_{\pi^+}=m^2_{\pi^0}=m^2_{\pi^-}=B(m_u+m_d)\equiv M^2.
+$$
+Eliminating $B$, one obtains the formula:
+$$
+F^2M^2=-(m_u+m_d)\langle0|\bar uu|0\rangle.
+$$
