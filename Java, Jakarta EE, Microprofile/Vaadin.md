@@ -689,3 +689,79 @@ greetingRenderer = (root: HTMLElement) => {
 	root.textContent = message;
 }
 ```
+## Hilla
+A framework that combines Spring Boot backend wth React frontend in a coherent way.
+Creating a Java service that will be available to be called from TypeSctipt:
+```java
+@Endpoint
+@AnonymousAllowed
+public class CounterEndpoint {
+    public int addOne(int number) {
+        return number + 1;
+    }
+}
+// or
+@BrowserCallable
+@AnonymousAllowed
+public class CounterService {
+    public int addOne(int number) {
+        return number + 1;
+    }
+}
+```
+Methods inherited from base class are normally not exposed, unless they are annotated with:
+```java
+@EndpointExposed
+public class ExposedClass {
+    public String fromExposedClass() { 
+        return "Hello from ExposedClass";
+    }
+}
+```
+#### Reactive endpoints
+They return `Flux` or `EndpointSubscription`, a wrapper for `Flux` which allows to execute some logic on the server when the client cancels a subscription 
+```java
+@AnonymousAllowed
+public Flux<@NonNull String> getClock() {
+    return Flux.interval(Duration.ofSeconds(1)).onBackpressureDrop()
+            .map(_interval -> new Date().toString());
+}
+
+@AnonymousAllowed
+public EndpointSubscription<@NonNull String> getClockCancellable() {
+    return EndpointSubscription.of(getClock(), () -> {
+        LOGGER.info("Subscription has been cancelled");
+    });
+}
+```
+It is consumed on the client side with:
+```ts
+import { Subscription } from '@vaadin/hilla-frontend';
+import { Button } from '@vaadin/react-components/Button.js';
+import { TextField } from '@vaadin/react-components/TextField.js';
+import { getClockCancellable } from 'Frontend/generated/ReactiveEndpoint';
+
+export default function ReactiveView() {
+  const serverTime = useSignal("");
+  const subscription = useSignal<Subscription<string> | undefined>(undefined);
+
+  const toggleServerClock = async () => {
+    if (subscription) {
+      subscription.cancel();
+      subscription.value = undefined;
+    } else {
+      subscription.value = getClockCancellable().onNext((time) => {
+        serverTime.value = time;
+      });
+    }
+  }
+
+  return (
+    <section className="flex p-m gap-m items-end">
+      <TextField label="Server time" value={serverTime.value} readonly />
+      <Button onClick={toggleServerClock}>Toggle server clock</Button>
+    </section>
+  );
+}
+```
+There is also `onError`, `onComplete` etc.
