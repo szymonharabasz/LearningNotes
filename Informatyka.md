@@ -54,6 +54,7 @@ $$
 Mantysa kodowana jako znak-moduł prosty, znormalizowana do całości, bez optymalizacji, cecha kodowana nadmiarowo:
 - Single: 32 bity, 24 na mantysę
 - Double: 64 bity, 53 na mantysę
+Negacja liczby zmiennoprzecinkowej: `XOR` z `-0.0`
 
 Algorytm Euklidesa bazuje na tym, że jeżeli a = m b + r, to NWD(a, b) = NWD(b, r)
 
@@ -122,3 +123,22 @@ Ogólnego przeznaczenia
   `al - dl`
 - Wyższe 8 bitów rejestru 16-bitowego
   `ah - dh`
+Kopiowanie wartości do rejestru 8-bitowego lub 16-bitowego **nie zeruje** górnych bitów rejestru 64-bitowego.
+Kopiowanie wartości do rejestru 32-bitowego **zeruje** górne bity rejestru 64-bitowego
+Bieżąca pozycja w pamięci : `$`
+Deklarowanie użycia funkcji zewnętrznej
+```asm
+extern printf
+```
+Prolog i epilog funkcji
+```asm
+push rpb
+mov rpb,rsp
+; ...
+mov rsp,rpb
+pop rpb
+```
+Umieszczenie w rejestrze wartości pod danym adresem
+```asm
+mov rsi, [radius]
+```
