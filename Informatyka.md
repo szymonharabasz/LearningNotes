@@ -112,7 +112,7 @@ Liczby zmiennoprzecinkowe:
 | Same jedynki  | Inna wartość | NaN                     |
 Dla liczby zdenormalizowanej nie jest dodawana domyślna jedynka przed przecinkiem, pozwala to na zapisanie jeszcze mniejszych liczb
 #### Rejestry procesora x86_64
-Ogólnego przeznaczenia
+###### Ogólnego przeznaczenia
 - 64 bitowe:
   `rax - rdx, rsi, rdi, rbp, rsp, r8 - r15`
 - 32 bitowe:
@@ -125,10 +125,25 @@ Ogólnego przeznaczenia
   `ah - dh`
 Kopiowanie wartości do rejestru 8-bitowego lub 16-bitowego **nie zeruje** górnych bitów rejestru 64-bitowego.
 Kopiowanie wartości do rejestru 32-bitowego **zeruje** górne bity rejestru 64-bitowego
+###### Rejestr flag `rflags`
+- `CF` - przeniesienie - poprzednia instrukcja spowodowała przeniesienie
+- `PF` - parzystość - ostatni bajt zawierał parzystą liczbę jedynek
+- `AF` - korekcja - operacja BCD
+- `ZF` - zero - wynikiem poprzedniej instrukcji było zero
+- `SF` - znak - w wyniku poprzedniej instrukcji najbardziej znaczący bit został ustawioy na 1
+- `DF` - kierunek - kierunek operacji łańcuchowych, zwiększanie lub zmniejszanie
+- `OF` - przepełnienie - poprzednia instrukcja spowodowała przepełnienie
+Typy danych w `section .data`:
+- db - bajt
+- dw - słowo (16 bitów)
+- dd - podwójne słowo
+- dq - poczwórne słowo
 Bieżąca pozycja w pamięci : `$`
-Deklarowanie użycia funkcji zewnętrznej
+Użycie funkcji zewnętrznej
 ```asm
 extern printf
+; ... po umieszczeniu argumentów w odpowiednich rejestrach:
+call printf
 ```
 Prolog i epilog funkcji
 ```asm
@@ -138,7 +153,31 @@ mov rpb,rsp
 mov rsp,rpb
 pop rpb
 ```
+Wyjście z programu:
+```assembler
+mov rax, 60; 60 = wyjście
+mov rdi, 0 ; wartość wyjściowa - 0 = sukces
+syscall
+```
+albo
+```asm
+ret
+```
+###### Instrukcje
 Umieszczenie w rejestrze wartości pod danym adresem
 ```asm
 mov rsi, [radius]
 ```
+Porównanie (ustawia odpowiednie flagi):
+```
+cmp rax, rbx
+```
+Skok bezwarunkowy:
+```asm
+jmp etykieta
+```
+Skoki warunkowe
+- `je` - skok jeśli równe
+- `jne` - skok jeśli nie równe
+- `jg, jge, jl, jle` - skok jeśli większe, większe lun równe itd, ze znakiem
+- `ja, jae, jb, jbe` - skok jeśli wyższe, wyższe lub równe itd, bez znaku
