@@ -765,3 +765,105 @@ export default function ReactiveView() {
 }
 ```
 There is also `onError`, `onComplete` etc.
+#### Client middleware
+Basic structure
+```typescript
+import { Middleware, MiddlewareContext, MiddlewareNext } 
+	from '@vaadin/hilla-frontend';
+
+// A middleware is an async function, that receives the `context` and `next`
+export const MyLogMiddleware: Middleware = async function(
+  context: MiddlewareContext,
+  next: MiddlewareNext
+) {
+  const {endpoint, method, params} = context;
+  console.log(
+    `${endpoint} - method: ${method} parameters: ${JSON.stringify(params)} `
+  );
+
+  // Fetch API Request and Reponse types
+  const request: Request = context.request;
+  const response: Response = await next(context);
+
+  // The response is a Fetch API `Response` object.
+  console.log(`Received response: ${response.status} ${response.statusText}`);
+
+  // A middleware returns a response.
+  return response;
+  // or
+  return await next(context);
+}
+```
+Using it if the Hilla TypeScript client is instantiated:
+```typescript
+import { ConnectClient } from '@vaadin/hilla-frontend';
+import { MyLogMiddleware } from './my-log-middleware';
+
+const client = new ConnectClient({
+  prefix: '/connect',
+  middlewares: [MyLogMiddleware]
+});
+
+export default client;
+```
+Or when generated client is used
+```typescript
+import client from 'Frontend/generated/connect-client.default';
+import { MyLogMiddleware } from './my-log-middleware';
+
+client.middlewares = [MyLogMiddleware];
+```
+Middleware can modify request and response, e.g.,
+```typescript
+const url = context.request.url.replace(
+  'https//my-app.example.com',
+  'https://external-endpoint.example.com'
+);
+context.request = new Request(url, context.request);
+// ...
+return new Response('{}');
+```
+#### Client-side routes
+Views defined in `src/main/frontend/views`. Special names:
+`_starting-with-underscore.tsx` - ignored by the router
+`@index.tsx` - index page
+`@layout.tsx` - layout for other routes defined in the same (sub-)directory
+In the component, one should render `<Outlet />`
+`{parameter}.tsx` - route with mandatory parameter
+`{{optionalParameter}}.tsx` - route with mandatory parameter
+`{...wildcard}.tsx` - route that matches any character
+The parameters can be accessed like this in `{productId}.tsx`:
+```tsx
+import { useParams } from 'react-router';
+// ...
+const { productId } = useParams();
+```
+With React Router, the wildcard parameter is always named `*`, for convenience, one can use destructuring rename:
+```tsx
+const { "*": wildcard } = useParams();
+```
+#### Creating menu from routes
+```tsx
+import { createMenuItems } from '@vaadin/hilla-file-router/runtime.js';
+import { SideNav } from '@vaadin/react-components/SideNav.js';
+import { SideNavItem } from '@vaadin/react-components/SideNavItem.js';
+import { Outlet, useNavigate, useLocation } from 'react-router';
+
+export default function MainMenu() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  return (
+    <SideNav onNavigate={({path}) => path && navigate(path)} location={location}>
+      {
+        createMenuItems().map(({ to, icon, title }) => (
+          <SideNavItem path={to} key={to}>
+            {icon && <Icon icon={icon} slot="prefix"/>}
+            {title}
+          </SideNavItem>
+        ))
+      }
+    </SideNav>
+  );
+}
+```
