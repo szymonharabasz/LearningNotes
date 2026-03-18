@@ -141,3 +141,92 @@ $$
 ds^2=e^{2\tau}(d\tau^2+d\Omega^2_{d-1}).
 $$
 It is flat, the rescaled metric is independent of $\tau$, but it is not fully compact, it represents the geometry of a cylinder instead of a sphere.
+#### Classical fields
+The conformal transformation can be viewed as acting on fields and the metric:
+$$
+\begin{split}
+\phi(x)\rightarrow &e^{\Delta\sigma(x)}\phi(x),\\
+g_{\mu\nu}(x)\rightarrow&e^{2\sigma(x)}g_{\mu\nu}(x),
+\end{split}
+$$
+where $\Delta$ is the **scaling dimension** that for the free fields coincides with units of energy,
+$$
+\Delta=\frac{d-2}{2}.
+$$
+In this approach the space-time is curved, so the action must include metric explicitly and can be supplemented with a term depending on the scalar curvature $R$,
+$$
+S=\int d^dx\sqrt{|g|}\left[
+-\frac{1}{2}g^{\mu\nu}\partial_\mu\phi\partial_\nu\phi+\alpha R\phi^2
+\right].
+$$
+The value of $\alpha$ is uniquely defined if the action is to be invariant under the above transformation.
+
+Another view is to assume that the transformation changes fields and coordinates, but not the metric,
+$$
+\phi(x)\rightarrow e^{\Delta\sigma(x)}\phi(x+\epsilon),
+$$
+where $\sigma$ and $\epsilon$ are related by the conformal Killing equation,
+$$
+\sigma=\frac{1}{d}\partial_\mu\epsilon^\mu.
+$$
+Infinitisemaly,
+$$
+\phi(x)\rightarrow\left[
+1+\frac{d-2}{2d}(\partial_\nu\epsilon^\nu)+e^\nu\partial_\nu
+\right]\phi(x).
+$$
+When the change of the Lagrangian under the transformation $\phi\rightarrow \phi+\delta_\epsilon\phi$ is
+$$
+{\cal L}\rightarrow {\cal L}+\partial_\mu\Lambda^\mu_\epsilon,
+$$
+then the Noether current is
+$$
+J^\mu_\epsilon=\Lambda^\mu_\epsilon-
+\frac{\partial{\cal L}}{\partial(\partial_\mu\phi)}\delta_\epsilon\phi.
+$$
+In this example,
+$$
+J^\mu_\epsilon=\epsilon_\nu\left(
+\partial_\mu\phi\partial^\nu\phi-
+\frac{1}{2}g^{\mu\nu}\partial_\rho\phi\partial^\rho\phi
+\right) \equiv \epsilon_\mu T^{\mu\nu}_c,
+$$
+where $T^{\mu\nu}_c$ is the canonical **energy-momentum tensor**, whose divergence is
+$$
+\partial_\nu T^{\mu\nu}_c=\partial^\mu\phi\partial^2\phi.
+$$
+It vanishes by equations of motion $\partial^2\phi=0$. For constant $\epsilon$ the current is then conserved, but for $\epsilon$ depending on the space-time, one has:
+$$
+\partial_\mu J^\mu_\epsilon=(\partial_\nu\epsilon_\mu)T^{\mu\nu}_c.
+$$
+Because the tensor is symmetric, one can write
+$$
+\partial_\mu J^\mu_\epsilon=
+\frac{1}{2}(\partial_\nu\epsilon_\mu+\partial_\mu\epsilon_\nu)T^{\mu\nu}_c=
+\sigma g_{\mu\nu}T^{\mu\nu}_c=
+-\frac{d-2}{2}\sigma\partial_\mu\phi\partial^\mu\phi.
+$$
+For $d>2$ the current is only conserved if $\sigma=0$. This is because the above version of Noether's theorem does not directly apply to the case of a space-dependent parameter. In fact, the energy-momentum tensor is not unique, one can always add a term proportional to
+$$
+(\partial^\mu\partial^\nu-g^{\mu\nu}\partial^2)\phi^2,
+$$
+and the tensor conservation is not affected. For example, the combination
+$$
+T^{\mu\nu}=T^{\mu\nu}_c+\frac{d-2}{2(d-1)}(\partial^\mu\partial^\nu-g^{\mu\nu}\partial^2)\phi^2
+$$
+is traceless for every $d$. In a field theory with conformal symmetry one can always construct a symmetric, traceless energy-momentum tensor that is conserved when imposing equations of motion. The Noether's theorem only applies to theories with Lagrangian desrciption, but the existence of such a tensor will be always assumed in conformal field theories and will be treated, in a sense, as their "axiom". From this one will deduce a charge conservation
+$$
+J^\mu=\epsilon_\nu T^{\mu\nu} \Rightarrow 
+\partial_\mu J^\mu=\epsilon_\nu\partial_\mu T^{\mu\nu}=0
+$$
+if equations of motion are obeyed.
+
+The conserved charges are:
+$$
+\begin{split}
+P^\mu=&-i\int d^{d-1}\vec xT^{0\mu}(x),\\
+M^{\mu\nu}=&-i\int d^{d-1}\vec x[x^\mu T^{0\nu}(x)x^\nu T^{0\mu}(x)], \\
+D=&-i\int d^{d-1}\vec xx_\mu T^{0\mu}(x),\\
+K^\mu=&-i\int d^{d-1}\vec x[2x^\mu x_\nu T^{0\nu}(x)-x^2T^{0\mu}(x)].
+\end{split}
+$$
