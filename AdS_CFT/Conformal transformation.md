@@ -230,3 +230,32 @@ D=&-i\int d^{d-1}\vec xx_\mu T^{0\mu}(x),\\
 K^\mu=&-i\int d^{d-1}\vec x[2x^\mu x_\nu T^{0\nu}(x)-x^2T^{0\mu}(x)].
 \end{split}
 $$
+#### Fields with sources
+An additional term in the action:
+$$
+S_\mathrm{source}=\int d^dxJ(x)\phi(x),
+$$
+change in the equation of motion:
+$$
+\partial^2\phi+J=0,
+$$
+change in the conservation of the canonical energy-momentum tensor:
+$$
+\partial_\nu T^{\mu\nu}=-J\partial^\mu\phi.
+$$
+If the source is localized, for example
+$$
+J(x)=\delta^d(x-x_\odot),
+$$
+then one can consider the change in one charge, for example $P^\mu$ between $x^0<x^0_\odot$ and $x^0>x^0_\odot$ and call it **momentum of the field**,
+$$
+P^\mu_\odot=-i\int_{x^0>x^0_\odot} d^{d-1}\vec xT^{0\mu}(x)+i\int_{x^0>x^0_\odot} d^{d-1}\vec xT^{0\mu}(x).
+$$
+The two surfaces meet at spatial infinity, and they form two sides of a closed surface $\partial\Sigma$. Using the divergence theorem.
+$$
+P^\mu_\odot=-i\int_{\partial\Sigma} d^{d-1}n_\nu T^{\mu\nu}(x)=
+i\int_{\Sigma} d^{d}x\partial_\nu T^{\nu\mu}(x)=
+i\int_\Sigma d^dx\delta^d(x-x_\odot)\partial^\mu\phi=
+i\partial^\mu\phi(x_\odot).
+$$
+So this charge, and other charges as well are the same as the symmetry generators acting on a classical field. This can be generalized to any classical theory, not only the free one.
