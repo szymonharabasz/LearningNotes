@@ -10,3 +10,24 @@ Niklas:
 
 #### NN ref. Tania
 
+One CUDA device found
+
+Device Number: 0
+  Device Name: NVIDIA RTX 1000 Ada Generation Laptop GPU
+  Compute Capability: 8.9
+  Number of Multiprocessors: 20
+  Single- to Double-Precision Perf Ratio: 64
+  Max Threads per Multiprocessor: 1536
+  Supports Cooperative Kernels: Yes
+
+  Global Memory (GB):     5.640
+
+  Execution Configuration Limits
+    Max Grid Dims: 2147483647 x 65535 x 65535
+    Max Block Dims: 1024 x 1024 x 64
+    Max Threads per Block: 1024
+
+  Managed Memory
+    Can Allocate Managed Memory: Yes
+    Device/CPU Concurrent Access to Managed Memory: Yes
+
