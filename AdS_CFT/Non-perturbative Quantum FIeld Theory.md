@@ -293,3 +293,41 @@ $$
 \partial_\mu A^\mu(x)|0\rangle=0,
 $$
 This means that *primary fields are conserved currents*.
+#### Correlation functions
+The conformal algebra in $d$ is isomorphic to $SO(d+1,1)$ in the Euclidean metric case and $SO(d,2)$ in the Minkowski metric. This is checked explicitly after defining the coordinates
+$$
+X^\mu, X^{d+1}, X^{d+2}
+$$
+and the line element
+$$
+ds^2=g_{\mu\nu}dX^\mu dX^\nu+dX^{d+1}dX^{d+1}-dX^{d+2}dX^{d+2}\equiv\
+\eta_{MN}dX^{M}dX^{N}.
+$$
+
+From the explicit form of $W(x)$, one can get by Wick rotation in the upper-half complex plane (where it is analytical),
+$$
+x^0=i\tau,~~~\tau>0,
+$$
+a **Schwinger function**,
+$$
+\langle\phi(0)\phi(x_E)\rangle=\frac{1}{(x^2_E)^\Delta}.
+$$
+The function is invariant under the Euclidean conformal group $SO(d+1,1)$, and so under translations and rotations. Then one can show
+$$
+\langle\phi(0)\phi(x)\rangle=\langle\phi(x)\phi(0)\rangle.
+$$
+An $n$-point Wightman function
+$$
+\langle0|\phi_n(x_n-n_{n-1})\phi_{n-1}(x_{n-1}-x_{n-2})...
+\phi_2(x_2-x_1)\phi_1(x_1)|0\rangle,
+$$
+can be Wick rotated to the $n$-point Schwinger function (using the "average" notation instead of the "VEV" one implies using Euclidean metric),
+$$
+\langle\phi_n(x_n-n_{n-1})\phi_{n-1}(x_{n-1}-x_{n-2})...
+\phi_2(x_2-x_1)\phi_1(x_1)\rangle,
+$$
+where all the arguments have positive $\tau$, so the product is time-ordered. One can state that:
+- Schwinger functions are symmetric under exchange of operators,
+- They transform covariantly under Euclidean $SO(d+1,d)$ transformations,
+- They are not defined at coincident points
+- Are **reflection positive**, if they are arranged in a configuration that is symmetric under reflection across some plane, then they are positive.
