@@ -331,3 +331,138 @@ where all the arguments have positive $\tau$, so the product is time-ordered. On
 - They transform covariantly under Euclidean $SO(d+1,d)$ transformations,
 - They are not defined at coincident points
 - Are **reflection positive**, if they are arranged in a configuration that is symmetric under reflection across some plane, then they are positive.
+
+To go from the embedding space $X^M$ to $x^\mu$ without violating Lorentz symmetry explicitly, one can
+- Restrict to the future light cone, $X^2=0$, $X^{d+2}>0$
+- Identify the points related by a scale transformation on this cone, $X^M~\lambda X^M, \lambda >0$.
+- To make the mapping between points $x^\mu$ and light rays in $(d+2)$ Minkowski space, we choose the section of the light cone with $X^{d+1}+X^{d+2}=1$ by identifying
+  $$
+	  X^\mu=x^\mu,~~~X^{d+1}=\frac{1-x^2}{2},~~~X^{d+2}=\frac{1+x^2}{2}.
+   $$
+Because of the isomorphism, conformal transformations are Lorentz transformations in the embedding space,
+$$
+X'M={\Lambda^M}_NX^N.
+$$
+To obtain $x'^\mu$, we map it to the section of the light cone by the above identification, perform the Lorentz transformation, and rescale to the preferred light cone section, $x'\mu=\lambda(X')X'^\mu$.
+For local operators we declare in tre preferred section
+$$
+\phi(X)\equiv\phi(x),~~~(X^2=0,X^{d+1}+X^{d+2}=1).
+$$
+On the rest of the cone, the *primary* operators are defined by the rescaling rule
+$$
+\phi(\lambda X)=\lambda^{-\Delta}\phi(X).
+$$
+Correlation functions are constructed using the following rules
+- They must depend on Lorentz-invariant quantities in the embedding space, that is, scalar products of the type $X_i\cdot X_j$, where only $i\neq j$ appear, because $X^2=0$ on the light cone.
+- When
+  $$
+	  \phi_i(X_i)\rightarrow\lambda(X_i)^{-\Delta_i}\phi_i(X_i),
+   $$
+   then the correlator must transform homogenously
+   $$
+	   \langle\phi_1(X_1)...\phi_n(X_n)\rangle\rightarrow
+	   \lambda(X_1)^{-\Delta_1}...\lambda(X_n)^{-\Delta_n}
+	   \langle\phi_1(X_1)...\phi_n(X_n)\rangle
+   $$
+Therefore there are no one-point functions. The simplest case, a two-point function, must obey
+$$
+\langle\phi(X_1)\phi(X_2)\rangle\propto(X_1\cdot X_2)^{-\Delta}.
+$$
+Using the above identification, we get
+$$
+X_1\cdot X_2=-\frac{1}{2}(x_1-x_2)^2.
+$$
+After fixing a proportionality factor, one gets
+$$
+\langle\phi(x_1)\phi(x_2)\rangle=\frac{1}{[(x_1-x_2)^2]^\Delta}.
+$$
+For a 3-point function, the only possible form is
+$$
+\langle\phi_1(X_1)\phi_2(X_2)\phi_3(X_3)\rangle\propto
+(X_1\cdot X_2)^{\alpha_{12}}
+(X_1\cdot X_3)^{\alpha_{13}}
+(X_2\cdot X_3)^{\alpha_{23}}
+$$
+with
+$$
+\begin{split}
+\alpha_{12}+\alpha{13}=-\Delta_1,\\
+\alpha_{12}+\alpha{23}=-\Delta_2,\\
+\alpha_{13}+\alpha{23}=-\Delta_3.\\
+\end{split}
+$$
+It has a solution
+$$
+\begin{split}
+\alpha_{12}=-\frac{\Delta_1+\Delta_2-\Delta_3}{2}\equiv\Delta_{12,3},\\
+\alpha_{13}=-\frac{\Delta_1+\Delta_3-\Delta_3}{2}\equiv\Delta_{13,2},\\
+\alpha_{23}=-\frac{\Delta_2+\Delta_3-\Delta_1}{2}\equiv\Delta_{23,1}.\\
+\end{split}
+$$
+With another compact notation,
+$$
+x^2_{ij}=(x_i-x_j)^2,
+$$
+this can be written in Euclidean coordinates,
+$$
+\langle\phi_1(x_1)\phi_2(x_2)\phi_3(x_3)\rangle=
+\frac{\lambda_{123}}{
+(x^2_{12})^{\Delta_{12,3}}
+(x^2_{13})^{\Delta_{13,2}}
+(x^2_{23})^{\Delta_{23,1}}
+}.
+$$
+With just Poincare and scale symmetry, without the conformal one, there is an infinite sum of similar terms, each with its coefficient.
+For example of a descendant operator,
+$$
+\langle\partial^2\phi_1(x_1)\phi_2(x_2)\phi_3(x_3)\rangle=
+4\lambda_{123}\begin{split}\left[
+\frac{(\Delta_1-\frac{d-2}{2})\Delta_{12,3}}{
+(x^2_{12})^{\Delta_{12,3}+1}
+(x^2_{13})^{\Delta_{13,2}}
+(x^2_{23})^{\Delta_{23,1}}
+}+ \\
+\frac{(\Delta_1-\frac{d-2}{2})\Delta_{13,2}}{
+(x^2_{12})^{\Delta_{12,3}}
+(x^2_{13})^{\Delta_{13,2}+1}
+(x^2_{23})^{\Delta_{23,1}}
+}+\\
+\frac{\Delta_{12,3}\Delta_{13,2}}{
+(x^2_{12})^{\Delta_{12,3}+1}
+(x^2_{13})^{\Delta_{13,2}+1}
+(x^2_{23})^{\Delta_{23,1}-1}
+}\right]
+\end{split}.
+$$
+This is a sum of three terms, each of which is individually consistent with Poincare and scale symmetry. There are special cases, when the 3-point function takes a form of correlator involving primary operators. These are:
+- When $\Delta_1=|\Delta_2-\Delta_3|, then either $\Delta_{12,3}=0$ or $\Delta_{13,2}=0$, in both cases two terms vanish. In this case, a three point function factorizes into a product of two-point functions, for example, when $\Delta_3=\Delta_1+\Delta_2$, then
+  $$
+	  \langle\phi_1(x_1)\phi_2(x_2)\phi_3(x_3)\rangle\propto
+	  \langle\phi_1(x_1)\phi_1(x_3)\rangle
+	  \langle\phi_2(x_2)\phi_2(x_3)\rangle.
+   $$
+   This situation is realized in a generlized free field theory when $\phi_3$ is a composite operator $\phi_3\approx\phi_1\phi_2$.
+- If $\Delta=\frac{d-2}{2}$ then the first two terms vanish and this is the case of free scalar field with equation of motion $\partial^2\phi_1=0$ and it is natural that the correlator takes the form of primary 3-point function. But it must also vanish identically, so either $\lambda_{123}=0$ or that an additional condition $\Delta_1=|\Delta_2-\Delta_3|$ is satisfied. This is for example the case of a 3-point function involving the primary composite operator $\phi^2$,
+  $$
+	  \langle\phi(x_1)\phi(x_2)\phi^2(x_3)\rangle=
+	  \frac{\lambda}{(x^2_{13})^{(d-2)/2}(x^2_{23})^{(d-2)/2}}.
+   $$
+This is non-zero, but vanishes identically under the action of $\partial^2/(\partial x_{1})^2$. Going back to Minkowski space,
+$$
+\langle 0|\phi_1(x_1)\phi_2(x_2)\phi_3(x_3)|0\rangle=
+\frac{\lambda_{123}}{
+(x^2_{12})^{\Delta_{12,3}}
+(x^2_{13})^{\Delta_{13,2}}
+(x^2_{23})^{\Delta_{23,1}}
+},
+$$
+with
+$$
+x^2_{ij}=-(x^0_i-x^0_j-i\epsilon)+(\vec x_i - \vec x_j)^2.
+$$
+Then $x^2_{ij}\neq x^2_{ji}$, and the WIghtman 3-point function is not symmetric under the exchange of operators. But for real operators, $\phi_i(x)^\dagger=\phi_i(x)$ we must have
+$$
+\langle 0|\phi_1(x_1)\phi_2(x_2)\phi_3(x_3)|0\rangle=
+\langle 0|\phi_3(x_3)\phi_2(x_2)\phi_1(x_1)|0\rangle^*.
+$$
+Consequently $\lambda_{123}$ *must be real*.
