@@ -13,7 +13,7 @@ where the variables ${\cdot}^*_1$ are for particle 1 in the two-body rest frame.
 a hadron
 $$
 \sum_\mathrm{polarizations}|{\cal T}(P\rightarrow P'l^+l^-)|^2=
-e^2{\cal W}^{mu\nu}\frac{1}{q^4}L_{\mu\nu}.
+e^2{\cal W}^{\mu\nu}\frac{1}{q^4}L_{\mu\nu}.
 $$
 The hadronic tensor,
 $$
@@ -186,3 +186,71 @@ where $F_\pi$ is the eTFF of charged pions and
 $$
 \Gamma_{\pi\pi}=\frac{g^2_\rho}{2\pi}\frac{p^3_\pi}{M^2}.
 $$
+#### NN bremsstrahlung
+In general, any process $NN\rightarrow NNX\gamma^*$,but some processes treated separately.
+In the non-resonant, "quasi-elastic" process, one or both nucleons go off-shell before or after the photon emission and their virtuality is lifted by the strong interaction between nucleons, calculated with one boson exchange
+In transport models - soft photon approximation:
+- $\gamma^*$ emission following an elastic NN interaction with the phase space modifications due to the produced virtual photon. 
+- Inference effects neglected
+- Emission form a meson line are neglected - **but new GiBUU paper does not neglect!**
+- Other processes, like resonance decay are added incoherently.
+Sensitivity to form factors, interference terms.
+$n-p$ much stronger than $p-p$ because of non-vanishing dipole moment and additional charged pion exchange channels. 
+Important was and off-shell $\rho$ contributions to the eTFF of internal charged pion.
+#### Drell-Yan
+Cross-section for $q\bar q$ annihilation into dilepton
+$$
+\frac{d\hat\sigma}{dQ^2}=\frac{4\pi\alpha}{3Q^2}e^2(Q^2-\hat s).
+$$
+Factorization concept:
+$$
+\frac{d\sigma}{dQ^2}=\beta_c\sum_q\int dx\int dy f_q(x)f_{\bar q}
+(y)\frac{d\hat\sigma}{dQ^2},
+$$
+where $\hat s = (xp_1+yp_2)^2\approx xys$.
+Higher-order effects - implemented as $K$-factors.
+In $p+A$ and $A+A$ additional effects:
+- structure functions modified by embedding nucleons in medium
+- gluon shadowing
+- Croning effect - $p_T$ enhancement due to parton multiple scattering
+#### Thermal dileptons
+For a perturbative gas of quarks and gluons.
+$$
+\frac{dN_{ll}}{d^4x}=-4e^4\int
+\frac{d^3k_1}{(2\pi)^32E_1}
+\frac{d^3k_2}{(2\pi)^32E_2}
+{\cal W}^{\mu\nu}\frac{1}{q^4}L_{\mu\nu},
+$$
+where the leptonic tensor, integrated over the momenta if final state leptons, for momentum transfer much larger than the lepton mass gives
+$$
+\frac{1}{q^4}L_{\mu\nu}=-\frac{\alpha^2}{3\pi^3M^2}\left(
+g_{\mu\nu}-\frac{q_\mu q_\nu}{M^2}
+\right).
+$$
+Partonic tensor is the thermal average
+$$
+W^{\mu\nu}(q)=\int d^4xe^{-iqx}
+\langle\langle j^\mu_\mathrm{em}(x)j^\nu_\mathrm{em}(0)\rangle\rangle.
+$$
+This gives for $q^2>>m^2_e$, 
+$$
+\frac{dN_{ll}}{d^4xd^4q}=\frac{\alpha^2}{12\pi^3M^2}W\mu_\mu(q).
+$$
+In practice, it is enough to take only three lightest quarks, weighted by their electric charge,
+$$
+j^\mu_\mathrm{em}=\frac{2}{3}\bar u\gamma^\mu u-
+\frac{1}{3}\bar d\gamma^\mu d-
+\frac{2}{3}\bar s\gamma^\mu s.
+$$
+After integrating,
+$$
+\frac{dN_{ll}}{dM}=R_\mathrm{part}\frac{\alpha^2}{6\pi^2}M^2TK_1(M/T),
+$$
+where
+$$
+R_\mathrm{part}=N_c\sum_{f=u,d,s}e^2_f=
+3\left(\frac{4}{9}+\frac{1}{9}\frac{1}{9}\right).
+$$
+The microscopic properties of QGP enter the rate only through the number $R_\mathrm{part}$.
+
+For $M/T>5$, which corresponds to the IMR, the above formula agrees within 5% with black-body radiation, which allows to extract the temperature of the QGP. It also dominates the yield due to its larger temperature value.
