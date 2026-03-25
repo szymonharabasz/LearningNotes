@@ -376,6 +376,7 @@ After fixing a proportionality factor, one gets
 $$
 \langle\phi(x_1)\phi(x_2)\rangle=\frac{1}{[(x_1-x_2)^2]^\Delta}.
 $$
+###### 3-point functions
 For a 3-point function, the only possible form is
 $$
 \langle\phi_1(X_1)\phi_2(X_2)\phi_3(X_3)\rangle\propto
@@ -466,3 +467,116 @@ $$
 \langle 0|\phi_3(x_3)\phi_2(x_2)\phi_1(x_1)|0\rangle^*.
 $$
 Consequently $\lambda_{123}$ *must be real*.
+###### 4-point functions
+There are two invariant quantities, that can be constructed from four $X_i$:
+$$
+u=\frac{(X_1\cdot X_1)(X_3\cdot X_4)}{(X_1\cdot X_3)(X_2\cdot X_4)},~~~
+v=\frac{(X_1\cdot X_4)(X_2\cdot X_3)}{(X_1\cdot X_3)(X_2\cdot X_4)},
+$$
+called **cross-ratios**. Any function of these will be invariant, and the most general 4-point function, restricting to identical scalar field and one scaling dimension, is
+$$
+\langle\phi(X_1)\phi(X_2)\phi(X_3)\phi(X_4)\rangle\propto
+\frac{g(u,v)}{(X_1\cdot X_2)^\Delta(X_3\cdot X_4)^\Delta}.
+$$
+In terms of Euclidean coordinates,
+$$
+\langle\phi(x_1)\phi(x_2)\phi(x_3)\phi(x_4)\rangle=
+\frac{g(u,v)}{(x^2_{12}x^2_{34})^\Delta}
+$$
+with
+$$
+u=\frac{x^2_{12}x^2_{34}}{x^2_{13}x^2_{24}},~~~~
+v=\frac{x^2_{14}x^2_{23}}{x^2_{13}x^2_{24}}.
+$$
+It is most general, because we can always:
+- Use translations to move $x_1$ to 0.
+- Use special conformal transformations to move $x_4$ to $\infty$ without moving $x_1$ from the origin.
+- Rotate and scale to move $x_3$ to $(0,0,...,1)$. 
+- There is still a set of rotations that do not affect $x_3$, but move $x_2$ to $(b,0,...,0,a)$.
+For 3-point functions, first three operations fully fix the kinematics, so we are left with one multiplicative constant. For 4-point functions, we are left with two parameters $a,b$, which are in 1-1 correspondence with two cross-ratios.
+One sometimes works with $z=a+ib, \bar z=a-ib$, which are related to the cross ratios by
+$$
+u=z\bar z,~~~v(1-z)(1-\bar z).
+$$
+The function $g$ is subject to the **crossing symetry** of the 4-point function which requires 
+$$
+g(u,v)=g\left(\frac{u}{v}\frac{1}{v}\right)
+$$
+upon exchanging $\phi(x_1)$ and $\phi(x_2)$ and
+$$
+g(u,v)=\left(\frac{u}{v}\right)^\Delta g(u,v)
+$$
+upon exchanging $\phi(x_1)$ and $\phi(x_3)$.
+#### Operator product expansion
+In quantum field theory, the operator product expansion states that
+$$
+\phi_1(x)\phi_2(y)\xrightarrow[x\rightarrow y]{} 
+\sum_if_i(x-y)\phi_i(y).
+$$
+In non-perturbaative theory this can be defined, not very precisely, using the Hilbert space. Using a complete basis,
+$$
+\phi_1(x)\phi_2(y)|0\rangle=
+\sum_{|\Psi\rangle}|\Psi\rangle\langle\Psi|\phi_1(x)\phi_2(y)|0\rangle.
+$$
+Some of the basis states are obtained by acting with $\phi_i(y)$ on the vacuum, so one has
+$$
+\phi_1(x)\phi_2(y)|0\rangle=
+\sum_if_i(x-y)\phi_i(y)|0\rangle+...
+$$
+where the object $f_i$:
+$$
+f_i(x-y)\approx\lim_{x\rightarrow\infty}
+\frac{\langle 0|\phi_i(z)\phi_1(x)\phi_2(y)|0\rangle}
+{\langle 0|\phi_i(x)\phi_i(y)|0\rangle}.
+$$
+In conformal field theory, however:
+- 2-point functions are diagonal, that is, only identical primaries have 2-point functions, so states created by different primaries are orthogonal and we also have a norm of primary states.
+- 3-point functions are known and so $f_i$ are fixed up to a proportionality constant.
+- **There are no other states than created by primaries. There is an operator/state equivalence.**
+In conformal field theory, for normalizability and orthogonality, we construct the Hilbert space from states created by local operators in momentum space:
+$$
+{\cal H}\sim\mathrm{span}\{|0\rangle,\tilde\phi(p)|0\rangle,...\}.
+$$
+We can use the resolution of identity
+$$
+\mathbb{1}=|0\rangle\langle0|+
+\sum_i\int_{p^0>|\vec p|}\frac{d^dp}{(2\pi)^d}
+\frac{\tilde\phi_i(p)|0\rangle\langle0|\tilde\phi_i(p)}
+{2\pi C(-p^2)^{\Delta-d/2}}+...,
+$$
+This can be inserted in any product of two operators to obtain
+$$
+\tilde\phi_1(p_1)\tilde\phi_2(p_2)=
+\sum_i\tilde f_i\tilde\phi_i(p_1+p_2)|0\rangle.
+$$
+It is only convergent when smeared with smooth test functions.
+In Euclidean space we can formulate
+$$
+\phi_1(x_1)\phi_2(x_2)=\sum_if_i(x_1-x_2,\partial_{x_2})\phi_i(x_i),
+$$
+whose convergence is only true inside a correlation function, in which $x_1,x_2$ can be separated from all other insertions of local operators, by a quantization surface, for example, a sphere in radial quantization, whose center and radius can be arbitrary thanks to the translation and scaling symmetry.
+The symbol $\partial_{x_2}$ means that all descendant operators are included in the sum, so $f_i$ is itself an infinite series.
+One can calculate
+$$
+\langle\phi(x)\phi(0)=\frac{1}{(x^2)^{\Delta_\phi}}\langle\mathbb{1}\rangle
+$$
+with $\langle\mathbb{1}\rangle=1$, from which
+$$
+f_{\langle\mathbb{1}\rangle}(x,\partial)=\frac{1}{(x^2)^{\Delta_\phi}},
+$$
+so the unity operator has no descendants.
+One can also deduce
+$$
+f_i(x,\partial)=\frac{\lambda_{12i}}{(x^2)^{\Delta_{12,i}}}
+[1+ax^\mu \partial_\mu+b_1x^\mu x^\nu\partial_\mu\partial_\nu+
+b_2x^2\partial^2+...],
+$$
+where
+$$
+\begin{split}
+a=&\frac{\Delta_{i1,2}}{\Delta_i},\\
+b_1=&\frac{\Delta_{i1,2}(\Delta_{i1,2}+1)}{2\Delta_i(\Delta_i+1)},\\
+b_2=&-\frac{\Delta_{i1,2}\Delta_i2,1}
+{4\Delta_i(\Delta_i+1)(\Delta_i-\frac{d-2}{2})}.
+\end{split}
+$$
