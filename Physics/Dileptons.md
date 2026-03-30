@@ -74,19 +74,21 @@ The partial decay width can be factorized:
 $$
 d\Gamma(P\rightarrow P'l^+l^-)=
 \frac{\alpha}{3\pi}
-d\Gamma(P\rightarrow P'\gamma^*)
-\sqrt{1-\frac{4m^2_l}{M_{l^+l^-}^2}}
-\left(1+\frac{4m^2_l}{M_{l^+l^-}^2}\right)
+d\Gamma(P\rightarrow P'\gamma^*)L(M_{l^+l^-})
 \frac{dM_{l^+l^-}^2}{M_{l^+l^-}^2}.
 $$
+where
+$$
+L(M_{l^+l^-})=\sqrt{1-\frac{4m^2_l}{M_{l^+l^-}^2}}
+\left(1+\frac{4m^2_l}{M_{l^+l^-}^2}\right)
+$$
+is the dilepton phase space factor.
 This gives
 $$
 \begin{split}
 \frac{d\Gamma(P\rightarrow P'l^+l^-)}
 {dM_{l^+l^-}^2\Gamma(P\rightarrow P'\gamma)}=&
-\frac{\alpha}{3\pi}
-\sqrt{1-\frac{4m^2_l}{M_{l^+l^-}^2}}
-\left(1+\frac{4m^2_l}{M_{l^+l^-}^2}\right)
+\frac{\alpha}{3\pi}L(M_{l^+l^-})
 \frac{1}{M_{l^+l^-}^2}\\
 \times&
 \left[
@@ -143,9 +145,7 @@ $$
 $$
 Finally, the dilepton decay widths is written as
 $$
-\Gamma(M)_{l^+l^-}=\frac{4\pi\alpha^2}{3g^2_V}\frac{M^4_V}{M^3}
-\sqrt{1-\frac{4m^2_l}{M^2}}
-\left(1+\frac{4m^2_l}{M^2}\right).
+\Gamma(M)_{l^+l^-}=\frac{4\pi\alpha^2}{3g^2_V}\frac{M^4_V}{M^3}L(M).
 $$
 The coupling constants are:
 $$
@@ -172,13 +172,9 @@ $$
 \frac{M\Gamma_{\pi\pi}\Gamma_{l^+l^-}M}
 {(M^2-M^2_\rho)^2+M^2\Gamma^2_\mathrm{tot}}\\
 =&\frac{8\pi\alpha^2p_\pi}{3M^3}
-\frac{M^4_\rho}{(M^2-M^2_\rho)^2+M^2\Gamma^2_\mathrm{tot}}
-\sqrt{1-\frac{4m^2_l}{M^2}}
-\left(1+\frac{4m^2_l}{M^2}\right)\\
+\frac{M^4_\rho}{(M^2-M^2_\rho)^2+M^2\Gamma^2_\mathrm{tot}}L(M)\\
 =&\frac{4\pi\alpha^2}{3M^3}
-\sqrt{1-\frac{4m^2_l}{M^2}}
-\sqrt{1-\frac{4m^2_\pi}{M^2}}
-\left(1+\frac{4m^2_l}{M^2}\right)
+\sqrt{1-\frac{4m^2_\pi}{M^2}}L(M)
 |F_\pi|^2,
 \end{split}
 $$
@@ -249,8 +245,108 @@ $$
 where
 $$
 R_\mathrm{part}=N_c\sum_{f=u,d,s}e^2_f=
-3\left(\frac{4}{9}+\frac{1}{9}\frac{1}{9}\right).
+3\left(\frac{4}{9}+\frac{1}{9}+\frac{1}{9}\right)=2.
 $$
 The microscopic properties of QGP enter the rate only through the number $R_\mathrm{part}$.
 
 For $M/T>5$, which corresponds to the IMR, the above formula agrees within 5% with black-body radiation, which allows to extract the temperature of the QGP. It also dominates the yield due to its larger temperature value.
+For the hadronic part:
+$$
+j^\mu_\mathrm{em}=\frac{2}{3}\bar u\gamma^\mu u-
+\frac{1}{3}\bar d\gamma^\mu d-
+\frac{1}{3}\bar s\gamma^\mu s=
+j^\mu_\mathrm{em,\rho}+j^\mu_\mathrm{em,\omega}+j^\mu_\mathrm{em,\phi}
+$$
+with
+$$
+\begin{split}
+j^\mu_\mathrm{em,\rho}  =&\frac{1}{2}(\bar u\gamma^\mu u-\bar d\gamma^\mu d),\\
+j^\mu_\mathrm{em,\omega}=&\frac{1}{6}(\bar u\gamma^\mu u+\bar d\gamma^\mu d),\\
+j^\mu_\mathrm{em,\phi}  =&\frac{1}{2}\bar s\gamma^\mu s,
+\end{split}
+$$
+and
+$$
+\frac{dN_{ll}}{dM}=R_\mathrm{had}\frac{\alpha^2}{6\pi^2}M^2TK_1(M/T),
+$$
+where 
+$$
+R_\mathrm{had}=
+\frac{\sigma(e^+e^-\rightarrow\mathrm{hadrons})}
+{\sigma(e^+e^-\rightarrow\mu^+\mu^-)}\propto
+\frac{1}{M^2}\mathrm{Im}\Pi_\mathrm{em}.
+$$
+In vacuum $\rho$ propagator dominated by pion loops. $\Rightarrow$ Decays to $\pi^+\pi^-$ play important role. $\Rightarrow$  Inverse process $\pi^+\pi^-$ fusion. $\Rightarrow$ In the pion-dominated medium, $\rho$ propagator might be sensitive to chiral symmetry restoration, whose Goldstone bosons are pions.
+
+Dilepton polarization make occur already from local anisotropy of plasma, due to, e.g., Bjorken flow, or, at finite transverse momentum, due to available phase space constrained by the parent particle decay.
+#### Chiral symmetry restoration
+Chiral symmetry is broken in vacuum due to gluon self-interaction, leading to the appearance of non-zero quark-antiquark and gluon condensates.
+Originally, a nearly linear drop of chiral condensate was predicted because of its nearly zero value inside of baryons. More recent results do not support it because of a hard-core repulsive nucleon-nucleon interaction.
+
+From current algebra, the relation was derived
+$$
+m_\rho=\sqrt 2g_Vf_\pi.
+$$
+Brown and Rho dropping mass suggestion amounts to
+$$
+\frac{m^*_V}{m_V}\sim\frac{f^*_\pi}{f_\pi}=
+\left(\frac{\langle\bar qq\rangle^*}{\langle\bar qq\rangle}\right)^{1/3}.
+$$
+Weinberg sum rules are
+$$
+\begin{split}
+\int dss^{-1}(D^V(s)-D^A(s))=&f^2_\pi,\\
+\int ds(D^V(s)-D^A(s))=&f^2_\pi m_q=-2m_q\langle\bar qq\rangle,\\
+\int dss(D^V(s)-D^A(s))=&-2\pi\alpha_sO^\mathrm{SB}_4,
+\end{split}
+$$
+where $O^\mathrm{SB}_4$ is the chirally odd combination of four-quark condensates in vector and axial channels.
+
+In chiral mixing scenario, the finite-temperature vector correlator can be expressed as a mixing of vacuum vector and axial correlators
+$$
+\Pi^{\mu\nu}_V(q,T)=(1-\epsilon)\Pi^{\mu\nu}_V(q,0)+\epsilon\Pi^{\mu\nu}_A(q,0),
+$$
+where the mixing parameter was calculated in chiral limit $m_\pi=0$, as a loop integral
+$$
+	\epsilon=\frac{2}{f^2_\pi}\int\frac{d^3k}{2\pi^3\omega_k}f_\pi(\omega_k,T)
+$$
+#### Dileptons in microscopic models
+Writing the rate in the hadronic phase as
+$$
+\frac{dR}{d^4xd^qp}=-\frac{\alpha^2}{\pi^3}\frac{L(M)}{M^2}
+\mathrm{Im}\Pi_\mathrm{em}(M,q,T,\mu_\mathrm{B})f^\mathrm{B}(q_0,T),
+$$
+one has, in analogy to hadronic tensor $W^{\mu\nu}$,
+$$
+\Pi^{\mu\nu}_\mathrm{em}(q)=
+i\int d^4x~e^{ipx}\theta(x_0)\langle\Omega|[j^\mu(x),^\nu(0)]|\Omega\rangle,
+$$
+where $|\Omega\rangle$ characterizes the medium.
+In strict VMD,
+$$
+\mathrm{Im}\Pi^\mathrm{had}_\mathrm{em}=
+\sum_{V=\rho,\omega,\phi}\left(\frac{m^2_V}{g^2_V}\right)\mathrm{Im}D_V(M).
+$$
+The in-medium propagator is 
+$$
+D_\rho=\frac{1}
+{M^2-m^2_\rho-\Sigma_{\rho\phi\phi}-\Sigma_{\rho M}-\Sigma_{\rho B}}.
+$$
+The additional terms are due to the dressing of a pion loop by interaction of virtual pions, for example with surrounding baryons to form a baryonic resonance-hole pair.
+In the partonic phase, using pQCD,
+$$
+\mathrm{Im}\Pi^\mathrm{had}_\mathrm{em}=
+N_c\sum_{q=u,d,s,c}\frac{M^2}{12\pi}e^2_q\left(1+\frac{\alpha_s(M)}{\pi}+...\right)
+$$
+#### Experiment
+###### Nucleon-nucleon
+1. RHIC and LHC data well described by hadronic cocktail
+2. At SPS early experiments reported excess over "conventional sources"
+3. Helios 1 directly measured $\eta$ Dalitz decays, this provided upper limits for unconventional sources
+4. Further reduced to 23% by CERES
+5. NA60 provided eTFF for $\eta$ and $\omega$ Dalitz thanks to an iterative procedure:
+	- Not interesting processes, direct decays of $\omega$ and $\phi$, and cham are subtracted by fitting the normalization and peak shape by simulation
+	- $\omega$, $\eta$ Dalitz and $\rho$ are retained
+	- Corrected for acceptance using the extracted meson transverse mass distributions
+	- After correction, the spectrum is fitted with $\eta$, $\omega$ and $\rho$ contributions, varying the normalization
+6. 
