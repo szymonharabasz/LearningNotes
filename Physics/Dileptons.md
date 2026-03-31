@@ -349,4 +349,11 @@ $$
 	- $\omega$, $\eta$ Dalitz and $\rho$ are retained
 	- Corrected for acceptance using the extracted meson transverse mass distributions
 	- After correction, the spectrum is fitted with $\eta$, $\omega$ and $\rho$ contributions, varying the normalization
-6. 
+6. Normalizing HI and NN to pion multiplicity takes into account baryon resonances, because pions come from baryon decays.
+7. The observation that C+C agrees with NN ref. explains the long standing ‘‘DLS puzzle’’ connected to the dilepton yield measured in C–C collisions as being due to unexpected baryonic contributions not properly accounted for in the theoretical description of the data.
+8. In the IMR, open charm and Drell-Yan dominate, but QGP contribution is also present
+9. NA60: 130 kHz, 440.000 signal pairs. Drell-Yan: fix its contribution relative to open charm with p-A collisions at higher energy, scaled down with excitation functions calculated with properly adjusted PYTHIA, use the $J/\psi$ yield to fix DY.
+10. The contributions from ηDalitz decay were determined by the conservative ansatz that the LMR yield at invariant masses around 200 MeV/$c^2$  is fully saturated by Dalitz decays
+11. The acceptance filter of NA60 roughly cancels the Boltzmann factor.
+12. At RHIC, the suppression of high $p_t$ $\pi^0$ and other mesons is attributed to quenching of hard partons in QGP created nearly instantaneously.
+13. Important hadronic contribution above 1 GeV are multi-pion processes.
