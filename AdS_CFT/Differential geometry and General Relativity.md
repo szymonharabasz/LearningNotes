@@ -2,6 +2,11 @@ Vector components in tangent space:
 $$
 V=V^\mu\partial_\mu.
 $$
+So, tangent vector is an operator acting on a function of a manifold:
+$$
+V[f]=V^\mu\partial_\mu(f\circ\varphi^{-1}),
+$$
+where $\varphi$ defines a chart.
 Cotangent space - linear maps from $T_p(M)$ to $\mathbb R$. The basis in the cotangent space dual to $\partial_\mu$:
 $$
 W=W_\nu dx^\nu
@@ -9,6 +14,14 @@ $$
 with
 $$
 dx^\nu(\partial_\mu)=\delta^\nu_\mu.
+$$
+So one has
+$$
+W[V]=W_\mu V^\mu.
+$$
+Given a function $f$, $df$ is a covector defined as
+$$
+df[V]\equiv V[f]=V^\mu\frac{\partial f}{\partial x^\mu}.
 $$
 General tensor is a mapping:
 $$
@@ -30,6 +43,39 @@ $$
 g_{\mu\nu}e^\mu_ae^\nu_b=\eta_{ab}.
 $$
 The set of such basis vectors is called **vielbein** and can be seen as a square-root of the metric.
+
+**Interior product** is defined as a map that assigns to any vector $V$ a linear map from $p+1$-forms to $p$-forms:
+$$
+\iota_V\omega(V_1,...,V_p)\equiv\omega(V,V_1,...,V_p).
+$$
+It is anticommutative:
+$$
+\iota_V\circ\iota_U=-\iota_U\corc\iota_V.
+$$
+It is also an antiderivative of the exterior algebra:
+$$
+\iota_V(\omega\wedge\sigma)=
+(\iota_V\omega)\wedge\sigma+(-1)^p\omega\wedge\iota_V(\sigma).
+$$
+If we have a smooth map between manifolds $f:M\rightarrow N$ and a test function $g:N\rightarrow\mathbb{R}$, we get $g\circ f:M\rightarrow\mathbb{R}$. Then we can get the mapping $f_*$ from $V\in T_x(M)$ to $f_*V\in T_{f(x)}(N)$ defined such that
+$$
+f_*V[g]\equiv V[g\circ f].
+$$
+The image $f_*V$ is called **push-fowrard** of $V$ by $f$.
+For coordinate basis vectors:
+$$
+f_*\partial_\mu=\frac{\partial f^b}{\partial x_a}\partial_a.
+$$
+We can also get the mapping from $\omega\in T^*_{f(x)}(N)$ to $f^*\omega\in T^*_x(M)$, defined such that
+$$
+f^*\omega(V)\equiv\omega(f_*V),~~~\mathrm{for~any~}V\in T_x(M).
+$$
+The image $f^*\omega$ is called **pull-back** of $\omega$ by $f$.
+For dual coordinate basis covectors
+$$
+f^*dy^\mu=\frac{\partial f^\mu}{\partial x^a}dx^a.
+$$
+
 This condition can be satisfied by different orthonormal sets that are connectd by **local Lorentz transformations**,
 $$
 e'_a(x)={\Lambda_a}^b e_b(x)
@@ -174,7 +220,24 @@ $$
 ds^2=-dt^2+e^{2Ht}(dx^2+dy^2+dx^2).
 $$
 #### Lie derivative
-The Lie derivative along the vector field $V=V^\mu(x)\partial_\mu$ acts on a scalar as follows:
+Lie transport is a mapping
+$$
+\phi_{V,t}:M\rightarrow M
+$$
+such that $\phi_{V,t}(x)=\gamma(t)$, where the curve $\gamma$ is the solution of differential equation
+$$
+\frac{df(\gamma(t))}{dt}=\left.V[f]\right|_{\gamma(t)}
+$$
+with initial condition $\gamma(0)=x$. The above equation is a coordinate-independent way of writing
+$$
+\frac{d\gamma^a(t)}{dt}=v^a(\gamma(t)).
+$$
+The Lie derivative along the vector field $V=V^\mu(x)\partial_\mu$ is defined for any tensor $\mathbb T$ as
+$$
+L_V\mathbb{T}=-\left.\frac{d(\phi_{V,t*}\mathbb{T})}{dt}\right|_{t=0}=
+\lim_{\epsilon\rightarrow 0}\frac{\mathbb{T}-\phi_{V,\epsilon*}\mathbb{T}}{\epsilon}
+$$
+It acts on a scalar as follows:
 $$
 L_V\phi(x)=V^\rho(x)\partial_\rho\phi(x),
 $$on vectors or one forms as follows:
