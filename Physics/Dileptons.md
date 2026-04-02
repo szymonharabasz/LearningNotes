@@ -273,16 +273,64 @@ where
 $$
 R_\mathrm{had}=
 \frac{\sigma(e^+e^-\rightarrow\mathrm{hadrons})}
-{\sigma(e^+e^-\rightarrow\mu^+\mu^-)}\propto
-\frac{1}{M^2}\mathrm{Im}\Pi_\mathrm{em}.
+{\sigma(e^+e^-\rightarrow\mu^+\mu^-)}=
+-\frac{12\pi}{M^2}\mathrm{Im}\Pi_\mathrm{em}.
 $$
 In vacuum $\rho$ propagator dominated by pion loops. $\Rightarrow$ Decays to $\pi^+\pi^-$ play important role. $\Rightarrow$  Inverse process $\pi^+\pi^-$ fusion. $\Rightarrow$ In the pion-dominated medium, $\rho$ propagator might be sensitive to chiral symmetry restoration, whose Goldstone bosons are pions.
 
 Dilepton polarization make occur already from local anisotropy of plasma, due to, e.g., Bjorken flow, or, at finite transverse momentum, due to available phase space constrained by the parent particle decay.
+
+In LQCD, the spectral function can be reconstructed from the Euclidean propagator:
+$$
+G^E_V(\tau,\vec p)=
+\int_0^\infty\frac{dp_0}{2\pi}\rho_V(p_0,\vec p)
+\frac{\cosh(p_0(\tau-1/2T))}{\sinh(p_0/2T)},
+$$
+Inverting it is an ill-defined problem for finite number of points in $\tau$. Numerical continuation methods include Maximum Entropy, Backus-Gilbert, Schlessinger Point, and Tikhonov regularization.
+From it, one can calculate the rate:
+$$
+p_0\frac{dR}{d^3p}=\sum_fQ^2_f
+\frac{\alpha}{4\pi^2}
+\frac{\rho_V(p_0=|\vec p|)}{e^{p_0/T}-1}.
+$$
+In the hydrodynamical regime, given parametrically by $p_0, p \leq \alpha^2_sT$, the vector spectral function can be related to the **diffusion coefficient** 
+$$
+D_\mathrm{eff}=\frac{\rho_V(p_0=|\vec p|)}{4p_0\chi_s},
+$$
+where the susceptibility
+$$
+\chi_s=\int d^4x\langle V_0^\mathrm{em}(x)V_0^\mathrm{em}(0)\rangle.
+$$
+is the conserved charge correlator.
+Connection to **electrical conductivity**:
+$$
+\sigma_\mathrm{em}=e^2\sum_fQ^2_f\chi_sD_\mathrm{eff}.
+$$
+
 #### Chiral symmetry restoration
 Chiral symmetry is broken in vacuum due to gluon self-interaction, leading to the appearance of non-zero quark-antiquark and gluon condensates.
+In full QCD, the trace of the energy momentum tensor is
+$$
+T^\mu_\mu=\frac{\beta(g)}{2g}G^{\mu\nu}_aGa_{\mu\nu}+
+\sum_fm_f(1+\gamma_{m_f})\langle\bar q_fq_f\rangle,
+$$
+where $\beta(g)$ is the beta function of the renormalization group, and $\gamma_{m_f}$ is the anomalous mass dimension of the quark $q_f$. This comes from the regularization and renormalization of the UV divergence, which already in the chiral limit breaks the scale invariance. The minus expectation value of the first term is the **gluon condensate**.
+The quark condensate is calculated as
+$$
+\langle\bar\psi\psi\rangle_q=\frac{T}{V}\frac{\partial Z}{\partial m_q}.
+$$
 Originally, a nearly linear drop of chiral condensate was predicted because of its nearly zero value inside of baryons. More recent results do not support it because of a hard-core repulsive nucleon-nucleon interaction.
-
+Relation of the energy-momentum tensor to the proton mass:
+$$
+\langle p_1|T^\mu_\mu|p_2\rangle=
+\left(\frac{M^2}{p_{01}p_{02}}\right)^{1/2}
+\bar u(p_1,s_1)u(p_2,s_2)G(q^2)
+$$
+and
+$$
+G(0)=m_p
+$$
+The second term, called $\sigma$-term only accounts for 80 MeV of 8% of the proton mass. Most comes from gluons.
 From current algebra, the relation was derived
 $$
 m_\rho=\sqrt 2g_Vf_\pi.
@@ -292,7 +340,7 @@ $$
 \frac{m^*_V}{m_V}\sim\frac{f^*_\pi}{f_\pi}=
 \left(\frac{\langle\bar qq\rangle^*}{\langle\bar qq\rangle}\right)^{1/3}.
 $$
-Weinberg sum rules are
+**Weinberg sum rules** are
 $$
 \begin{split}
 \int dss^{-1}(D^V(s)-D^A(s))=&f^2_\pi,\\
@@ -301,14 +349,25 @@ $$
 \end{split}
 $$
 where $O^\mathrm{SB}_4$ is the chirally odd combination of four-quark condensates in vector and axial channels.
+In medium, because the heat bath breaks the Lorentz invariance, they are. valid, but for fixed spatial momentum, and separately for longitudinal and transverse parts of the vector and axial vector spectral functions.
+This is where the projector come in. So they are used but it does not mean that they are defined in medium.
 
-In chiral mixing scenario, the finite-temperature vector correlator can be expressed as a mixing of vacuum vector and axial correlators
+QCD sum rules are for a given hadronic channel $\alpha$ and for space-like momenta $q^2=-Q^2 <0$:
+$$
+\Pi_\alpha(Q^2)=\Pi_\alpha(0)+\Pi'_\alpha(0)+
+Q^4\int\frac{ds}{\pi s^2}\frac{\mathrm{Im}\Pi_\alpha(s)}{s+Q^2},
+$$
+where $\Pi_\alpha(0)$ and $\Pi'_\alpha(0)$ are subtraction constants.
+
+In chiral mixing scenario, the finite-temperature vector correlator can be expressed as a mixing of vacuum vector and axial correlators, for low temperature and density, that is, for a dillute pion gas
 $$
 \Pi^{\mu\nu}_V(q,T)=(1-\epsilon)\Pi^{\mu\nu}_V(q,0)+\epsilon\Pi^{\mu\nu}_A(q,0),
 $$
 where the mixing parameter was calculated in chiral limit $m_\pi=0$, as a loop integral
 $$
-	\epsilon=\frac{2}{f^2_\pi}\int\frac{d^3k}{2\pi^3\omega_k}f_\pi(\omega_k,T)
+\epsilon=
+\frac{2}{f^2_\pi}\int\frac{d^3k}{2\pi^3\omega_k}f_\pi(\omega_k,T)\approx
+\frac{T^2}{6f^2_\pi}.
 $$
 #### Dileptons in microscopic models
 Writing the rate in the hadronic phase as
@@ -332,13 +391,14 @@ $$
 D_\rho=\frac{1}
 {M^2-m^2_\rho-\Sigma_{\rho\phi\phi}-\Sigma_{\rho M}-\Sigma_{\rho B}}.
 $$
-The additional terms are due to the dressing of a pion loop by interaction of virtual pions, for example with surrounding baryons to form a baryonic resonance-hole pair.
+The additional terms are direct interactions of $\rho$ with baryons $B$ and mesons $M$ coming from the heat bath, but one can imagine, that virtual pions from the pion loop create resonance by interacting with medium constituents.
+
 In the partonic phase, using pQCD,
 $$
 \mathrm{Im}\Pi^\mathrm{had}_\mathrm{em}=
 N_c\sum_{q=u,d,s,c}\frac{M^2}{12\pi}e^2_q\left(1+\frac{\alpha_s(M)}{\pi}+...\right)
 $$
-#### Experiment
+## Experiment
 ###### Nucleon-nucleon
 1. RHIC and LHC data well described by hadronic cocktail
 2. At SPS early experiments reported excess over "conventional sources"
@@ -357,3 +417,39 @@ $$
 11. The acceptance filter of NA60 roughly cancels the Boltzmann factor.
 12. At RHIC, the suppression of high $p_t$ $\pi^0$ and other mesons is attributed to quenching of hard partons in QGP created nearly instantaneously.
 13. Important hadronic contribution above 1 GeV are multi-pion processes.
+14. Frank and Arno: "Thermal photons dominate the spectra for momenta between, approximately, 2 and 3 GeV/c or for virtual photon masses between 1 and 3 GeV/c 2." - check if really dominate, Piotr and Joachim wrote that they are small contribution compared to DY and open charm.
+15. Relation between radial expansion and effective temprature:
+    $$
+		    T_\mathrm{eff}=\sqrt{\frac{1+\beta_r}{1-\beta_r}}T
+     $$
+16. In hadron absorber method, muon identification benefits from high lab momenta and is convenient in fixed-target experiments and forward instrumentation of collider experiments.
+17. ITS3 silicon tracker is proposed at ALICE for small conversion probability
+#### Photons
+Classification according to Frank and Arno:
+Decay photons: from long-lived resonances, like $\pi$, $\eta$, $\omega$, after freeze-out.
+Direct photons: all the remaining. Direct photons are classified into:
+- Prompt photons, usually high $p_T$ - initial hard scattering or pre-quilibrium phase that includes "hot glue", Glasma, photons from magnetic field, synchrotron radiation
+- Thermal photons from QGP, hot and dense hadronic medium, including short-lived resonances, $\omega$, $a_1$, $\Delta$, $N^*$,...
+- Other sources: jet-medium interactions, hadronic bremsstrahlung, jet bremsstrahlung, jet fragmentation, other resonance decays, $B$-field produced photons etc.
+
+According to http://dx.doi.org/10.1103/PhysRevC.89.044910, most photons come from close to $T_c$ and significant amount from hadronic phase
+The references, http://dx.doi.org/10.1016/j.nuclphysa.2020.121863, http://dx.doi.org/10.1103/PhysRevC.105.014909 describe nicely $v_2$ and $p_t$ of photons with hydro+something
+
+PHENIX data from Run-14:
+- External conversion method
+- Enhancement for $p_T < 3~\mathrm{GeV}$
+- At high $p_T$ consistency with p+p scaled with $N_\mathrm{coll}$
+- Consistent with other data sets, virtual-$\gamma$ method and ECAL
+- Scaling with $(dN_\mathrm{ch}/d\eta)^{1.25}$, same for STAR and WA98, although those two have lower yields
+#### Dileptons
+Classification:
+Primordial, that is, Drell-Yan processes $NN\rightarrow l^+l^-X$ with $\bar qq$ annihilation.
+Thermal dileptons from QGP ($\bar qq\rightarrow l^+l^-$) and hot and dense hadronic medium:
+- $\pi^+\pi^-\rightarrow l^+l^-$
+- Multi-meson reactions ('$4\pi$')
+- Decays of short-lived resonances $\rho,~\omega,~a_1,~\Delta,~N^*,...$
+- Decays of long-lived mesons and baryons, $\pi^0,~\eta,~\phi,~J/\psi,~\psi',D\bar D,...$ including Dalitz decays of some light mesons $\pi^0,~\eta,~\eta'\rightarrow\gama e^+e^-$
+- Decays of baryonic resonances $\Delta,~N^*\rightarrow Ne^+e^-$ and non-resonant, quasi-elastic bremsstrahlung $NN\rightarrow NNe^+e^-$.
+	- "Since primordial (and pre-equilibrium) contributions are not expected to be of exponential shape (e.g., power law for Drell–Yan), their ‘contamination’ may be judged by the fit quality of the exponential ansatz."
+
+$\lambda_\phi^\perp$ and $\lambda_{\theta\phi}^\perp$ are non-zero only for processes that are not symmetric with respect to reflections in the production plane.
