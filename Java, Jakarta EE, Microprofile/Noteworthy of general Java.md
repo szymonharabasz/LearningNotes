@@ -162,6 +162,14 @@ final Response response = argumentCaptorResponse.getValue();
     assertThat(response.getStatusInfo().getFamily()).isEqualTo(Response.Status.Family.SUCCESSFUL);
 ```
 #### Futures
+Creating by an asynchronously running task:
+```java
+runAsync(() -> importantWork())...
+```
+Blocking:
+```java
+...get();
+```
 Consuming a future returned by a service:
 ```java
 service.greeting(”Luke”)
@@ -193,7 +201,71 @@ Handling exceptions:
 ```java
 service.greeting(”Leia”).exceptionally(exception -> ”Hello”);
 ```
-#### Virtual threads
+#### Basic threads
+Most important operations
+```java
+Thread thread = new Thread(CallStackDemo::processOrder);
+thread.setName("mcj-thread");
+thread.start();
+thread.join();
+```
+    System.out.println("Executed by thread: " +
+		    Thread.currentThread().getName());
+By extending `Thread` class
+```java
+class ThreadByExtension extends Thread {
+	public ThreadByExtension(String name) {
+		super(name);
+	}
+
+	@Override
+	public void run() {
+		System.out.println("Extended Thread: " + getName());
+	}
+}
+// ...
+Thread t1 = new ThreadByExtension("Worker-1");
+t1.start();
+```
+One can also pass a `Runnable` to `new Thread`.
+###### Executor framework
+Fixed thread pool (note try-with-resources):
+```java
+try (ExecutorService executor = Executors.newFixedThreadPool(5)) {
+	for (int i = 0; i < 10; i++) {
+		final int taskId = i;
+		executor.submit(() -> {
+			System.out.println("Executing task " + taskId + " in thread " + 
+				Thread.currentThread().getName());
+		});
+	}
+}
+```
+Executor using virtual threads:
+```java
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+// ...
+	executor.submit(this::importantWork);
+// ...
+}
+```
+###### Correct handling `InterruptedException`
+It requires to propagate the thread's interrupted status:
+```java
+catch (InterruptedException e) {
+	Thread.currentThread().interrupt();
+	throw new RuntimeException(e);
+}
+```
+###### Fork-Join pool
+It is a pool that uses a work-stealing algorithm and allows for better cache affinity:
+```java
+ForkJoinPool forkJoinPool = new ForkJoinPool();
+forkJoinPool.submit(() -> {
+// ...
+}).join();
+```
+## Virtual threads and structured concurrency
 Basic usage:
 ```java
 Thread.startVirtualThread(() -> {
@@ -201,3 +273,11 @@ Thread.startVirtualThread(() -> {
     System.out.println(response);
 });
 ```
+When we don't want to start immediately:
+```java
+var unstartedThread = Thread.ofVirtual().unstarted(() ->
+	System.out.println("Hello world!"));
+// ...
+unstartedThread.start();
+```
+There is also `Thread.ofPlatform()`.
