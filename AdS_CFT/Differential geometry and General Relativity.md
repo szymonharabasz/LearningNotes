@@ -247,6 +247,12 @@ $$
 $$
 L_VW_\mu=V^\rho\partial_\rho W_\mu+(\partial_\mu V^\rho)W_\rho.
 $$
+Having $[e_A,e_B]=0$ is necessary an sufficient for $e_{A,B}$ to be some coordinate basis, $e_A=\partial/\partial^A.$
+A useful identity is:
+$$
+L_U\circ\iota_V-\iota_V\circ L_U=\iota_{[U,V]},
+$$
+which is a variation on the Leibniz rule.
 For an infinitesimal transformation, $x^\mu\rightarrow x'^\mu=x^\mu+\xi^\mu$, an arbitrary tensor transforms as, up to terms linear in $\xi$, 
 $$
 \delta {T^{\mu_1...\mu_r}}_{\nu_1...\nu_s}\equiv

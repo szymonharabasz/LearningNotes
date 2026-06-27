@@ -1,3 +1,55 @@
+###### JAR files
+Manifest file in `META-INF/MANIFEST.MF`:
+```
+Manifest-Version: 1.0
+Created-By: 9.0.1 (Oracle Corporation)
+Main-Class: second.Main
+
+```
+Running it:
+```shell
+java -jar app-with-main-class-header.jar
+```
+Running another class in the file:
+```shell
+java -cp app-without-main-class-header.jar path.to.Main
+```
+###### Gradle
+Basic `build.gradle`:
+```groovy
+description = "A basic Gradle project"
+
+task helloGradle {
+    doLast {
+        println 'Hello, Gradle!'
+    }
+}
+```
+Listing all possible tasks:
+```shell
+gradle tasks -- all
+```
+Adding a JAR manifest:
+```Groovy
+jar {
+	manifest { 
+		attributes("Main-Class": "org.hyperskill.gradleapp.App") 
+	} 
+}
+```
+Defining repositories:
+```Groovy
+repositories {
+    mavenCentral() | mavenLocal() | google()
+}
+// or
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+```
+###### Java SE
 Maybe good `equals` and `hashCode`:
 ```java
 @Override
