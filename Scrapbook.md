@@ -31,3 +31,12 @@ Device Number: 0
     Can Allocate Managed Memory: Yes
     Device/CPU Concurrent Access to Managed Memory: Yes
 
+
+
+$$
+\vec a=\vec a_{n+1} \tau+\vec a_n(1-\tau),\;\;\;\tau\in]0,1]
+$$
+$$
+\tau=(t_\mathrm{best}-t_{n+1}+\Delta t)/\Delta t
+
+$$
