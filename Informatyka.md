@@ -181,3 +181,28 @@ Skoki warunkowe
 - `jne` - skok jeśli nie równe
 - `jg, jge, jl, jle` - skok jeśli większe, większe lun równe itd, ze znakiem
 - `ja, jae, jb, jbe` - skok jeśli wyższe, wyższe lub równe itd, bez znaku
+# Związki między teorią kategorii a programowaniem funkcyjnym
+**Funktor** $F$ z kategorii $C_1$ do $C_2$ spełnia następujące warunki:
+- $F$ przekształca obiekty $C_!$ na obiekty $C_2$ (na przykład `String` na `List<String>`)
+- $F$ przekształca *morfizmy* w $C_1$ na morfizmy w $C_2$
+- $F(f\circ g) = F(f)\circ F(g)$ o ile odpowiednie dziedziny i przeciwdziedziny są zgodne 
+Jeśli $C_1=C_2$ to taki funktor jest nazywany **endofunktorem**.
+W **kategorii typów Scali albo Javy**, funktorem jest na przykład `List`. Kiedy mamy funkcję `length: String -> Int` to `List(length)` musi być funkcją `List<String> -> List<Int>`. Taką właśnie funkcją jest `map`. Symbolicznie:
+```scala
+List(length)(List("abc")) = List("abc").map(s => s.length)
+```
+###### Przykład użycia biblioteki `Cats`
+```Scala
+val listOfOptions = List(Some(8), None, Some(2))
+
+	Functor[List].compose[Option].map(listOfOptions)(_ + 1)
+```
+
+**Monoid** to półgrupa z elementem neutralnym $e$ takim, że
+$$
+ex=xe
+$$
+dla każdego elementu $x$ należącego do półgrupy.
+**Naturalne transformacje** odpowiadają morfizmom w kategorii endofunktorów $\sf{End}(C)$. Kiedy ta kategoria otrzyma strukturę monoidu, jest nazywana **monadą**. Czyli "monada to monoid w kategorii endofunktorów".
+
+Jako funktor, monada posiada metodę `map`. Dodatkowo, posiada też `flatMap`.
