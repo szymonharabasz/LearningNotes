@@ -73,8 +73,15 @@ Zamiana na odwrotną notację polską:
 
 Ewaluacja odwrotnej notacji polskiej:
 - Operand: położyć na stos
-- Operator: zdjąć ze stosu ilość operandów odpowiadających krotności operatora, wykonać działanie, a wynik działania odłożyć na stos
-
+- Operator: zdjąć ze stosu ilość operandów odpowiadających krotności operatora, wykonać działanie, a wynik działania odłożyć na stos.
+###### Kod Graya
+1. Liczbę jednobitową zapisujemy jako `0` lub `1`
+2. Żeby dodać następny bit:
+	1. Dodajemy odbicie lustrzane istniejącego układu: `0, 1, 1, 0`
+	2. Dodajemy `0` przed oryginalnymi bitami i `1` przed odbitymi: 
+	   `0: 00, 1: 01, 2: 11: 3: 10`
+3. Przykład trzech bitów: `000, 001, 011, 010, 110, 111, 101, 100`
+4. Każde kolejne wartości różnią się zmianą tylko jednego bitu, również największa i najmniejsza wartość, `000` i `100` dla trzech bitów
 ###### Zapis w odwrotnej notacji polskiej elementarnych algorytmów strukturalnych:
 Krótka instrukcja warunkowa:  
 ```
