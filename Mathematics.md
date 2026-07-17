@@ -1,3 +1,7 @@
+**Ring**: A set with two operations, $(R, +, \cdot, 0)$, where $(R,+,0)$ is an abelian group, and $(R, \cdot)$ is a semigroup, that is, the operation $\cdot$ is *associative*, $a\cdot(b\cdot c) = (a\cdot b)\cdot c$, and $\cdot$ is distributive with respect to $+$:
+- $a\cdot(b+c) = (a\cdot b) + (a\cdot b)$
+- $(b+c)\cdot a = (b\cdot a) + (b\cdot a)$
+An **integral domain** is a ring in which a product of two non-zero elements is non-zero.
 **Ring of sets**: A family $\cal R$ of subsets of $\mathbb R$, such that for $A, B\in\cal{R}$:
 - $A\cup B\in\cal{R}$
 - $A-B\in\cal{R}$
