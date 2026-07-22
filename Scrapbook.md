@@ -31,6 +31,8 @@ Device Number: 0
     Can Allocate Managed Memory: Yes
     Device/CPU Concurrent Access to Managed Memory: Yes
 
+$\overline{\sigma}$ 
+
 
 
 $$

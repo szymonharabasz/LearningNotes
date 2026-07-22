@@ -1,3 +1,4 @@
+**Zorn's Lemma:** If $(P,\leq)$ is a partially ordered set (poset) with the property that every partially ordered subset is bounded from above, then $P$ has a maximal element.
 **Ring**: A set with two operations, $(R, +, \cdot, 0)$, where $(R,+,0)$ is an abelian group, and $(R, \cdot)$ is a semigroup, that is, the operation $\cdot$ is *associative*, $a\cdot(b\cdot c) = (a\cdot b)\cdot c$, and $\cdot$ is distributive with respect to $+$:
 - $a\cdot(b+c) = (a\cdot b) + (a\cdot b)$
 - $(b+c)\cdot a = (b\cdot a) + (b\cdot a)$
@@ -58,4 +59,23 @@ $$
 We denote by $\cal L$ the collection of subsets of $\mathbb R$ which can be written as a countable union of sets in $\overline{\cal E}$. Provided $A\in{\cal L}$, then $A\in\overline{\cal E}$ iff $m^*(A)<\infty$. The collection $\cal L$ is a $\sigma$-algebra in $\mathbb R$ and $m^*$ is countably additive on ${\cal L}$. It is called the **Lebesgue measurable subsets of $\mathbb R$**. and the measure defined on $\cal L$ by $m(A)=m^*(A)$ is called the **Lebesgue measure on $\mathbb R$**. We also define smaller collections of Lebesgue measurable sets:
 $$
 {\cal L}(A)=\{B\in{\cal L}: B\subseteq A\}.
+$$
+A topological space $(X\tau)$ is:
+- **compact** if every open covering has a finite subcover.
+- **Hausdorff** if every pair of disjoint points in $X$ have disjoint neighborhoods
+- **normal** if for every pair of disjoint sets $A$, $B$ there exists a continuous function:
+$$
+f:X\rightarrow[0,1]: f(x)=0~\forall x\in A,~f(x)=1~\forall x\in B,~
+0\leq f(x)\leq1~\forall x\in X.
+$$
+- a **regular space** if for every neighborhood $U$ of any point $p\in X$ there exists another neighborhood $U$ of $p$ such that $\overline{V}\subset U$.
+
+**Heine-Borel** theorem states that a set in $\mathbb{R}^n$ is compact iff it is closed and bounded.
+There is an isomorphism:
+$$
+{\rm im}T\cong V/{\rm ker}T.
+$$
+Also:
+$$
+u-v\in W\Rightarrow u+W=v+W.
 $$
