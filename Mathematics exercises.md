@@ -50,3 +50,78 @@ $$
 B=\{2^i5^j: i,j\in\mathbb{N}\}\subseteq\mathbb{N}
 $$
 guarantees that $\bigcup_{n=0}^\infty$ is countable.
+###### Exercise 1.2.1
+Prove parts (b), (e), and (g) of Theorem 1.2.2.
+**Answer** (b) uniqueness of the additive inverse: let $y$ be an alternative inverse of $x$, then
+$$
+y=y+0=y+(x+(-x))=(y+x)+(-x)=0+(-x)=-x.
+$$
+(e) $-(x+y)=(-x)+(-y)$:
+$$
+\begin{split}
+-(x+y)=&-(x+y)+x+(-x)+y+(-y)=-(x+y)+(x+y)+(-x)+(-y)\\=&0+(-x)+(-y)=(-x)+(-y)
+\end{split}
+$$
+(g) $-(-x)=x$:
+$$
+-(-x)=-(-x)+0=-(-x)+(-x+x)=(-(-x)+(-x))+x=0+x.
+$$
+###### Exercise 1.2.2
+Prove parts (a), (c), (e), (f), (h), and (i) of Theorem 1.2.3.
+**Answer** (a) the multiplicative identity is unique: Let $1'$ be an alternative identity, then
+$$
+1=1\cdot1'=1'\cdot1=1'.
+$$
+(c) if $xz=yz$ and $z\neq0$ then $z=y$:
+$$
+0=0\cdot z^{-1}=(xz-yz)z^{-1}=(z-y)zz^{-1}=x-y.
+$$
+(e) if $x\neq0$ then $(x^{-1})^{-1}=x$:
+$$
+(x^{-1})^{-1}=(x^{-1})^{-1}\cdot1=(x^{-1})^{-1}\cdot x^{-1}\cdot x=1\cdot x=x.
+$$
+(f) $(xy)^n=x^ny^n$:
+$$
+(xy)^n=\underbrace{xyxy...xy}_{\text{n times}}=\underbrace{xx...x}_{\text{n times}}\underbrace{yy...y}_{\text{n times}}=n^ny^n.
+$$
+(g) $-(xy)=(-x)y=x(-y)$:
+$$
+-(xy)\stackrel{\text{1.2.2 (g)}}{=}-1\cdot xy=(-1\cdot x)y=(-x)y=
+x(-1\cdot y)=x(-y).
+$$
+(h) $(-x)(-y)=xy$:
+$$
+(-x)(-y)=(-1)x(-1)y\stackrel{\text{1.2.2 (g)}}{=}(-1)(-y)xy\stackrel{\text{1.2.2 (h)}}{=}1\cdot xy=xy.
+$$
+(i) if $x,y\neq0$ then (xy)^{-1}=x^{-1}y^{-1}:
+$$
+(xy)^{-1}=(xy)^{-1}xx^{-1}yy^{-1}=(xy)^{-1}(xy)x^{-1}y^{-1}=1\cdot x^{-1}y^{-1}=x^{-1}y^{-1}.
+$$
+###### Exercise 1.2.3
+Let $X$ be an ordered field and let $x\in X$:
+(a) Show that $-0=0$:
+**Answer** $-0=-1\cdot0=0$
+(b) If $x\neq0$, show that $(-x)^{-1}=-x^{-1}$
+Answer
+$$
+-x^{-1}=(-x^{-1})(-x)(-x)^{-1}=(-1)(-1)x^{-1}x(-x)^{-1}=x^{1}x(-x)^{-1}=
+(-x)^{-1}
+$$
+###### Exercise 1.2.4
+Prove parts (e), (f), and (h) of theorem 1.2.5
+**Answer** (e) if $x<y$ and $z>0$ then $xz<yz$:
+$$
+0 < y-x\stackrel{\text{1.2.4 (d)}}{\Longrightarrow}0<(y-x)z=yz-xz\Rightarrow
+xz<yz.
+$$
+(f) if $x<y$ and $z < 0$ then $xz>yz$
+$$
+0<y-x\stackrel{\text{1.2.4 (a) and 1.2.5 (b)}}{\Longrightarrow}
+0<(y-x)(-z)=y(-z)-x(-z)=xz-yz\Rightarrowxz>yz.
+$$
+(h) if $0<x<y$ then $0<y^{-1}<x^{-1}$.
+Positiveness comes from (g). Then assume $x<y$ and towards a contradiction $x^{-1}<y^{-1}. Then 
+$$
+1=x^{-1}x<y^{-1}x<y^{-1}y=1.
+$$
+Thus $1<1$ which contradicts the trichotomy axiom.
