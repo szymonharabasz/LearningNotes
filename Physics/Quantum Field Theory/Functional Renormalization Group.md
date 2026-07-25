@@ -109,7 +109,53 @@ The modified Legendre transform is written as
 $$
 \Gamma_k[\phi]=\sup_J\left(\int J\phi-W_k[J]\right)-\Delta S_k[\phi].
 $$
-
+The average field remains
+$$
+\phi(x)=\frac{\delta W[J]}{\delta J(x)},
+$$
+and the equation of motion receives an additional term from the regulator,
+$$
+J(x)=\frac{\delta\Gamma_k[\phi]}{\delta\phi(x)}+(R_k\phi)(x),
+$$
+from which
+$$
+\frac{\delta J(x)}{\delta\phi(y)}=
+\frac{\delta^2\Gamma_k[\phi]}{\delta\phi(x)\delta\phi(y)}+R_k(x,y).
+$$
+On the other hand,
+$$
+\frac{\delta\phi(y)}{\delta J(x')}=
+\frac{\delta^2W_k[J]}{\delta J(x')\delta J(y)}\equiv
+G_k(y-x').
+$$
+Putting together,
+$$
+\delta(x-x')=\frac{\delta J(x)}{\delta J(x')}=
+\int d^Dx\frac{\delta J(x)}{\delta\phi(y)}\frac{\delta\phi(y)}{\delta J(x')}=
+\int d^Dy(\Gamma^{(2)}_k[\phi]+R_k)(x,y)~G_k(y-x'),
+$$
+or, in operator notation
+$$
+\mathbb{1}=(\Gamma^{2}_k+R_k)~G_k,
+$$
+where
+$$
+\Gamma^{(n)}_k[\phi]=\frac{\delta^n\Gamma_k[\phi]}{\delta\phi...\delta\phi}.
+$$
+Note that for a fixed $\phi$. the $J$ that attains supremum, $J=J_\sup$, necessarily depends on $k$. In any case, in such situation one writes:
+$$
+\begin{split}
+\partial_t\Gamma_k[\phi]&=
+-\left.\partial_tW_k[J]\right|_\phi+\int(\partial_t\phi)J
+-\partial_t\Delta S_k[\phi]=
+-\left.\partial_tW_k[J]\right|_J
+-\partial_t\Delta S_k[\phi]\\
+&=\frac{1}{2}\int\frac{d^dq}{(2\pi)^D}\partial_tR_k(q)G_k(q)\\
+&=\frac{1}{2}\mathrm{Tr}\left[
+\partial_tR_k\left(\Gamma^{(2)}_k[\phi]+R_k\right)^{-1}
+\right].
+\end{split}
+$$
 The **exact RG** equation is:
 $$
 \delta_k\Gamma_k=\frac{1}2\int_q\partial_k R_k(q)\left(
@@ -128,7 +174,7 @@ $$
 $$
 One often uses the RG "time" $t=\log k/\Lambda$ with $\dot R_k=\partial_t R_k=k\partial_k R_k$.
 
-Popular choices are:
+Popular choices for the regulator are:
 $$
 R_k(q)=\frac{q^2}{e^{q^2/k^2}-1}
 $$
