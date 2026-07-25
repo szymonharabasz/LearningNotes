@@ -117,7 +117,7 @@ $$
 (f) if $x<y$ and $z < 0$ then $xz>yz$
 $$
 0<y-x\stackrel{\text{1.2.4 (a) and 1.2.5 (b)}}{\Longrightarrow}
-0<(y-x)(-z)=y(-z)-x(-z)=xz-yz\Rightarrowxz>yz.
+0<(y-x)(-z)=y(-z)-x(-z)=xz-yz\Rightarrow xz>yz.
 $$
 (h) if $0<x<y$ then $0<y^{-1}<x^{-1}$.
 Positiveness comes from (g). Then assume $x<y$ and towards a contradiction $x^{-1}<y^{-1}. Then 
@@ -125,3 +125,33 @@ $$
 1=x^{-1}x<y^{-1}x<y^{-1}y=1.
 $$
 Thus $1<1$ which contradicts the trichotomy axiom.
+###### Exercise 1.2.6
+Let $X$ be an ordered field and let $A\subseteq X$ be nonempty and bounded above. If $\sup(A)$ exists, show that it is unique.
+**Answer** Let $x, y\in X$ fulfil the definition of supremum. Then:
+- $x$ is an upper bound of $A$
+- $y$ is an upper bound of $A$
+- if $a$ is an upper bound of $A$ then $x\leq z$
+- if $b$ is an upper bound of $A$ then $y\leq b$
+Putting this together, $x\leq y$ and $y\leq x$ which means $x=y$.
+###### Exercise 1.2.7
+Let $X$ be an ordered field and let $A\subseteq X$ be nonempty and bounded below. 
+(a) Provide a definition for the greatest lower bound or infimum of $A$.
+**Answer** We say $A$ has a *greatest lower bound* or *infimum* if there is a point in $X$, denoted $\inf(A)$, such that:
+- $\inf(A)$ is a lower bound of $A$;
+- if $b$ is another upper bound of $A$, then $\inf(A)\geq b$,
+(b) Show that $\inf(A)$ is unique if it exists.
+**Answer** Let $x,y\in X$ fulfil the above conditions, that is:
+- $x,y$ are lower bounds of $X$
+- If $b$ is a lower bound of $A$, then $x\geq b$ and $y\geq b$.
+Putting it together, $x\geq y$ and $y\geq x$, thus $x=y$
+(c) Provide a version (including a proof) of Lemma 1.2.10 for infima
+**Answer** Let $X$ be an ordered field and let $A\subseteq X$ be nonempty and bounded below. If $M\in X$ is a lower bound of $A$, then $M=\inf(A)$ if and only if for every $\epsilon\in X$ with $\epsilon>0$, there is a point $a\in A$ such that $M+\epsilon>a$.
+*Proof.* Assume $M=\inf(A)$. Let $\epsilon>0$ in $X$ and consider $M+\epsilon>M$. Thus $M+\epsilon$ is not a lower bound, since $M$ is the greatest lower bound. By negating the definition of lower bound we see that there must exist a point $a\in A$ such that $M+\epsilon>a$. 
+For the converse, assume that for every $\epsilon>0$ in $X$ there is a point $a\in A$ such that $M+\epsilon > a$. Let $b$ be a lower bound of $A$. To show that $M\geq b$, we exclude $M<b$. Towards the contradiction, we assume $M<b$. Setting $\epsilon=b-M$, there exists $a\in A$ such that $M+\epsilon = M+b-M=b > a$. This contradicts that $b$ is a lower bound of $A$. Consequently, $M\geq b$ and the second condition in the definition of infimum is fulfilled. 
+###### Exercise 1.2.8
+Let $X$ be a complete ordered field. Show that every set $A\subseteq X$ thet is nonemply and bounded below has a greatest lower bound in $X$.
+**Answer** Let $-A = \{-a: a\in A\}$. Then by completeness of $X$, there exist $x$ such that:
+- $x$ is an upper bound of $-A$
+- if $b$ is another upper bound of $A$ then $x\leq b$. 
+From the first condition, for each $a'=-a\in -A$, $a'\leq x$. Thus $a=-a'\geq -x$. Therefore for every $a\in A$, $a\geq -x$ and so $-x$ is a lower bound of $A$. 
+Let $c$ be another lower bound of $A$. Then $-c$ is another upper bound of $-A$. Therefore $x\leq-c$ and $-x\geq c$. So $-x$ is the greatest lower bound of $A$, that is $-x=\inf(A)$.
