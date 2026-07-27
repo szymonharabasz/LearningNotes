@@ -155,3 +155,84 @@ Let $X$ be a complete ordered field. Show that every set $A\subseteq X$ thet is 
 - if $b$ is another upper bound of $A$ then $x\leq b$. 
 From the first condition, for each $a'=-a\in -A$, $a'\leq x$. Thus $a=-a'\geq -x$. Therefore for every $a\in A$, $a\geq -x$ and so $-x$ is a lower bound of $A$. 
 Let $c$ be another lower bound of $A$. Then $-c$ is another upper bound of $-A$. Therefore $x\leq-c$ and $-x\geq c$. So $-x$ is the greatest lower bound of $A$, that is $-x=\inf(A)$.
+###### Exercise 1.2.9
+We define:
+$$
+\left(
+\begin{split}
+n\\k
+\end{split}
+\right)=\frac{n!}{k!(n-k)!}.
+$$
+(a) Show that:
+$$
+\left(\begin{matrix}
+n\\k-1
+\end{matrix}\right)+
+\left(\begin{gathered}
+n\\k
+\end{gathered}\right)=
+\left(\begin{matrix}
+n+1\\k
+\end{matrix}\right).
+$$
+Answer
+$$
+\begin{split}
+&\left(\begin{matrix}
+n\\k-1
+\end{matrix}\right)+
+\left(\begin{matrix}
+n\\k
+\end{matrix}\right)=
+\frac{n!}{(k-1)!(n-(k-1))!}+\frac{n!}{k!(n-k)!}=
+\frac{n!}{(k-1)!(n-k+1)!}+\frac{n!}{k!(n-k)!}\\
+&=\frac{kn!}{k!(n-k)!(n-k+1)}+\frac{n!(n-k+1)}{k!(n-k)!(n-k+1)}=
+\frac{n!(n-k+1+k)}{k!(n-k)!(n-k+1)}\\
+&=\frac{n!(n+1)}{k!(n+1-k)!}=\frac{(n+1)!}{k!(n+1-k)!}=\left(
+\begin{matrix}
+n+1\\k
+\end{matrix}\right).
+\end{split}
+$$
+(b) Let $X$ be a field. For $x\in X$ show that
+$$
+(1+x)n=\sum_{k=0}^n\left(\begin{matrix}n\\k\end{matrix}\right)x^k
+$$
+**Answer** By induction, for $n=1$:
+$$
+1+x=x^0+x^1=\frac{1!}{0!(1-0)!}x^0+\frac{1!}{1!(1-1)!}x^1=
+\left(\begin{matrix}1\\0\end{matrix}\right)x^0+
+\left(\begin{matrix}1\\1\end{matrix}\right)x^1=
+\sum_{k=0}^1\left(\begin{matrix}1\\k\end{matrix}\right)x^k.
+$$
+Inductive step:
+$$
+\begin{split}
+(1+x)^{n+1}&=(1+x)^n(1+x)=\sum_{k=0}^n\left(\begin{matrix}n\\k\end{matrix}\right)x^k(1+x)=
+\sum_{k=0}^n\left(\begin{matrix}n\\k\end{matrix}\right)x^k+
+\sum_{k=0}^n\left(\begin{matrix}n\\k\end{matrix}\right)x^{k+1}\\
+&=1+\sum_{k=1}^n\left(\begin{matrix}n\\k\end{matrix}\right)x^k+
+\sum_{k'=1}^{n+1}\left(\begin{matrix}n\\k'-1\end{matrix}\right)x^{k'}
+\stackrel{\left(\begin{matrix}n\\n+1\end{matrix}\right)=0}{=}
+1+\sum_{k=1}^{n+1}\left(\begin{matrix}n\\k\end{matrix}\right)x^k+
+\sum_{k'=1}^{n+1}\left(\begin{matrix}n\\k'-1\end{matrix}\right)x^{k'}\\
+&=1+\sum_{k=1}^{n+1}\left(\begin{matrix}n+1\\k\end{matrix}\right)x^k=
+\sum_{k=0}^{n+1}\left(\begin{matrix}n+1\\k\end{matrix}\right)x^k.
+\end{split}
+$$
+(c) Show that
+$$
+(a+b)^n=\sum_{k=0}^n\left(\begin{matrix}n\\k\end{matrix}\right)a^kb^{n-k}.
+$$
+**Answer** For $b=0$ the only non-zero term on the right-hand side is for $n=k$, it is:
+$$
+\left(\begin{matrix}n\\n\end{matrix}\right)a^nb^{n-n}=1\cdot a^n\cdot b^0=a^n.
+$$
+For $b\neq0$:
+$$
+(a+b)^n=b^n\left(1+\frac{a}{b}\right)^n=
+b^n\sum_{k=0}^n\left(\begin{matrix}n\\k\end{matrix}\right)
+\left(\frac{a}{b}\right)^k=
+\sum_{k=0}^n\left(\begin{matrix}n\\k\end{matrix}\right)a^kb^{n-k}.
+$$
