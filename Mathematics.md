@@ -134,11 +134,45 @@ $$
 11. The **completion** of a $\sigma$-field ${\cal G}$, relative to $\mu$, is the smallest $\sigma$-field ${\cal F}\supset{\cal G}$ such that if $N\subset G\in{\cal G}$, and $\mu(G)=0$, then $N\in{\cal F}$.
 12. The completion of $\cal G$ has the form
     $$
-	    \left\{G\supset N:G\in{\cal G},N\subset F\in{\cal F}
-    \text{ with }\mu{F}=0\right\}.      
+	\left\{G\supset N:G\in{\cal G},N\subset F\in{\cal F}
+	\text{ with }\mu{F}=0\right\}.      
     $$
 13. $\cal M$ is the completion of $\cal B$.
-14. If $E\in{\cal M}$, then for $\epsilon>0$ there exists a closed set $F\subset E$ such that $m(E\backslash F)<\epsilon$. Hence, there exists $B\subset E$ in the form $B=\bigcup_nF_n$, where all the $F_n$ are closed, and $m(E\backslash B)=0$.  
+14. If $E\in{\cal M}$, then for $\epsilon>0$ there exists a closed set $F\subset E$ such that $m(E\backslash F)<\epsilon$. Hence, there exists $B\subset E$ in the form $B=\bigcup_nF_n$, where all the $F_n$ are closed, and $m(E\backslash B)=0$.
+15. A function $f:E\rightarrow\mathbb{R}$ is Legesgue-measurable if for any interval $I$:
+	$$
+	f^{-1}(I)\in{\cal M}.
+	$$
+16. The conditions are equivalent:
+	1. $f$ is measurable
+	2. for all $a$ $f^{-1}((a,\infty))$ is measurable
+	3. for all $a$ $f^{-1}([a,\infty))$ is measurable
+	4. for all $a$ $f^{-1}((-\infty,a))$ is measurable
+	5. for all $a$ $f^{-1}((-\infty,a])$ is measurable
+17. The set of real-values measurable (or Borel) functions defined on $E\in\cal M$ is a vector space and is closed under multiplication.
+18. Suppose $F:\mathbb{R}\times\mathbb{R}\rightarrow\mathbb{R}$ is a continuous function. if $f,g$ are measurable, then $h(x)=F(f(x),g(x))$ is also measurable.
+19. Let $E\subset\mathbb{R}$:
+	1. $f:E\rightarrow\mathbb{R}$ is measurable iff both $f^+$ and $f^-$ are measurable.
+	2. If $f$ is measurable, then so is $|f|$ (the converse is not true).
+20. If $(f_n)$ is a sequence of measurable (or Borel)functions on $\subset\mathbb{R}$ then
+    $$
+    \max_{n\leq k}f_n,~\min_{n\leq k}f_n,~\sup_{n\in\mathbb{N}}f_n,
+    ~\inf_{n\in\mathbb{N}}f_n,~\limsup_{n\rightarrow\infty}f_n,
+    ~\liminf_{n\rightarrow\infty}f_n
+    $$
+    are measurable (or Borel) as well.
+21. Note the definition:
+    $$
+    \limsup_{n\rightarrow\infty}f_n=\inf_{n\geq 1}\sup_{m\geq n}f_m.
+    $$
+22. As a corollary, if a sequence of measurable (or Borel) functions converges (pointwise) then the limit is a measurable (or Borel) function.
+23. If $f:E\rightarrow\mathbb{R}$ is measurable, $E\in\cal M$, and $g:E\rightarrow\mathbb{R}$ is such that the set $\{x:f(x)\neq g(x)\}$ is null, then $g$ is measurable.
+24. If $(f_n)$ is a sequence of measurable functions and $f_n(x)\rightarrow f(x)$ for almost every $x\in E$, then $f$ is measurable.
+25. Let $f:E\rightarrow\overline{\mathbb{R}}$ is measurable, then we define **essential supremum**, $\text{ess sup}f$ as $\inf\{z: f\leq z\text{ a.e.}\}$ and **essential infimum**, $\text{ess inf}f$ as $\sup\{z: f\geq z\text{ a.e.}\}.$ 
+26. If $f,g$ are measurable functions then
+    $$
+    \text{ess sup}(f+g)\leq\text{ess sup}(f)+\text{ess sup}(g).
+    $$
 #### Topology
 A topological space $(X\tau)$ is:
 - **compact** if every open covering has a finite subcover.
