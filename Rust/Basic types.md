@@ -1,5 +1,5 @@
 #### Integers and chars
-Size of `char` is always 4 bytes. It can be checked with:
+The size of `char` is always 4 bytes. It can be checked with:
 ```RUst
 std::mem::size_of::<char>()
 ```
