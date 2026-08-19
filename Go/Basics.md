@@ -1,3 +1,8 @@
+###### Go tools
+Checking for shadowed variables
+```shell
+go vet -vettool=$(which shadow)
+```
 ###### Iota
 ```go
 const (
