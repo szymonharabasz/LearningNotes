@@ -42,3 +42,15 @@ $$
 \tau=(t_\mathrm{best}-t_{n+1}+\Delta t)/\Delta t
 
 $$
+#### Kids meeting 19.08.2026
+Karina
+Analysis note: probably sufficiently comprehensive based on the length (57 pages)
+Paper proposal: ask Anar if 5 pages text is fine, should one prepare a talk? Physics forum?
+Slide 3: how yellow-ish box is derived from the data points of the ratio? Have it explained in the analysis note
+Are uncertainties of the fit parameters somehow included in the syst. uncertainty? Do they have to?
+For Sacha: use mean momenta in bins, like Karina
+Yes, please push the code to the repository
+
+Carina: send me her plots, see what we have, write to Vladimir
+
+Karina + Niklas vs. Sacha - fit parameters are large or small
