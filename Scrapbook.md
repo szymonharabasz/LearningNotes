@@ -54,3 +54,16 @@ Yes, please push the code to the repository
 Carina: send me her plots, see what we have, write to Vladimir
 
 Karina + Niklas vs. Sacha - fit parameters are large or small
+
+#### Meeting 02.09.2026
+Andrei: new student working on shining in Ag+Ag at 1.23*A* GeV - multidifferential spectra, comparison to Philipp
+
+Possible task for me: what is the kink of the momentum in the magnetic field? Are the tracks in low field above 500 MeV too straight? Does the tracking have a tendency to make the kink larger than it actually is, which is especially relatively strong for more or less straight tracks?
+
+Henrik: mainly programming issues
+
+Jan: new student from Wuppertal who will analyze $\gamma e^+e^-$ in Au+Au at 800*A* MeV
+
+Jessica: progress but still not finished translating Urban's code from Fortran to C++
+
+LLM bot at GSI? Check slides from the AI workshop
