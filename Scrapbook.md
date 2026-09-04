@@ -67,3 +67,19 @@ Jan: new student from Wuppertal who will analyze $\gamma e^+e^-$ in Au+Au at 800
 Jessica: progress but still not finished translating Urban's code from Fortran to C++
 
 LLM bot at GSI? Check slides from the AI workshop
+###### p+p at 1.58 GeV
+Analysis note (57 pages) and a written paper proposal (7 pages), with Claudia as Karina's supervisor, then will go to the writing committee in which I am. Should the proposal be converted to a talk and presented in the Physics Forum?
+###### Ag+Ag at 1.58*A* GeV
+With the writing committee there is paper draft and analysis note, both being edited now by Claudia as far as I know. The analysis is finalized and only the plots will need to be redone after the delta electron issue is finished, but nothing of the physics message should change.
+
+###### Ag+Ag at 1.23*A* GeV low field
+Investigation is ongoing about the smearing matrices being tilted (not diagonal). We think that it is a fact with which we have to live. Question is if there is the same bias in SIM and in EXP and what is then  the most reasonable upper cut on mometum
+
+###### Au+Au at 1.23*A* GeV
+Found in the changelog for hydra2-4.9m:
+
+-HGeantKine : bug fix: init value for acceptance word was missing
+              (all functions xxxBit() working on acceptance word were giving
+              wrong results )
+
+Embedded white leptons for gen8 were produced with hydra2-4.9l. As a check, I produced (only Geant) with 4.9m and the acceptance is very similar to gen10. Conclusion: Efficiency matrices are not 100% correct in gen8, we have already 3 important improvements from gen8 to gen10 so we will not try anymore to compare with old results but we take what we gen in gen10.
