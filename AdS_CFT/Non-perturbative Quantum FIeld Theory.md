@@ -436,7 +436,7 @@ $$
 \end{split}.
 $$
 This is a sum of three terms, each of which is individually consistent with Poincare and scale symmetry. There are special cases, when the 3-point function takes a form of correlator involving primary operators. These are:
-- When $\Delta_1=|\Delta_2-\Delta_3|, then either $\Delta_{12,3}=0$ or $\Delta_{13,2}=0$, in both cases two terms vanish. In this case, a three point function factorizes into a product of two-point functions, for example, when $\Delta_3=\Delta_1+\Delta_2$, then
+- When $\Delta_1=|\Delta_2-\Delta_3|$, then either $\Delta_{12,3}=0$ or $\Delta_{13,2}=0$, in both cases two terms vanish. In this case, a three point function factorizes into a product of two-point functions, for example, when $\Delta_3=\Delta_1+\Delta_2$, then
   $$
 	  \langle\phi_1(x_1)\phi_2(x_2)\phi_3(x_3)\rangle\propto
 	  \langle\phi_1(x_1)\phi_1(x_3)\rangle
