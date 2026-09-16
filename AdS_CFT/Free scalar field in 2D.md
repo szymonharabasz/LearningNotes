@@ -1,8 +1,26 @@
+###### Complex geometry
 With the definitions:
 $$
-\xi=x^0+ix^1,~\partial_\xi=\frac{1}{2}(\partial_0-i\partial_1)
+\xi=x^0+ix^1,~\partial_\xi=\frac{1}{2}(\partial_0-i\partial_1),
 $$
-and $z=e^\xi$, the actions can be written as:
+derivative is a special case of a vector,
+$$
+A_\xi=\frac{1}2(A^0-iA^1),~~~~
+A_\bar\xi=\frac{1}2(A^0+iA^1),~~~
+A^\xi=(A^0+iA^1),~~~~
+A^\bar\xi=(A^0-iA^1).
+$$
+The metric is
+$$
+g_{\xi\bar\xi}=g_{\bar\xi\xi}=\frac{1}{2},~~~
+g^{\xi\bar\xi}=g^{\bar\xi\xi}=2,~~~
+g_{\xi\xi}=g_{\bar\xi\bar\xi}=g^{\xi\xi}=g^{\bar\xi\bar\xi}=0.
+$$
+Often a space direction is compactified from $\mathbb{R}$ to $\mathbb{S}^1$ , so that $x^1+2\pi=x^1$. Then $z=e^\xi$ maps the compactified spacetime of cylindircal shape to a complex plane. One defines
+$$
+\partial=\partial_z,~~~\bar\partial=\partial_{\bar z}.
+$$
+Then the free scalar field action can be written as:
 $$
 S=\int d^2x{\cal L}=
 \frac{1}{8\pi}\int d^2x\partial_\nu\hat X\partial^\nu\hat X=
@@ -11,7 +29,7 @@ S=\int d^2x{\cal L}=
 $$
 where
 $$
-d^2\xi=\frac{i}{2}d\xi\wedge d\bar\xi,~d^2\z=\frac{i}{2}dz\wedge d\barz
+d^2\xi=\frac{i}{2}d\xi\wedge d\bar\xi,~d^2\z=\frac{i}{2}dz\wedge d\bar z
 $$
 The Euler-Lagrange equation:
 $$
@@ -25,12 +43,12 @@ It is invariant under translations, SO(2) rotations:
 $$
 \delta z=-i\epsilon z,~\delta\bar z =i\epsilon\bar z,
 $$
-and affine current algebra transformations:
+and **affine current algebra transformations**:
 $$
 \hat X(z,\bar z)\rightarrow \hat X(z,\bar z)+A(z),~
 \hat X(z,\bar z)\rightarrow \hat X(z,\bar z)+\bar A(\bar z),
 $$
-where $A(z)$, $\bar A(\bar z)$ are arbitrary holomorphic and anti-holomorphic functions.
+where $A(z)$, $\bar A(\bar z)$ are arbitrary *holomorphic* and *anti-holomorphic* functions.
 (N.B., anti-holomorphic is a function whose complex conjugate is holomorphic).
 The currents obtained from infinitesimal affine current algebra transformations:
 $$
