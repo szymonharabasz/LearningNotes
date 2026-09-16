@@ -67,11 +67,11 @@ $$
 ds^2=dzd\bar z\rightarrow
 \frac{\partial z'}{\partial z}\frac{\partial\bar z'}{\partial\bar z}dzd\bar z.
 $$
-It fulfils the condition for a **conformal transformation** which leaves metric invariat up to the scale:
+It fulfills the condition for a **conformal transformation** which leaves the metric invariant up to the scale:
 $$
 g_{\mu\nu}(x)\rightarrow g'_{\mu\nu}(x')=\Omega(x)g_{\mu\nu}(x).
 $$
-They preserve angles between vectors.
+Such transformation preserves angles between vectors.
 General infinitesimal coordinate transformation $x^\mu\rightarrow x^\mu+\epsilon^\mu(x)$ leads to:
 $$
 ds^2\rightarrow ds^2+
