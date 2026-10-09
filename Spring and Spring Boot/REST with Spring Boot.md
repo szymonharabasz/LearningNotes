@@ -177,6 +177,27 @@ Enhance the output (JSON) representation:
 			);
 	return ResponseEntity.ok(license);
 ```
+One can simplify the controller model by implementing a model assembler:
+```java
+@Component
+class LicenseModelAssembler implements RepresentationModelAssembler<
+	License, EntityModel<License>> {
+	@Override
+	public EntityModel<License> toModel(License license) {
+		var selfRel = linkTo(methodOn(LicenseConteoller.class)
+			.getLicense(organizationId, license.getLicenseId()))
+			.withSelfRel();
+		var creation = linkTo(methodOn(LicenseConteoller.class)
+			.createLicense(organizationId, license, null))
+			.withRel("createLicense");
+		return EntityModel.of(license, selfRel, creation);
+	}
+}
+```
+It can be injected in the controller and used like:
+```java
+return licenseModelAssembler.toModel(license);
+```
 ###### REST interceptor
 Defining:
 ```Java
