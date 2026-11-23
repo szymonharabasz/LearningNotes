@@ -1,0 +1,625 @@
+deck: Quarkus
+source: Java, Jakarta EE, Microprofile/Quarkus and MicroProfile.md
+tag: quarkus
+
+sections:
+  - section: Development workflow
+    cards:
+      - id: q-dev-mode
+        q: |-
+          How do you start a Quarkus app in development mode with live reload?
+        a: |-
+          `mvn quarkus:dev`
+      - id: q-native-container-build
+        prompt: |-
+          Which property builds a native executable **without a local GraalVM**?
+        cloze: |-
+          ```
+          mvn package -Pnative -D{{c1::quarkus.native.container-build}}=true
+          ```
+      - id: q-dev-services
+        q: |-
+          What are Quarkus **Dev Services**, and when do they kick in?
+        a: |-
+          In dev and test mode, Quarkus automatically starts the needed containers (Postgres, Kafka, Keycloak, Redis...) when the extension is present **and no URL is configured** for it.
+      - id: q-index-dependency
+        q: |-
+          CDI beans in a shared `dragonbank-commons` JAR are not discovered by Quarkus. Why, and how do you fix it?
+        a: |-
+          Quarkus discovers beans at build time, only in its own module (Jandex index). Make it index the dependency:
+          ```properties
+          quarkus.index-dependency.commons.group-id=com.dragonbank
+          quarkus.index-dependency.commons.artifact-id=dragonbank-commons
+          ```
+
+  - section: Configuration
+    cards:
+      - id: q-config-inject
+        prompt: |-
+          Inject the config property `dragonbank.greeting`, with a default value.
+        cloze: |-
+          ```java
+          @Inject
+          @{{c1::ConfigProperty}}(name = "dragonbank.greeting", {{c2::defaultValue}} = "Hello, hatchling")
+          String greeting;
+          ```
+      - id: q-config-programmatic
+        q: |-
+          How do you read the config property `dragonbank.greeting` **programmatically** in MicroProfile Config?
+        a: |-
+          ```java
+          ConfigProvider.getConfig().getValue("dragonbank.greeting", String.class);
+          ```
+      - id: q-config-ordinals
+        q: |-
+          Give the default MicroProfile/Quarkus config sources **ordered by ordinal**, with the numbers. Which one wins?
+        a: |-
+          The **higher** ordinal wins:
+          1. System properties: **400**
+          2. Environment variables: **300**
+          3. Kubernetes ConfigMap: **270**
+          4. `application.yaml`: **254**
+          5. `application.properties`: **250**
+          6. `microprofile-config.properties`: **100**
+      - id: q-config-custom-ordinal
+        q: |-
+          What ordinal does a custom `ConfigSource` get by default, and how can it be changed?
+        a: |-
+          **100**. It can be changed with the property `config_ordinal` in that source, or by overriding `getOrdinal()`.
+      - id: q-config-profile-prefix
+        prompt: |-
+          Give `dragonbank.greeting` a different value in the **dev** profile, in the same `application.properties`.
+        cloze: |-
+          ```properties
+          dragonbank.greeting=Welcome, mighty dragon!
+          {{c1::%dev.}}dragonbank.greeting=Hello, dragon developer!
+          ```
+      - id: q-config-profile-files
+        q: |-
+          Besides the `%profile.` prefix, how can you give a profile its own properties **file**? (MicroProfile vs Quarkus)
+        a: |-
+          - MicroProfile: `microprofile-config-<profile>.properties`
+          - Quarkus: `application-<profile>.properties`
+      - id: q-config-expression
+        prompt: |-
+          Make one property reuse the value of another (property expression).
+        cloze: |-
+          ```properties
+          support.email=help@dragonbank.example
+          goblin-support.email={{c1::${support.email} }}
+          ```
+      - id: q-configvalue
+        q: |-
+          How can you find out **which config source** a property value actually came from?
+        a: |-
+          Inject a `ConfigValue` instead of the plain type:
+          ```java
+          @Inject @ConfigProperty(name = "cave.host") ConfigValue caveHost;
+          caveHost.getSourceName(); caveHost.getValue();
+          ```
+      - id: q-configproperties-vs-mapping
+        q: |-
+          `@ConfigProperties` vs `@ConfigMapping`: who defines each one, and how do they differ?
+        a: |-
+          - `@ConfigProperties` (MicroProfile): a **class** with fields or getters/setters; injected with `@Inject @ConfigProperties`.
+          - `@ConfigMapping` (Quarkus): an **interface**; supports **nested** groups and Bean Validation (with `quarkus-hibernate-validator`).
+      - id: q-configmapping-nested
+        q: |-
+          With `@ConfigMapping(prefix = "goblin-support-mapping")` and a method `NightShift nightShift()` whose type has `String phone()`, what is the property name?
+        a: |-
+          `goblin-support-mapping.night-shift.phone` (method names become **kebab-case**)
+      - id: q-config-source-methods
+        q: |-
+          Which methods **must** a custom MicroProfile `ConfigSource` implement?
+        a: |-
+          `getPropertyNames()`, `getValue(String)`, `getName()`. The others (`getProperties()`, `getOrdinal()`) have defaults.
+      - id: q-config-register
+        q: |-
+          What are the two ways to register a custom `ConfigSource` or `Converter`?
+        a: |-
+          1. A ServiceLoader file `META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource` (or `...spi.Converter`) containing the class name.
+          2. Building the config manually: `ConfigProviderResolver.instance().getBuilder().addDefaultSources().withSources(...).withConverters(...).build()`, then `registerConfig(config, classLoader)`.
+
+  - section: Reactive programming with Mutiny
+    cards:
+      - id: q-uni-multi
+        q: |-
+          What is the difference between Mutiny's `Uni` and `Multi`? When does a pipeline actually start running?
+        a: |-
+          `Uni<T>`: 0 or 1 item. `Multi<T>`: a stream of items. Both are **lazy**: nothing happens until you **subscribe**.
+      - id: q-concat-vs-merge
+        q: |-
+          What is the difference between `transformToMultiAndConcatenate` and `transformToMultiAndMerge`?
+        a: |-
+          **Concatenate** keeps the order (processes one inner stream after another). **Merge** interleaves items from the inner streams as they arrive (faster, no ordering).
+      - id: q-select-skip
+        q: |-
+          Which Mutiny operator group is the opposite of `.select()`?
+        a: |-
+          `.skip()`
+      - id: q-mutiny-retry
+        prompt: |-
+          Mutiny: retry on failure with exponential backoff, at most 3 times.
+        cloze: |-
+          ```java
+          .onFailure().{{c1::retry()}}.{{c2::withBackoff}}(Duration.ofSeconds(3)).{{c3::atMost(3)}}
+          ```
+      - id: q-mutiny-timeout
+        prompt: |-
+          Mutiny: fail if no item arrives within 1 second.
+        cloze: |-
+          ```java
+          .{{c1::ifNoItem()}}.after(Duration.ofSeconds(1)).fail()
+          ```
+      - id: q-mutiny-invoke-vs-transform
+        q: |-
+          What is the difference between `onItem().invoke(...)` and `onItem().transform(...)`?
+        a: |-
+          `invoke` runs a **side effect** and passes the item through unchanged. `transform` **replaces** the item with the function's result.
+      - id: q-mutiny-overflow
+        q: |-
+          A `Multi` emits every 20 ms but the consumer handles one item per second. What are two ways to deal with it in Mutiny?
+        a: |-
+          ```java
+          .onOverflow().buffer(250)
+          .onOverflow().drop(item -> log("dropped " + item))
+          ```
+          (plus `.emitOn(executor)`, so the slow consumer runs on another thread)
+      - id: q-mutiny-combine
+        prompt: |-
+          Mutiny: combine two `Uni`s into a tuple.
+        cloze: |-
+          ```java
+          Uni.{{c1::combine().all().unis}}(goldUni, gemsUni).{{c2::asTuple()}}
+          ```
+
+  - section: Data access
+    cards:
+      - id: q-panache-active-record
+        q: |-
+          How do you write a Panache **active record** entity? Why can the fields be `public`?
+        a: |-
+          `@Entity` + `extends PanacheEntity`, with public fields. At build time Quarkus generates getters and setters and **rewrites every field access** to call them.
+      - id: q-panache-id
+        q: |-
+          Where is the `@Id` of an entity extending `PanacheEntity`?
+        a: |-
+          It is inherited: `PanacheEntity` provides a generated `Long id`. Use `PanacheEntityBase` if you want to define your own id.
+      - id: q-panache-repository
+        q: |-
+          How do you write a Panache **repository**?
+        a: |-
+          ```java
+          @ApplicationScoped
+          public class HoardRepository implements PanacheRepository<Hoard> {
+              public Hoard findByHoardNumber(Long n) { return find("hoardNumber", n).firstResult(); }
+          }
+          ```
+          The entity is a plain JPA `@Entity`.
+      - id: q-panache-streamall
+        q: |-
+          What does `Hoard.streamAll()` return in blocking Panache, and what does it need?
+        a: |-
+          A `java.util.stream.Stream` (not a reactive stream). It needs an **active transaction**.
+      - id: q-reactive-transaction
+        q: |-
+          How do you demarcate transactions in **Hibernate Reactive** Panache?
+        a: |-
+          `Panache.withTransaction(() -> ...)` or `@WithTransaction`, **not** `@Transactional` (which is for blocking code).
+      - id: q-named-datasource
+        prompt: |-
+          Configure an additional **named** datasource called `raids`.
+        cloze: |-
+          ```properties
+          quarkus.datasource.{{c1::raids}}.db-kind=postgresql
+          ```
+      - id: q-reactive-datasource-url
+        q: |-
+          Which property gives the datasource URL for **Hibernate Reactive**, and how does it differ from the JDBC one?
+        a: |-
+          `quarkus.datasource.reactive.url=postgresql://localhost:5432/dragonbank` (no `jdbc:` prefix), vs `quarkus.datasource.jdbc.url`.
+      - id: q-flyway-at-start
+        q: |-
+          Which property runs Flyway migrations at startup in Quarkus?
+        a: |-
+          `quarkus.flyway.migrate-at-start=true`
+
+  - section: REST endpoints (RESTEasy Reactive)
+    cards:
+      - id: q-resteasy-threading
+        q: |-
+          On which thread does a RESTEasy Reactive endpoint run?
+        a: |-
+          - Returns `Uni`/`Multi`: the **I/O (event-loop) thread**
+          - Plain return type: a **worker thread**
+          - You can override this with `@Blocking` / `@NonBlocking`. Never block the event loop.
+      - id: q-server-exception-mapper
+        q: |-
+          What is the RESTEasy Reactive shortcut for an exception mapper?
+        a: |-
+          A method annotated with `@ServerExceptionMapper` (in the resource, or in a global class):
+          ```java
+          @ServerExceptionMapper
+          public Response scrollMissing(FileSystemException ex) { ... }
+          ```
+      - id: q-swagger-in-prod
+        q: |-
+          Swagger UI is missing in the production build. Which property fixes that?
+        a: |-
+          `quarkus.swagger-ui.always-include=true`
+      - id: q-root-path
+        q: |-
+          How do you put all Quarkus HTTP endpoints under `/api`?
+        a: |-
+          `quarkus.http.root-path=/api`
+
+  - section: Calling other services
+    cards:
+      - id: q-restclient-declare
+        prompt: |-
+          Declare a MicroProfile REST Client interface, then inject it.
+        cloze: |-
+          ```java
+          @Path("/appraisals")
+          @{{c1::RegisterRestClient}}(configKey = "goblin-appraisal")
+          public interface GoblinAppraisalService { ... }
+
+          @Inject @{{c2::RestClient}}
+          GoblinAppraisalService appraisalService;
+          ```
+      - id: q-restclient-url
+        q: |-
+          What are two ways to configure the URL of a REST client with `configKey = "goblin-appraisal"`?
+        a: |-
+          ```properties
+          goblin-appraisal/mp-rest/url=http://goblin-appraisal:8080/api      # MicroProfile style
+          quarkus.rest-client.goblin-appraisal.url=http://goblin-appraisal:8080/api   # Quarkus style
+          ```
+          In the MicroProfile style the key can also be the interface's FQCN.
+      - id: q-clientheaderparam-computed
+        q: |-
+          How can a MicroProfile REST Client header value be **computed by a method**?
+        a: |-
+          ```java
+          @ClientHeaderParam(name = "X-Bribe", value = "{computeBribe}")
+          BigDecimal getValue(...);
+
+          default String computeBribe() { return "3 gold coins"; }
+          ```
+      - id: q-propagate-headers
+        q: |-
+          How do you make a MicroProfile REST Client **forward the incoming `Authorization` header**?
+        a: |-
+          Put `@RegisterClientHeaders` on the interface (the default factory), and list the headers:
+          ```properties
+          org.eclipse.microprofile.rest.client.propagateHeaders=Authorization,Cookie
+          ```
+      - id: q-restclient-builder
+        q: |-
+          How do you create a MicroProfile REST Client **programmatically**, with timeouts?
+        a: |-
+          ```java
+          RestClientBuilder.newBuilder()
+              .baseUrl(new URL(url))
+              .connectTimeout(500, TimeUnit.MILLISECONDS)
+              .readTimeout(1200, TimeUnit.MILLISECONDS)
+              .build(GoblinAppraisalService.class);
+          ```
+          The interface doesn't need `@RegisterRestClient` for this.
+      - id: q-response-exception-mapper
+        q: |-
+          Client side: how do you turn a 404 from the appraisal service into a `TreasureNotFoundException`?
+        a: |-
+          Implement `ResponseExceptionMapper<TreasureNotFoundException>` with `handles(status, headers)` (return `status == 404`) and `toThrowable(response)`. Register it with `@RegisterProvider`.
+      - id: q-invoked-method-property
+        q: |-
+          In a REST Client `ClientRequestFilter`, how do you find out which interface method was called?
+        a: |-
+          `ctx.getProperty("org.eclipse.microprofile.rest.client.invokedMethod")`. It returns a `java.lang.reflect.Method`.
+      - id: q-restclient-async
+        q: |-
+          What return types make a MicroProfile REST Client method **asynchronous**?
+        a: |-
+          `CompletionStage<T>`, or Mutiny `Uni<T>` in Quarkus.
+      - id: q-vertx-webclient
+        q: |-
+          Which low-level reactive HTTP client can you use in Quarkus besides the REST Client, and what does it return?
+        a: |-
+          The Vert.x Web Client (`io.vertx.mutiny.ext.web.client.WebClient`, created from the injected `Vertx`). It returns Mutiny `Uni`s, e.g. `client.getAbs(url).send()`. Close it in `@PreDestroy`.
+
+  - section: Reactive messaging
+    cards:
+      - id: q-channel-config
+        prompt: |-
+          Configure the outgoing channel `hoard-depleted` to write to the Kafka topic `depleted-hoards`.
+        cloze: |-
+          ```properties
+          mp.messaging.{{c1::outgoing}}.hoard-depleted.{{c2::connector}}=smallrye-kafka
+          mp.messaging.outgoing.hoard-depleted.{{c3::topic}}=depleted-hoards
+          ```
+      - id: q-emitter-types
+        q: |-
+          What does `send()` return on an `Emitter`, and on a `MutinyEmitter`?
+        a: |-
+          `Emitter.send()` returns `CompletionStage<Void>`. `MutinyEmitter.send()` (Quarkus) returns `Uni<Void>`.
+      - id: q-message-ack-callbacks
+        q: |-
+          How do you send a message with **ack/nack callbacks**?
+        a: |-
+          ```java
+          emitter.send(Message.of(event,
+              () -> { /* ack */  return CompletableFuture.completedFuture(null); },
+              reason -> { /* nack */ return CompletableFuture.completedFuture(null); }));
+          ```
+      - id: q-incoming-message-ack
+        q: |-
+          An `@Incoming` method takes `Message<KnightSighting>` instead of `KnightSighting`. What extra duty do you have?
+        a: |-
+          You must **acknowledge** it yourself, e.g. `return msg.ack();` (or `msg.nack(ex)` on failure).
+      - id: q-incoming-blocking
+        q: |-
+          What does `@Blocking` do on an `@Incoming` method?
+        a: |-
+          It makes the framework run the method on a **worker thread**, so it can block.
+      - id: q-kafka-key
+        q: |-
+          How do you set the **Kafka key** of an outgoing message, and read it from an incoming one?
+        a: |-
+          ```java
+          Message.of(event).addMetadata(OutgoingKafkaRecordMetadata.builder().withKey("very-angry-dragon").build());
+          msg.getMetadata(IncomingKafkaRecordMetadata.class).get().getKey();
+          ```
+      - id: q-onoverflow
+        prompt: |-
+          Inject an emitter for `hoard-depleted` that buffers up to 100 messages when the consumer is slow.
+        cloze: |-
+          ```java
+          @Inject @Channel("hoard-depleted")
+          @{{c1::OnOverflow}}(value = OnOverflow.Strategy.{{c2::BUFFER}}, bufferSize = 100)
+          MutinyEmitter<HoardDepleted> emitter;
+          ```
+        extra: |-
+          Other strategies: `UNBOUNDED_BUFFER`, `DROP`, `LATEST`, `FAIL`, `THROW_EXCEPTION`, `NONE`.
+      - id: q-processor
+        q: |-
+          How do you write a processor that turns knight sightings into dragon alarms?
+        a: |-
+          ```java
+          @Incoming("knight-sightings")
+          @Outgoing("dragon-alarms")
+          public Message<String> raiseAlarm(Message<KnightSighting> s) {
+              return s.withPayload("Hide the gold! " + s.getPayload().name());
+          }
+          ```
+      - id: q-channel-injection
+        q: |-
+          Besides `@Incoming`, how else can you consume a channel?
+        a: |-
+          Inject it as a stream and subscribe: `@Inject @Channel("knight-sightings") Multi<Message<KnightSighting>> sightings;`
+
+  - section: Fault tolerance
+    cards:
+      - id: q-bulkhead-queue
+        prompt: |-
+          MicroProfile FT: allow 10 concurrent calls, and let up to 10 more wait in a queue.
+        cloze: |-
+          ```java
+          @Bulkhead(value = 10, {{c1::waitingTaskQueue}} = 10)
+          ```
+        extra: |-
+          The waiting queue is only used together with `@Asynchronous`.
+      - id: q-fallback-signature
+        q: |-
+          MicroProfile `@Fallback(fallbackMethod = ...)`: what signature must the fallback method have? What is the alternative to a method?
+        a: |-
+          The **same parameters and return type** as the original method. Alternative: `@Fallback(value = MyHandler.class)` with a `FallbackHandler` class.
+      - id: q-fallback-applyon
+        q: |-
+          Which `@Fallback` attributes restrict which exceptions trigger it?
+        a: |-
+          `applyOn` (only these) and `skipOn` (never for these).
+      - id: q-circuitbreaker-params
+        q: |-
+          What do these `@CircuitBreaker` parameters mean: `requestVolumeThreshold`, `failureRatio`, `delay`, `successThreshold`?
+        a: |-
+          - `requestVolumeThreshold`: size of the rolling window
+          - `failureRatio`: failure ratio in the window that opens the circuit
+          - `delay` (with `delayUnit`): how long the circuit stays open
+          - `successThreshold`: successful trial calls needed to close it again
+      - id: q-retry-params
+        q: |-
+          What are the main MicroProfile `@Retry` parameters?
+        a: |-
+          `retryOn`, `abortOn`, `maxRetries`, `delay`/`delayUnit`, `jitter`/`jitterDelayUnit`, `maxDuration`/`durationUnit`.
+      - id: q-ft-config-override
+        prompt: |-
+          Change the `@Timeout` of `HoardResource.withdrawGold` to 150 ms in config, without touching the code.
+        cloze: |-
+          ```properties
+          com.dragonbank.HoardResource/withdrawGold/{{c1::Timeout}}/{{c2::value}}=150
+          ```
+        extra: |-
+          The format is `[<class>/[<method>/]]<annotation>/<parameter>`. The `enabled` parameter switches a policy off.
+      - id: q-ft-nonfallback
+        q: |-
+          A service mesh (Istio) already does retries and circuit breaking. How do you switch off all MicroProfile FT policies **except fallback**?
+        a: |-
+          `MP_Fault_Tolerance_NonFallback_Enabled=false`
+      - id: q-ft-asynchronous
+        q: |-
+          What return types does MicroProfile FT `@Asynchronous` need?
+        a: |-
+          `CompletionStage<T>` (or `Future<T>`). The method runs on a separate thread. Note: it is a different annotation from EJB's `@Asynchronous`.
+
+  - section: Observability
+    cards:
+      - id: q-health-kinds
+        q: |-
+          What kinds of health checks does MicroProfile Health define, and which extra one does Quarkus add?
+        a: |-
+          `@Liveness`, `@Readiness`, `@Startup`. Quarkus adds `@HealthGroup("custom")`.
+      - id: q-health-paths
+        q: |-
+          What are the health endpoint paths: standard MicroProfile vs Quarkus?
+        a: |-
+          MicroProfile: `/health/live`, `/health/ready`, `/health/started`. Quarkus: the same paths under **`/q`**, e.g. `/q/health/live`.
+      - id: q-health-response
+        prompt: |-
+          Build a health check response named `dragon-furnace`, with extra data.
+        cloze: |-
+          ```java
+          return HealthCheckResponse.{{c1::named}}("dragon-furnace")
+              .{{c2::withData}}("checkedAt", String.valueOf(new Date()))
+              .up()
+              .build();
+          ```
+      - id: q-health-producer
+        q: |-
+          How do you define a health check **without writing a class**?
+        a: |-
+          With a CDI producer:
+          ```java
+          @Produces @Readiness
+          HealthCheck caveEntrance() {
+              return () -> HealthCheckResponse.named("cave-entrance").status(!blocked()).build();
+          }
+          ```
+      - id: q-health-ui
+        q: |-
+          Which property includes the health UI in production builds?
+        a: |-
+          `quarkus.smallrye-health.ui.always-include=true`
+      - id: q-metric-gauges
+        q: |-
+          What does each of these metrics measure: `@Gauge`, `@ConcurrentGauge`, `@Counted`?
+        a: |-
+          - `@Counted`: number of invocations
+          - `@ConcurrentGauge`: calls **in progress** (incremented on entry, decremented on exit)
+          - `@Gauge`: the **value returned** by the annotated method (e.g. total gold in the vault)
+      - id: q-metric-absolute
+        q: |-
+          What does `absolute = true` mean in `@Counted(name = "appraise_treasure", absolute = true)`?
+        a: |-
+          The metric name is used as is. Without it, the name is prefixed with the class name.
+      - id: q-metric-registry
+        q: |-
+          How do you inject the **application** metric registry to register metrics by hand?
+        a: |-
+          ```java
+          @Inject @RegistryType(type = MetricRegistry.Type.APPLICATION)
+          MetricRegistry registry;
+          registry.histogram(metadata).update(n);
+          ```
+      - id: q-tracing-tag-vs-baggage
+        q: |-
+          OpenTracing: what is the difference between `span.setTag(...)` and `span.setBaggageItem(...)`?
+        a: |-
+          A **tag** is attached only to this span. A **baggage item** is **propagated to downstream services** with the trace context.
+      - id: q-metrics-tracing-modern
+        q: |-
+          What do newer Quarkus versions recommend instead of MP Metrics and MP OpenTracing?
+        a: |-
+          **Micrometer** (`quarkus-micrometer`) for metrics, and **OpenTelemetry** (`quarkus-opentelemetry`) for tracing.
+
+  - section: Security
+    cards:
+      - id: q-mpjwt-claims
+        q: |-
+          Which two claims does MP JWT expect that plain OIDC tokens lack? What do you do in Keycloak?
+        a: |-
+          `upn` (falling back to `preferred_username`, then `sub`) and **`groups`** (used for roles). Add them as custom claims (mappers) in Keycloak, Okta and similar providers.
+      - id: q-mpjwt-props
+        prompt: |-
+          Which properties tell MP JWT how to verify tokens from Keycloak (issuer and public keys)?
+        cloze: |-
+          ```properties
+          mp.jwt.verify.{{c1::issuer}}=http://localhost:9080/auth/realms/dragonbank-realm
+          mp.jwt.verify.{{c2::publickey.location}}=http://localhost:9080/auth/realms/dragonbank-realm/protocol/openid-connect/certs
+          ```
+      - id: q-claimvalue
+        q: |-
+          Why would you inject `@Claim("sub") ClaimValue<Optional<String>>` instead of a plain `String`?
+        a: |-
+          `ClaimValue` re-reads the claim on **every access**. It is needed when the bean's scope is **wider than `@RequestScoped`**, because a plain value would be fixed at injection.
+      - id: q-swagger-security-scheme
+        q: |-
+          Swagger UI doesn't send the JWT although `@SecurityScheme` and `@SecurityRequirement` are both defined. A likely cause?
+        a: |-
+          `securitySchemeName` in `@SecurityScheme` and `name` in `@SecurityRequirement` **must match** exactly (e.g. both `"jwt"`).
+      - id: q-jwt-all-claims
+        q: |-
+          How do you list all claims of the current token?
+        a: |-
+          Inject `JsonWebToken jwt`, then use `jwt.getClaimNames()` and `jwt.getClaim(name)`.
+
+  - section: Testing
+    cards:
+      - id: q-test-resource
+        q: |-
+          What is a `QuarkusTestResourceLifecycleManager`, and what is the map returned by `start()` used for?
+        a: |-
+          Something started before the tests (e.g. a Postgres container). The returned map **overrides the application's configuration**, e.g. `quarkus.datasource.jdbc.url`.
+      - id: q-test-resource-annotation
+        q: |-
+          How do you attach a test resource to a test class (old and new annotation)?
+        a: |-
+          `@QuarkusTestResource(PostgresResource.class)`. Newer versions: `@WithTestResource`.
+      - id: q-native-tests
+        q: |-
+          What are the annotations for (a) a test that runs against the native image, and (b) skipping an inherited test in native mode? Give the old and new names.
+        a: |-
+          (a) `@NativeImageTest` → newer `@QuarkusIntegrationTest`
+          (b) `@DisabledOnNativeImage` → newer `@DisabledOnIntegrationTest`
+      - id: q-test-k8s-config
+        q: |-
+          The tests try to read Kubernetes ConfigMaps and fail. Which property fixes it?
+        a: |-
+          `%test.quarkus.kubernetes-config.enabled=false`
+      - id: q-inject-mock
+        q: |-
+          How do you replace a bean with a Mockito mock in a `@QuarkusTest`?
+        a: |-
+          `@InjectMock` on a field of the bean's type.
+
+  - section: Containers and Kubernetes
+    cards:
+      - id: q-container-image-build
+        prompt: |-
+          Which property builds a container image during the Maven build?
+        cloze: |-
+          ```
+          mvn clean install -Pnative -Dquarkus.native.container-build=true -D{{c1::quarkus.container-image.build}}=true
+          ```
+      - id: q-jib
+        q: |-
+          What is the advantage of the `container-image-jib` extension?
+        a: |-
+          It builds images **without a Docker daemon**.
+      - id: q-k8s-env-vars
+        q: |-
+          How do you make the generated Kubernetes deployment set `mp.jwt.verify.issuer` as an environment variable?
+        a: |-
+          ```properties
+          quarkus.kubernetes.env.vars.mp-jwt-verify-issuer=http://keycloak-http.keycloak/auth/realms/dragonbank-realm
+          ```
+          The dots in the property name become dashes in the key.
+      - id: q-k8s-probes
+        q: |-
+          Do you have to write the liveness and readiness probe YAML for a Quarkus app yourself?
+        a: |-
+          No. The Quarkus Kubernetes extension generates the probes, pointing at `/q/health/live`, `/q/health/ready` and `/q/health/started`.
+      - id: q-compose-replicas
+        q: |-
+          `deploy.replicas: 5` in `docker-compose.yml` has no effect. Why?
+        a: |-
+          `deploy.replicas` only takes effect in **Swarm mode** (`docker stack deploy`).
+      - id: q-docker-chown
+        q: |-
+          How do you copy a file into an image so that it is owned by a given user and group?
+        a: |-
+          `COPY --chown=1001:0 src/... /config/` (for example the user and group of the Open Liberty base image)
+      - id: q-docker-rm-by-image
+        q: |-
+          A one-liner to remove all containers created from the image `dragonbank/hoard-service-jvm`?
+        a: |-
+          `docker rm $(docker ps -aq --filter ancestor=dragonbank/hoard-service-jvm)`

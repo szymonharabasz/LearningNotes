@@ -1,0 +1,268 @@
+deck: Spring Cloud
+source: Spring and Spring Boot/Spring Cloud/Config Server.md
+tag: spring-cloud
+
+sections:
+  - section: Config Server
+    source: Spring and Spring Boot/Spring Cloud/Config Server.md
+    cards:
+      - id: sc-config-enable
+        q: |-
+          Which annotation turns a Spring Boot app into a configuration server?
+        a: |-
+          `@EnableConfigServer` (dependency `spring-cloud-config-server`)
+      - id: sc-config-native
+        q: |-
+          What does the `native` profile mean on a Config Server? Which backend wins with `spring.profiles.active=native,git`?
+        a: |-
+          `native` = configuration from the **filesystem or classpath** (`spring.cloud.config.server.native.search-locations`). With several backends, the **last** one wins (here `git`).
+      - id: sc-config-files-urls
+        q: |-
+          How are configuration files named on the Config Server, and at which URL is `appraisal-service` with the `dev` profile served?
+        a: |-
+          `{application}-{profile}.properties|yml`, e.g. `appraisal-service-dev.yml`. URL: `http://config-server:8071/appraisal-service/dev`. A profile's values override those in `default`.
+      - id: sc-config-import
+        prompt: |-
+          Make `appraisal-service` load its config from the Config Server at `localhost:8071` (Boot 2.4+), and still start if the server is down.
+        cloze: |-
+          ```properties
+          spring.application.name=appraisal-service
+          spring.config.import={{c1::optional:configserver:}}http://localhost:8071
+          ```
+        extra: |-
+          Older style: `spring.cloud.config.uri` in `bootstrap.properties`.
+      - id: sc-refreshscope
+        q: |-
+          Where does `@RefreshScope` come from, how do you trigger a refresh, and what gets refreshed?
+        a: |-
+          From **Spring Cloud Context** (not Actuator). `POST /actuator/refresh` reloads the config and re-creates the `@RefreshScope` beans. This refreshes **custom** properties; infrastructure like the data source is not rebuilt.
+      - id: sc-config-encrypt
+        q: |-
+          How do you store an encrypted password with the Config Server?
+        a: |-
+          Set `encrypt.key` (e.g. through `ENCRYPT_KEY`) on the server, which then exposes `POST /encrypt` and `/decrypt`. Store the value as `spring.datasource.password={cipher}d1a9...`, and the server decrypts it.
+      - id: sc-profile-env
+        q: |-
+          How do you activate the `prod` profile from the command line, and from `docker-compose.yml`?
+        a: |-
+          `java -Dspring.profiles.active=prod -jar app.jar`, or the environment variable `SPRING_PROFILES_ACTIVE: "prod"`.
+
+  - section: Service discovery and load balancing
+    source: Spring and Spring Boot/Spring Cloud/Service discovery and load balancing.md
+    cards:
+      - id: sc-eureka-server
+        q: |-
+          How do you set up a Eureka server, and which two client properties must be `false` on the server itself?
+        a: |-
+          `@EnableEurekaServer` + `spring-cloud-starter-netflix-eureka-server`. Set `eureka.client.registerWithEureka=false` and `eureka.client.fetchRegistry=false` (the server doesn't register with itself).
+      - id: sc-eureka-client
+        q: |-
+          What is needed to register `appraisal-service` with Eureka? Where does its service id come from?
+        a: |-
+          Having `spring-cloud-starter-netflix-eureka-client` on the classpath is enough (`@EnableDiscoveryClient` is optional nowadays), plus `eureka.client.serviceUrl.defaultZone`. The service id is **`spring.application.name`**.
+      - id: sc-prefer-ip
+        q: |-
+          Why set `eureka.instance.preferIpAddress=true`?
+        a: |-
+          To register the instance's **IP** instead of its hostname. This is useful in containers, where hostnames often aren't resolvable by other services.
+      - id: sc-ribbon
+        q: |-
+          Old guides say to exclude Ribbon from the Eureka dependencies. What replaced Ribbon?
+        a: |-
+          **Spring Cloud LoadBalancer**
+      - id: sc-wait-sync-empty
+        q: |-
+          What does `eureka.server.waitTimeInMsWhenSyncEmpty: 5` do?
+        a: |-
+          The server doesn't wait (for long) for peer registrations at startup. A development setting.
+      - id: sc-discovery-client
+        q: |-
+          How do you find an instance of `treasure-service` using the low-level `DiscoveryClient`?
+        a: |-
+          ```java
+          List<ServiceInstance> instances = discovery.getInstances("treasure-service");
+          String baseUri = instances.get(0).getUri().toString();
+          ```
+          You choose the instance yourself; there is no load balancing.
+      - id: sc-loadbalanced
+        prompt: |-
+          Call `treasure-service` by its **service id** through a `RestTemplate`, with client-side load balancing.
+        cloze: |-
+          ```java
+          @Bean @{{c1::LoadBalanced}}
+          RestTemplate restTemplate() { return new RestTemplate(); }
+
+          restTemplate.getForObject("http://{{c2::treasure-service}}/v1/treasures/{id}", Treasure.class, id);
+          ```
+        extra: |-
+          The host name is the **service id**, resolved through discovery and load-balanced.
+      - id: sc-feign
+        q: |-
+          How do you declare a Feign client for `treasure-service`?
+        a: |-
+          `@EnableFeignClients` on the application class, then:
+          ```java
+          @FeignClient("treasure-service")
+          public interface TreasureClient {
+              @GetMapping("/v1/treasures/{id}")
+              Treasure getTreasure(@PathVariable("id") long id);
+          }
+          ```
+          It uses Spring MVC annotations.
+      - id: sc-httpexchange
+        q: |-
+          What is Spring 6's built-in alternative to Feign for declarative HTTP clients?
+        a: |-
+          `@HttpExchange` interfaces (`@GetExchange`, `@PostExchange`, ...), backed by `RestClient` or `WebClient`.
+
+  - section: API Gateway
+    source: Spring and Spring Boot/Spring Cloud/API Gateway.md
+    cards:
+      - id: sc-gateway-reactive
+        q: |-
+          Why do Spring Cloud Gateway filters work with `Mono` and `ServerWebExchange`?
+        a: |-
+          The gateway is a **reactive** app built on Spring WebFlux and Reactor, not on the Servlet stack.
+      - id: sc-gateway-lb
+        q: |-
+          How does a gateway route point to a service registered in Eureka?
+        a: |-
+          `uri: lb://appraisal-service`. `lb://` + the service id means: resolve through discovery and load-balance.
+      - id: sc-gateway-locator
+        q: |-
+          What does `spring.cloud.gateway.discovery.locator.enabled=true` do?
+        a: |-
+          It creates **automatic routes** for every discovered service: `/treasure-service/**` → `lb://treasure-service` (use `lowerCaseServiceId: true` for lowercase paths).
+      - id: sc-rewritepath
+        prompt: |-
+          Gateway: strip the `/appraisal` prefix before forwarding the request.
+        cloze: |-
+          ```yaml
+          filters:
+            - {{c1::RewritePath}}=/appraisal/(?<path>.*), /$\{path}
+          ```
+      - id: sc-gateway-predicates
+        q: |-
+          Which built-in Spring Cloud Gateway **route predicates** can you name (at least five)?
+        a: |-
+          `Path`, `Method`, `Header`, `Host`, `Query`, `RemoteAddr`, `After`/`Before`/`Between`
+      - id: sc-gateway-ratelimiter
+        q: |-
+          `RequestRateLimiter=10, 20, #{@dragonKeyResolver}`: what are the three arguments, and what infrastructure does it need?
+        a: |-
+          The replenish rate, the burst capacity and a key resolver bean. It needs **Redis**.
+      - id: sc-globalfilter-pre
+        q: |-
+          How do you add a header to the request in a gateway `GlobalFilter`? Why can't you just set it?
+        a: |-
+          The request is **immutable**, so you build a modified copy:
+          ```java
+          exchange = exchange.mutate()
+              .request(exchange.getRequest().mutate().header("X-Correlation-Id", id).build())
+              .build();
+          return chain.filter(exchange);
+          ```
+      - id: sc-globalfilter-post
+        q: |-
+          How do you write a gateway **post**-filter, i.e. code that runs after the downstream response comes back?
+        a: |-
+          ```java
+          return chain.filter(exchange).then(Mono.fromRunnable(() -> { ... }));
+          ```
+
+  - section: Resilience patterns
+    source: Spring and Spring Boot/Spring Cloud/Resilience patterns.md
+    cards:
+      - id: sc-r4j-instances
+        q: |-
+          In Resilience4j, where are the parameters of `@CircuitBreaker(name = "treasureService")` defined?
+        a: |-
+          In `application.yml`, under `resilience4j.circuitbreaker.instances.treasureService`. The annotation only **names the instance**; the names must match exactly, and several methods can share an instance.
+      - id: sc-r4j-fallback
+        prompt: |-
+          Resilience4j: complete the signature of the fallback method.
+        cloze: |-
+          ```java
+          @Retry(name = "treasureService", fallbackMethod = "lastKnownTreasures")
+          public List<Treasure> treasuresOf(String dragon) { ... }
+
+          public List<Treasure> lastKnownTreasures(String dragon, {{c1::Throwable t}}) { ... }
+          ```
+      - id: sc-r4j-order
+        q: |-
+          In which order does Resilience4j apply its decorators when a method has several annotations?
+        a: |-
+          `Retry( CircuitBreaker( RateLimiter( TimeLimiter( Bulkhead( method ) ) ) ) )`. Retry is the outermost, so every retry passes through the circuit breaker.
+      - id: sc-r4j-bulkhead-types
+        q: |-
+          What are the two Resilience4j bulkhead types, and which is the default?
+        a: |-
+          `SEMAPHORE` (default; limits concurrent calls) and `THREADPOOL` (a separate pool and queue; needs a `CompletableFuture` return type).
+      - id: sc-r4j-cb-props
+        q: |-
+          What are the key circuit breaker properties in Resilience4j (current names)?
+        a: |-
+          `slidingWindowSize` (formerly `ringBufferSizeInClosedState`), `permittedNumberOfCallsInHalfOpenState` (formerly `ringBufferSizeInHalfOpenState`), `waitDurationInOpenState`, `failureRateThreshold` (%), `recordExceptions`.
+      - id: sc-r4j-max-attempts
+        q: |-
+          Resilience4j `retry.maxAttempts: 5`: how many retries is that?
+        a: |-
+          **4 retries**, because `maxAttempts` **includes the first call** (formerly named `maxRetryAttempts`).
+      - id: sc-r4j-ratelimiter-props
+        q: |-
+          What do `limitForPeriod`, `limitRefreshPeriod` and `timeoutDuration` mean in a Resilience4j rate limiter?
+        a: |-
+          `limitForPeriod` calls are allowed per `limitRefreshPeriod`. `timeoutDuration` is how long a call **waits for permission** before failing.
+      - id: sc-r4j-proxy
+        q: |-
+          A method protected by `@CircuitBreaker` is called from another method of the same bean, and the circuit breaker never trips. Why?
+        a: |-
+          The annotations work through an **AOP proxy**. Self-invocation (`this.method()`) bypasses the proxy, just as with `@Transactional`.
+      - id: sc-r4j-health
+        q: |-
+          How do you make a circuit breaker's state visible in `/actuator/health`?
+        a: |-
+          `registerHealthIndicator: true` on the instance.
+
+  - section: Cloud Stream
+    source: Spring and Spring Boot/Spring Cloud/Cloud Stream.md
+    cards:
+      - id: sc-stream-binding-names
+        q: |-
+          Functional Spring Cloud Stream: what are the binding names for `@Bean Consumer<KnightSighting> onSighting()` and `@Bean Function<KnightSighting, DragonAlarm> raiseAlarm()`?
+        a: |-
+          `onSighting-in-0`, and `raiseAlarm-in-0` → `raiseAlarm-out-0`.
+      - id: sc-stream-destination
+        prompt: |-
+          Bind the consumer `onSighting` to the topic `knight-sightings`, in the consumer group `appraisal-service`.
+        cloze: |-
+          ```properties
+          spring.cloud.stream.bindings.onSighting-in-0.{{c1::destination}}=knight-sightings
+          spring.cloud.stream.bindings.onSighting-in-0.{{c2::group}}=appraisal-service
+          ```
+      - id: sc-stream-function-definition
+        q: |-
+          When is `spring.cloud.function.definition` required?
+        a: |-
+          When the app has **several** function beans (`Supplier`/`Function`/`Consumer`). It lists the ones to bind, e.g. `onSighting;raiseAlarm`.
+      - id: sc-streambridge
+        q: |-
+          How do you send a message from imperative code (e.g. a REST controller) in functional Spring Cloud Stream?
+        a: |-
+          `streamBridge.send("sightings-out-0", payload)` with an injected `StreamBridge`.
+      - id: sc-stream-group
+        q: |-
+          What does a consumer `group` do in Spring Cloud Stream?
+        a: |-
+          Each message is delivered to **one instance** of the group (competing consumers). Without a group, every instance gets every message.
+      - id: sc-stream-legacy
+        q: |-
+          What did the annotation-based Spring Cloud Stream model look like, and when was it removed?
+        a: |-
+          `@EnableBinding(Source.class / Sink.class)`, `source.output().send(...)`, `@StreamListener(Sink.INPUT)`, and custom `@Input`/`@Output` channel interfaces. Deprecated in 3.1, **removed in 4.0**.
+      - id: sc-sleuth
+        q: |-
+          What replaced Spring Cloud Sleuth for distributed tracing in Spring Boot 3?
+        a: |-
+          **Micrometer Tracing** (with an exporter such as Zipkin or OpenTelemetry).
+        tags: [observability]

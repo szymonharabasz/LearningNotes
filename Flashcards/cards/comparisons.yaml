@@ -1,0 +1,216 @@
+deck: Comparisons
+source: Spring and Spring Boot/README.md
+tag: compare
+# Short front/back pairs, so they are also generated reversed (Quarkus/MP -> Spring).
+defaults: { reverse: true }
+# Each labelled card gets a task line such as "Equivalent in MicroProfile?" (and "Equivalent in Spring?" when reversed).
+auto_prompt: true
+
+sections:
+  - section: Configuration
+    cards:
+      - id: cmp-value
+        q: |-
+          **Spring:** `@Value("${appraisal.goblin-commission}")`
+        a: |-
+          **MicroProfile:** `@ConfigProperty(name = "appraisal.goblin-commission")`
+        extra: |-
+          The default value syntax differs: `${key:default}` in Spring, vs the `defaultValue = "..."` attribute in MicroProfile.
+      - id: cmp-configuration-properties
+        q: |-
+          **Spring:** `@ConfigurationProperties(prefix = "appraisal")`
+        a: |-
+          **Quarkus:** `@ConfigMapping(prefix = "appraisal")` (MicroProfile: `@ConfigProperties`)
+      - id: cmp-profiles
+        q: |-
+          **Spring:** `application-dev.properties` + `spring.profiles.active=dev`
+        a: |-
+          **Quarkus:** a `%dev.` prefix in `application.properties` + `quarkus.profile=dev`
+        extra: |-
+          `application-dev.properties` also works in Quarkus. Spring `@Profile` ≈ Quarkus `@IfBuildProfile` (decided at build time).
+      - id: cmp-config-server
+        q: |-
+          **Spring:** Spring Cloud Config Server
+        a: |-
+          **MicroProfile/Quarkus:** no config server. A pluggable `ConfigSource`, in practice Kubernetes ConfigMaps/Secrets (ordinal 270)
+        extra: |-
+          Quarkus can also read from a Spring Config Server with `quarkus-spring-cloud-config-client`.
+      - id: cmp-refreshscope
+        q: |-
+          **Spring:** `@RefreshScope` + `POST /actuator/refresh`
+        a: |-
+          **MicroProfile:** no equivalent. Inject `Provider<T>` or `ConfigValue` to re-read the value on each access
+        reverse: false
+
+  - section: Calling other services
+    cards:
+      - id: cmp-feign
+        q: |-
+          **Spring:** Feign client (`@FeignClient` interface)
+        a: |-
+          **MicroProfile:** REST Client (`@RegisterRestClient` interface)
+        extra: |-
+          Both are annotated interfaces with a generated implementation. Feign uses **Spring MVC** annotations; the MicroProfile REST Client uses **JAX-RS** annotations. Spring 6 also has `@HttpExchange`.
+      - id: cmp-webclient
+        q: |-
+          **Spring:** `WebClient` (reactive HTTP client)
+        a: |-
+          **Quarkus:** Vert.x Web Client (Mutiny API)
+      - id: cmp-reactor-mutiny
+        q: |-
+          **Reactor:** `Mono<T>` / `Flux<T>`
+        a: |-
+          **Mutiny:** `Uni<T>` / `Multi<T>`
+      - id: cmp-discovery
+        q: |-
+          **Spring Cloud:** Eureka + `lb://service-id` / `@LoadBalanced`
+        a: |-
+          **Quarkus:** Kubernetes Service DNS, or SmallRye **Stork** (`quarkus.rest-client.x.url=stork://service-id`)
+      - id: cmp-client-interceptor
+        q: |-
+          **Spring:** `ClientHttpRequestInterceptor` (on `RestTemplate`)
+        a: |-
+          **JAX-RS / MicroProfile REST Client:** `ClientRequestFilter`
+      - id: cmp-token-propagation
+        q: |-
+          **Spring:** propagating the caller's token with an OAuth2-aware `WebClient`/`RestClient` (or the legacy `KeycloakRestTemplate`)
+        a: |-
+          **MicroProfile REST Client:** `@RegisterClientHeaders` + `org.eclipse.microprofile.rest.client.propagateHeaders=Authorization`
+        reverse: false
+
+  - section: Gateway
+    cards:
+      - id: cmp-gateway
+        q: |-
+          **Spring:** Spring Cloud Gateway
+        a: |-
+          **MicroProfile/Quarkus:** no gateway component. Use a Kubernetes Ingress / Gateway API, a service mesh (Istio), or Kong/Envoy
+        reverse: false
+
+  - section: Fault tolerance
+    cards:
+      - id: cmp-ft-config-location
+        q: |-
+          Fault tolerance: where do the **parameters** live? Resilience4j vs MicroProfile FT
+        a: |-
+          **Resilience4j:** the annotation names an instance; all parameters go in YAML.
+          **MicroProfile:** the parameters are annotation attributes, overridable in config (`Class/method/Retry/maxRetries=5`).
+        reverse: false
+      - id: cmp-fallback-signature
+        q: |-
+          What signature must a fallback method have: Resilience4j vs MicroProfile `@Fallback`?
+        a: |-
+          **Resilience4j:** the original parameters **+ `Throwable`**.
+          **MicroProfile:** **exactly** the original parameters.
+        reverse: false
+      - id: cmp-ratelimiter
+        q: |-
+          **Resilience4j:** `@RateLimiter`
+        a: |-
+          **MicroProfile FT:** none. SmallRye Fault Tolerance adds `@RateLimit`
+      - id: cmp-timelimiter
+        q: |-
+          **Resilience4j:** `@TimeLimiter`
+        a: |-
+          **MicroProfile FT:** `@Timeout`
+        extra: |-
+          Resilience4j's time limiter only applies to asynchronous (`CompletableFuture`) methods.
+      - id: cmp-circuitbreaker
+        q: |-
+          **Resilience4j:** `@CircuitBreaker(name = ...)` + `slidingWindowSize`, `failureRateThreshold`, `waitDurationInOpenState`
+        a: |-
+          **MicroProfile:** `@CircuitBreaker(requestVolumeThreshold, failureRatio, delay)`
+
+  - section: Messaging
+    cards:
+      - id: cmp-binder-connector
+        q: |-
+          **Spring Cloud Stream:** binder / binding
+        a: |-
+          **MP Reactive Messaging:** connector / channel
+      - id: cmp-consumer-incoming
+        q: |-
+          **Spring Cloud Stream:** a `@Bean Consumer<T>`
+        a: |-
+          **MP Reactive Messaging:** an `@Incoming` method
+      - id: cmp-supplier-outgoing
+        q: |-
+          **Spring Cloud Stream:** a `@Bean Supplier<T>`
+        a: |-
+          **MP Reactive Messaging:** an `@Outgoing` method
+      - id: cmp-function-processor
+        q: |-
+          **Spring Cloud Stream:** a `@Bean Function<T, R>`
+        a: |-
+          **MP Reactive Messaging:** a method with both `@Incoming` and `@Outgoing`
+      - id: cmp-streambridge-emitter
+        q: |-
+          **Spring Cloud Stream:** `StreamBridge.send(binding, payload)`
+        a: |-
+          **MP Reactive Messaging:** `Emitter.send(payload)` (`@Inject @Channel(...) Emitter<T>`)
+      - id: cmp-destination-topic
+        q: |-
+          **Spring:** `spring.cloud.stream.bindings.<binding>.destination=knight-sightings`
+        a: |-
+          **MicroProfile:** `mp.messaging.incoming.<channel>.topic=knight-sightings`
+      - id: cmp-consumer-group
+        q: |-
+          **Spring Cloud Stream:** a consumer `group`
+        a: |-
+          **Kafka / MP Reactive Messaging:** the Kafka `group.id`
+
+  - section: Observability
+    cards:
+      - id: cmp-health
+        q: |-
+          **Spring Boot Actuator:** `HealthIndicator`
+        a: |-
+          **MicroProfile Health:** `HealthCheck` (with `@Liveness` / `@Readiness` / `@Startup`)
+      - id: cmp-health-paths
+        q: |-
+          **Spring:** `/actuator/health/liveness`, `/actuator/health/readiness`
+        a: |-
+          **Quarkus:** `/q/health/live`, `/q/health/ready`
+      - id: cmp-metrics
+        q: |-
+          **Spring Boot:** Micrometer `MeterRegistry`
+        a: |-
+          **Quarkus:** the **same library**, Micrometer (`quarkus-micrometer`). The older alternative is MP Metrics
+      - id: cmp-tracing
+        q: |-
+          **Spring Boot 3:** Micrometer Tracing (formerly Sleuth)
+        a: |-
+          **Quarkus:** OpenTelemetry (formerly MP OpenTracing)
+
+  - section: Security
+    cards:
+      - id: cmp-jwt-config
+        q: |-
+          **Spring:** `spring.security.oauth2.resourceserver.jwt.issuer-uri`
+        a: |-
+          **MP JWT:** `mp.jwt.verify.issuer` + `mp.jwt.verify.publickey.location`
+      - id: cmp-jwt-roles
+        q: |-
+          Where do roles come from in a JWT: Spring resource server vs MP JWT?
+        a: |-
+          **MP JWT:** the `groups` claim (Keycloak needs a mapper).
+          **Spring:** by default the `scope` claim becomes `SCOPE_xxx` authorities. Keycloak realm roles (`realm_access.roles`) need a custom `JwtAuthenticationConverter`.
+        reverse: false
+      - id: cmp-ssl
+        q: |-
+          **Spring Boot:** `server.ssl.key-store=classpath:dragonbank.p12`
+        a: |-
+          **Quarkus:** `quarkus.http.ssl.certificate.key-store-file=dragonbank.p12`
+
+  - section: Testing
+    cards:
+      - id: cmp-mock-bean
+        q: |-
+          **Spring Boot test:** `@MockitoBean` (formerly `@MockBean`)
+        a: |-
+          **Quarkus test:** `@InjectMock`
+      - id: cmp-testcontainers
+        q: |-
+          **Spring Boot:** Testcontainers + `@ServiceConnection`
+        a: |-
+          **Quarkus:** Dev Services (automatic), or a `QuarkusTestResourceLifecycleManager`
