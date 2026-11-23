@@ -1,189 +1,200 @@
-In `beans.xml` one can specify `bean-discovery-mode="all"` to make all the POJOs in the project into CDI beans
-`@Stateless`, `@Stateful`, `@Singleton` beans from EJB are also managed by CDI.
-Beans annotated with `@Stereotype` are created when the application starts and not when their services are requested for the first time
-Usage:` @Named`, `@Inject` (on field, constructor or method which is then an initializer method (?)), `@Produces` (the latter one to annotate a factory method returning an object of a given type)
-NOTE: One needs to use `@Produces` in order to be able to inject objects of types which are not beans (like enums)
-Scopes of named beans:
-```Java
-@RequestScoped
-@ConversationScoped
+## Bean discovery
+- `beans.xml` with `bean-discovery-mode="all"` turns every class into a CDI bean. The default, `annotated`, only picks up classes with a bean-defining annotation, such as a scope or a stereotype.
+- EJB `@Stateless`, `@Stateful` and `@Singleton` beans are also CDI beans.
+- Quarkus uses build-time CDI (ArC). It only discovers beans in its own module unless told otherwise; see `quarkus.index-dependency` in [Quarkus](Quarkus%20and%20MicroProfile.md).
+
+## Injection and producers
+- `@Inject` can go on a field, a constructor, or a method. An injected method is called an *initializer method*.
+- `@Named` gives a bean an EL name, so it can be used in JSF pages as `#{hoardController}`. `@Named` is itself a qualifier.
+- You need a `@Produces` method (or field) to inject things that aren't beans: enums, JDK classes, objects from third-party libraries, or objects built from config.
+```java
+@Produces @ApplicationScoped
+Clock vaultClock() { return Clock.systemUTC(); }
 ```
-The latter useful in combination with Faces Flow:
-Inject the bean, inject `javax.enterprise.cotext.Conversation`, In the code: `conversation.begin(["id"]); conversation.getId(); conversation.end();`
-```Java
-@SessionScoped
-@ApplicationScoped
-@Dependent // always injected a new object of the class
+- Lifecycle callbacks: `@PostConstruct`, `@PreDestroy`.
+- Creating a bean eagerly at startup: CDI beans are created lazily, when first used. For eager creation use EJB `@Singleton @Startup`, an observer `void init(@Observes @Initialized(ApplicationScoped.class) Object o)`, or `@Startup` in Quarkus.
+
+## Scopes
+| Scope | Lifetime |
+|---|---|
+| `@RequestScoped` | one HTTP request |
+| `@SessionScoped` | HTTP session (the bean must be `Serializable`) |
+| `@ApplicationScoped` | whole application; clients get a proxy |
+| `@ConversationScoped` | between `conversation.begin()` and `conversation.end()`; used with JSF |
+| `@Dependent` | default; a **new instance for every injection point**, which lives as long as its owner |
+| `@FlowScoped("name")` | JSF Faces Flow, see [JSF](Java%20Server%20Faces%202.3.md) |
+
+Conversation:
+```java
+@Inject Conversation conversation;     // jakarta.enterprise.context.Conversation
+conversation.begin();                  // or begin("hoard-opening-42")
+conversation.getId();
+conversation.end();
 ```
-Qualifiers - definition:  
-```Java
-@Qualifier  
-@Retention(RUNTIME)  
-@TARGET( {METHOD, FIELD, PARAMETER, TYPE} )  
-public @interface Premium {  
-    @Nonbinding.        // in this case the value of the attribute  
-                        // doesn't influence the interceptor lookup  
-    MyCategory value();  
+
+## Qualifiers
+A qualifier tells CDI which of several implementations to inject:
+```java
+@Qualifier
+@Retention(RUNTIME)
+@Target({METHOD, FIELD, PARAMETER, TYPE})
+public @interface DragonClass {
+    Age value();                       // members take part in resolution...
+    @Nonbinding String comment() default "";   // ...unless they are @Nonbinding
 }
+
+@DragonClass(Age.ELDER)
+public class ElderDragonAccount implements Account { ... }
+
+@Inject @DragonClass(Age.ELDER)
+Account account;
 ```
-Otherwise, a useful technique is to use qualifier arguments for more specific qualification.
-Applying:  
-```Java
-@Named @RequestScoped  
-@Premium  
-public class PremiumCustomer extends Customer { … }
-```
-Injection:  
-```Java
-@Inject  
-@Premium  
-private Customer customer;
-```
-NOTE: `@Named` is a `@Qualifier`
-Predefined qualifiers:
-`@Default`
-`@RestClient` which allows to `@Inject` an automatically created implementation of an interface annotated with `@RegisterRestClient`
-**One cannot apply qualifiers to stereotypes**
-CDI Intereceptors - definition:  
-```Java
-@InterceptorBinding  
-@Retention(RUNTIME)  
-@TARGET( {METHOD, TYPE} )  
-public @interface Secure {  
-    @Nonbinding.        // in this case the value of the attribute  
-                        // doesn't influence the interceptor lookup  
-    MyCategory value();  
-}
-```
-Applying (there is also `@AroundConstruct`):  
-```Java
-@Secure(MyCategory.VERY_SECURE) @Interceptor public class SecurityInterceptor 
-{  
-    @AroundInvoke  
-    public Object interceptMethod(InvocationContext context) throws Exception 
-    {  
-        Object result = context.proceed();  
-        return "Intercepted " + result;  
-    }  
-}
-```
-Usage:  
-```Java
-@Secure(MyCategory.VERY_SECURE) public class SomeBean { … }  
-@Secure(MyCategory.VERY_SECURE) public void someMethod( … ) { … }
-```
-Or (does this way require `<interceptors>` in XML? - CHECK THIS):  
-```Java
-	@Interceptors(SecurityInterceptos.class) public class SomeBean { … }  
-    @Interceptors(SecurityInterceptor.class) public void someMethod( … ) { … }
-```
-Activating by one of the methods:
-- Defining `<interceptors>` in `beans.xml`
-- Annotating the interceptor class with `@Priority(Interceptor.Priority.APPLICATION)` (or other value of the attribute
-Alternatives: mark different classes implementing the same interface with `@Alternative`
-In `beans.xml` select the alternative to be used: 
-```XML
-<beans.…>  
-    <alernatives>  
-        <class>my.package.MyConcreteClass</class>  
+- Built-in qualifiers: `@Default`, `@Any`, `@Named`.
+- `@RestClient` (MicroProfile) injects the generated implementation of a `@RegisterRestClient` interface; see [Quarkus](Quarkus%20and%20MicroProfile.md).
+- With `Instance<Account>` plus `select(...)` you can choose a bean at runtime; see [Events](#events) for `AnnotationLiteral`.
+
+## Alternatives
+You mark several implementations of the same interface with `@Alternative` and select one of them in `beans.xml`, or by putting `@Priority` on the chosen one:
+```xml
+<beans>
+    <alternatives>
+        <class>com.dragonbank.vault.FireproofVault</class>
     </alternatives>
 </beans>
 ```
-Stereotypes: create an annotation marked with other needed annotations, add `@Stereotype` Use this new annotation on the beans.
 
-Decorators: create an interface e.g. `Product`. Implement the interface in a bean. Implement the interface in a decorator class:  
-```Java
-@Decorator  
-public class PriceDiscountDecorator implements Product {  
-    @Inject  
-    @Delegate  
-    Product product;  
-    @Override  
-    public double calculatePrice() {  
-        product.setPrice(product.getPrice * 0.5);  
-        return product.calculatePrice();  
-    }
+## Stereotypes
+A stereotype is an annotation that bundles other annotations (a scope, interceptor bindings, `@Named`, `@Alternative`):
+```java
+@Stereotype
+@RequestScoped
+@Named
+@Audited
+@Retention(RUNTIME) @Target(TYPE)
+public @interface GoblinController { }
+```
+A stereotype cannot declare qualifiers, except `@Named` with no value.
+
+## Interceptors
+An interceptor runs code before or after the methods of a bean, and can change their arguments or results.
+
+**1. Define an interceptor binding:**
+```java
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target({METHOD, TYPE})
+public @interface GoblinProof {
+    @Nonbinding SecurityLevel value() default SecurityLevel.HIGH;   // @Nonbinding: the value doesn't affect which interceptor is chosen
 }
 ```
-Configure the actual usage of the decorator (and order if there are many) in `beans:xml`:  
-```XML
-<decorators>  
-    <class>my.package.PriceDiscountDecorator</class>  
-</decorators>
-```
-XML configuration is not needed if decorators are also marked with the `@Priority(int)` annotation
-
-CDI events - emitting:  
-```Java
-@Inject  
-private Event<NavigationInfo> navigationInfoEvent;  
-.…  
-navigationInfoEvent.fire(navigationInfo);
-
-navigationInfoEvent.fireAsync(navigationInfo);
-```
-Handling:  
-```Java
-public void handle(@Observes[(during=TransactionPhase.AFTER_SUCCESS|AFTER_FAILURE|IN_PROGRESS|BEFORE_COMPLETION|AFTER_COMPLETION, notofyObserver=Reception.IF_EXISTS)]  
-    NavigationInfo navigationInfo, EventMetadata eventMetadata) { … }  
-public void handle(@ObservesAsync NavigationInfo navigationInfo) { … }
-
-public void handle(@Observes  
-    @Priority(Interceptor.Priority.APPLICATION) NavigationInfo navigationInfo) { … }
-```
-Instead of injecting many events with different qualifiers (being instance of one qualifier with different values of some parameters) one can create one event and select observers which are annotated with this qualifiers:  
-```Java
-userResponseEvent.select(getAnnotation(UserRegion.EU)).fireAsync(userResponse);  
-//One has to provide an appropriate instance of the annotation interface: 
-private MessageOption getAnnotation(final UserRegion userRegion) {  
-    if (userRegion == UserRegion.EU) {  
-        return new MessageOption() {  
-            @Override  
-            public MessageType value() { // parameter of the annotation  
-                return MessageType.EMAIL;  
-            }  
-            @Override  
-            public Class<? extends Annotation> annotationType() {  
-                return MessageOption.class;  
-            }  
-        };  
-    }  
-    return new MessageOption() { // else  
-        …  
-    };  
+**2. Write the interceptor:**
+```java
+@GoblinProof @Interceptor
+@Priority(Interceptor.Priority.APPLICATION)      // enables it; the alternative is <interceptors> in beans.xml
+public class GoblinProofInterceptor {
+    @AroundInvoke
+    public Object check(InvocationContext ctx) throws Exception {
+        log.info(ctx.getMethod().getDeclaringClass() + "." + ctx.getMethod().getName()
+            + Arrays.toString(ctx.getParameters()));
+        return ctx.proceed();
+    }
 }
 ```
-Transactions in CDI with JTA - annotate a method with: 
-```Java
-@Transactional(TxType.MANDATORY|NEVER|SUPPORTS|NOT_SUPPORTED|REQUIRED|REQUIRES_NEW,  
-        rollbackOn = MyException)
+**3. Apply it to a class or a method:**
+```java
+@GoblinProof public class VaultService { ... }
+@GoblinProof(SecurityLevel.PARANOID) public void openVault() { ... }
 ```
-`ManagedExecutorService` - for executing `Runnable` in application server managed thread
-`ManagedScheduledExecutorService` - for scheduling `Runnable` at given time or fixed rate
+**The older way, without a binding:** `@Interceptors(GoblinProofInterceptor.class)` on a class or method (from the Interceptors spec, used with EJBs). This **needs no activation** in `beans.xml`, but it couples the bean to the interceptor class.
 
-Lifecycle methods: `@PostConstruct`,
+- Other interceptor methods: `@AroundConstruct`, `@AroundTimeout` (EJB timers), `@PostConstruct`, `@PreDestroy`. In an interceptor class, the lifecycle methods take an `InvocationContext`.
+- `InvocationContext` methods: `getTarget()`, `getMethod()`, `getParameters()`, `setParameters(Object[])`, `getContextData()` (a map shared along the interceptor chain), `proceed()`.
+- EJB only: `@ExcludeDefaultInterceptors` (default interceptors are configured in `ejb-jar.xml`) and `@ExcludeClassInterceptors`.
 
-Resolving beans manually:  
-```Java
-@Inject  
-private BeanManager manager;  
-      
-private <T extends NeededInterface> Repository<T> locateTargetRepository(final Class<T> targetType) {  
-    ParametrizedType paramType = new ParametrizedType() {  
-@Override public Type getRawType() {  
-	return Repository.class;  
-}  
-@Override public Type getOwnerType() { return null; }  
-@Override public Type[] getActualTypeArguments() {  
-    return new Type[] { targetType }; // when targetType is given  
-}  
-  
-Set<Bean<?>> beans = manager.getBeans(paramType);  
-Bean<?> bean = manager.resolve(beans);  
-CreationalContext<?> cc = manager.createCreationalContext(null);  
-@SuppressWarning("unchecked")  
-Repository<T> repo = (Repository<T>)manager.getReference(  
-    bean, paramType, cc);  
-    return repo;  
+## Decorators
+An interceptor is generic. A decorator implements a business interface and wraps one particular bean:
+```java
+@Decorator
+@Priority(Interceptor.Priority.APPLICATION)    // or enable it in beans.xml <decorators>; this also sets the order
+public abstract class GoblinCommissionDecorator implements Treasure {
+    @Inject @Delegate
+    Treasure treasure;
+
+    @Override
+    public BigDecimal value() {
+        return treasure.value().multiply(new BigDecimal("0.9"));   // the goblins keep 10%
+    }
+}
+```
+
+## Events
+```java
+@Inject Event<KnightSighted> sightings;
+sightings.fire(new KnightSighted("Sir Reginald"));        // synchronous
+sightings.fireAsync(new KnightSighted("Sir Reginald"));   // returns CompletionStage; only @ObservesAsync observers get it
+
+public void onSighting(@Observes KnightSighted event, EventMetadata meta) { ... }
+public void onSightingAsync(@ObservesAsync KnightSighted event) { ... }
+public void hideGoldFirst(@Observes @Priority(Interceptor.Priority.APPLICATION) KnightSighted event) { ... }   // ordering
+
+// Transactional observers and conditional observers
+public void afterCommit(@Observes(during = TransactionPhase.AFTER_SUCCESS,   // IN_PROGRESS (default), BEFORE_COMPLETION,
+                                  notifyObserver = Reception.IF_EXISTS)       // AFTER_COMPLETION, AFTER_FAILURE
+                        HoardDeposited event) { ... }                         // IF_EXISTS: don't create the bean just for the event
+```
+**Picking observers by qualifier at runtime.** Fire one `Event` and select a qualifier instance; only observers with that qualifier are notified. Create the qualifier instance by extending `AnnotationLiteral`:
+```java
+public class AlarmChannelLiteral extends AnnotationLiteral<AlarmChannel> implements AlarmChannel {
+    private final Channel value;
+    public AlarmChannelLiteral(Channel value) { this.value = value; }
+    @Override public Channel value() { return value; }
+}
+
+alarms.select(new AlarmChannelLiteral(kingdom == NORTH ? Channel.RAVEN : Channel.SMOKE_SIGNAL))
+      .fireAsync(alarm);
+
+void viaRaven(@ObservesAsync @AlarmChannel(Channel.RAVEN) Alarm alarm) { ... }
+```
+
+## Transactions (JTA)
+```java
+@Transactional(value = TxType.REQUIRED,             // MANDATORY, NEVER, SUPPORTS, NOT_SUPPORTED, REQUIRED (default), REQUIRES_NEW
+               rollbackOn = VaultBreachedException.class,
+               dontRollbackOn = MinorGoblinMistake.class)
+public void depositGold(...) { ... }
+```
+By default only **unchecked** exceptions roll back. EJBs use their own annotations for this; see [EJB](Enterprise%20JavaBeans.md).
+
+## Managed concurrency (Jakarta Concurrency)
+These run tasks on threads managed by the application server, so the CDI context, security and JNDI are available inside them:
+- `ManagedExecutorService`: like `ExecutorService`
+- `ManagedScheduledExecutorService`: run at a given time or at a fixed rate
+```java
+@Resource ManagedExecutorService executor;
+```
+
+## Looking up beans programmatically
+The simple way:
+```java
+@Inject Instance<Repository<Hoard>> repositories;
+Repository<Hoard> repo = repositories.get();
+
+CDI.current().select(new TypeLiteral<Repository<Hoard>>() {}).get();   // from code that isn't a bean
+```
+The low-level way, with `BeanManager`, for a type known only at runtime:
+```java
+@Inject BeanManager manager;
+
+<T> Repository<T> locate(Class<T> entityType) {
+    ParameterizedType type = new ParameterizedType() {
+        @Override public Type getRawType() { return Repository.class; }
+        @Override public Type getOwnerType() { return null; }
+        @Override public Type[] getActualTypeArguments() { return new Type[] { entityType }; }
+    };
+    Bean<?> bean = manager.resolve(manager.getBeans(type));
+    CreationalContext<?> cc = manager.createCreationalContext(bean);
+    @SuppressWarnings("unchecked")
+    Repository<T> repo = (Repository<T>) manager.getReference(bean, type, cc);
+    return repo;
 }
 ```

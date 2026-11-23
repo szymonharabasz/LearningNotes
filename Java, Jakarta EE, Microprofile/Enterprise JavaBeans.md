@@ -1,155 +1,133 @@
-Annotations to create four types of beans:  
-```Java
-@Stateless, @Stateful, @Singleton, @MesageDriven(mappedName="jms/MyMessageQueue")  
-@DependsOn("MyOtherBean")
-```
-Annotations related to the life-cycle:  
-```Java
-@Startup // created when application starts
-@PostConstruct, @PreDestroy, @PrePassivate, @PostActivate // life-cycle methods, the latter two to be used in stateful beans)
-```
-Creating bean with remote interface (can also be local):  
-```Java
-@Remote  
-public interface SimpleSession { … }  
-@Stateless  
-public class SimpleSessionBean implements SimpleSession { … }
-```
-Or:  
-```Java
-public interface SimpleSession { … }  
-@Stateless  
-@Remote(my.package.SimpleSession)  
-public class SimpleSessionBean implements SimpleSession { … }
-```
-One may not annotate bean with `@Local` nor `@Remote` and not implement any interface or annotate the bean with `@LocalBean` in order to add a non-interface view
-Injecting to the client code:  
-```Java
-@EJB  
-private static SimpleBean simpleBean;
-```
-**Obtaining an EJB with remote interface.** The compiled remote interface must be packaged in the client project. Properties to be set
-```Java
-props = new Properties();  
-props.setProperty("java.naming.factory.initial", 
-	"com.sun.erterprise.naming.SerialInitContextFactory");  
-props.setProperty("java.naming.factory.url.pkgs", 
-	"com.sun.erterprise.naming");  
-props.setProperty("java.naming.factory.state", 
-	"com.sun.ee.impl.presentation.rmi.JNDIStateFactoryImpl");  
-props.setProperty("org.omg.CORBA.ORBInitialHost","192.168.1.100");  
-props.setProperty("org.omg.CORBA.ORBInitialPort","3700");  
-try {  
-    InitialContext ic = new InitialContext();  
-    NamingEnumeration<NameClassPair> list = ic.list("");  
-    while (list.hasMore()) {  
-        System.out.println(list.next().getName());  
-    }  
-    SimpleSession simple = (SimpleSession)ic.lookup(  
-        "my.package.SimpleSession");     
-} catch (Exception e) {  
-    e.printStackTrade(System.err);  
-}
-```
-7. Asynchronous method invocation:  
- ```Java
-@Asynchronous @Override // because comes from an interface  
-public Future<Long> slowComputation() { … }
-```
-It can also be `void`
+EJBs are also CDI beans. Interceptors (`@Interceptors`, `@AroundInvoke`, `@AroundTimeout`, ...) are covered in [CDI](Context%20and%20Dependency%20Injection.md). Message-driven beans are in [JMS](Java%20Message%20Service.md). `@RolesAllowed` is in [Security](Security.md).
 
-Methods of the interface Future:  
-```Java
-cancel(bool mayInterruptIfRunning), get(), get(long timeout, TimeUnit unit), isCancelled(), isDone()
-```
-Container-managed concurrency:  
-```Java
-@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER) public class { …  
-	@Lock(LockType.WRITE) public void setUser…  
-	@Lock(LockType.READ)  
-	@AccessTimeout(value = 30, unit = TimeUnit.SECONDS)  
-	public string getName…
-```
-**Transactions in EJB - container-managed.** Methods in EJBs are by default execute within a transaction, which is also equivalent to annotating a bean with 
-```Java
-@TransactionManagement(value=TransactionManagementType.CONTAINER)
-```
-Default behaviour can be changed by 
-```Java
-@TransactionAttribute(value=TransactionAttributeType….)
-```
-`TransactionAttributeType` enumeration:  
-`MANDATORY, NEVER, NOT_SUPPORTED, REQUIRED, REQUIRES_NEW, SUPPORTS`
-Rolling back:  
-```Java
-@Resourece  
-private EJBContext ejbContext;  
-.…  
-ejbContext.setRollbackOnly();
+## Bean types and lifecycle
+```java
+@Stateless                        // pooled; no client state
+@Stateful                         // one instance per client
+@Singleton                        // one instance per application
+@MessageDriven(...)               // consumes JMS messages
+
+@Startup                          // (@Singleton) create at deployment, not on first use
+@DependsOn("VaultKeyring")        // (@Singleton) initialization order
+
+@PostConstruct @PreDestroy
+@PrePassivate @PostActivate       // @Stateful only: before/after the bean is swapped out to disk
 ```
 
-Bean-managed  
-```Java
-@Stateless  
-@TransactionManagement(value=TransactionManagementType.BEAN)  
-public class CustomerDaoBean implements CustomerDao {  
-    @Resource  
-    private UserTransaction userTransaction;  
-    …  
-    userTransaction.begin();  
-    …  
-    userTransaction.commit();
+## Views (local, remote, no-interface)
+```java
+@Remote
+public interface VaultSession { ... }
+@Stateless
+public class VaultSessionBean implements VaultSession { ... }
+
+// or declare it on the bean:
+@Stateless
+@Remote(VaultSession.class)                // or @Local(...)
+public class VaultSessionBean implements VaultSession { ... }
 ```
-Timer service:  
-```Java
-@Resource  
-TimerService timerService;  
-.…  
-Serializable info = ...  
-Timer timer = timerService.createTimer(new Date, 5000, info);  
-.…  
-@Timeout  
-public void logMessage(Timer timer) { … }  
-.…  
-if (timer.getInfo.equals(info)) { timer.cancel(); }
+A bean with no `@Local`/`@Remote` and no interfaces gets a **no-interface view** automatically. If it does implement interfaces, add `@LocalBean` to get the no-interface view as well.
+
+Injection into a client: `@EJB VaultSession vault;` (or `@Inject`). Fields must not be `static`; the only exception is the main class of an application client.
+
+**Looking up a remote EJB from a standalone client.** The client must have the compiled remote interface on its classpath. The properties are server-specific; these are for GlassFish:
+```java
+Properties props = new Properties();
+props.setProperty("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory");
+props.setProperty("java.naming.factory.url.pkgs", "com.sun.enterprise.naming");
+props.setProperty("java.naming.factory.state", "com.sun.corba.ee.impl.presentation.rmi.JNDIStateFactoryImpl");
+props.setProperty("org.omg.CORBA.ORBInitialHost", "192.168.1.100");
+props.setProperty("org.omg.CORBA.ORBInitialPort", "3700");
+
+InitialContext ic = new InitialContext(props);
+NamingEnumeration<NameClassPair> names = ic.list("");    // see what is bound
+while (names.hasMore()) System.out.println(names.next().getName());
+VaultSession vault = (VaultSession) ic.lookup("com.dragonbank.VaultSession");
 ```
-Cron-like expressions:  
-```Java
-@Schedule(hour="20, minute="10")  
-public void logMessage() { … }  
-@Schedules({@Schedule(…), @Schedule(…)})  
-public void doSomething() { … }
-```
-Parameters and example values:
-```Java
-dayOfMonth: "3", "Last", "-2", "1st Tue"
-dayOfWeek: "3", "Tue"
-hour, minute, second: "14", "*/10", "25/10"
-month: "3", "March", "Feb", "1-10"
-year: "2019"
-timezone: "America/New York"
-```
-For example: `second="*/12"` – every 12 seconds
-**Interceptors.** Interception target:  
-```Java
-@Interceptors(LoggerInterceptor.class)  
-public void setValue(Integer value) { … }
-```
-Definition of an interceptor:  
-```Java
-@AroundInvoke  
-public Object logger(InvocationContext ic) throws Exception {  
-    Object[] params = ic.getParameters();  
-    logger.warning("Parameters: " + params);  
-    return ic.proceed();  
+
+## Asynchronous methods
+```java
+@Asynchronous                              // jakarta.ejb.Asynchronous; MicroProfile has its own, see Quarkus notes
+public Future<BigDecimal> countAllGold() {
+    BigDecimal sum = ...;                  // slow: goblins count by hand
+    return new AsyncResult<>(sum);
 }
 ```
-Also:  `@AroundConstruct`, `@AroundTimeout`, `@PostContruct`, `@PreDestroy`. The last two can be used for interceptor mathods or directly for methods in a bean, they can then also accept `InvocationContext` as an argument.
-Methods of `InvocationContext`:  
-`getTarget(), getMethod(), getParameters(), setParameters(Object[]), getContextData(), proceed(), getMethod().getName(), getMethod().getDeclaringClass()`
-Excluding interceptors for a class:  
-```Java
-@ExcludeDefaultInterceptors // those that can be configured in beans.xml  
-@ExcludeClassInterceptors
+The method can also return `void` (fire and forget). `Future` methods: `get()`, `get(timeout, unit)`, `cancel(mayInterruptIfRunning)`, `isCancelled()`, `isDone()`.
+
+## Concurrency in `@Singleton`
+Container-managed concurrency is the default. The default lock is **`WRITE`**, which means all methods are serialized:
+```java
+@Singleton
+@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)   // or BEAN: you synchronize yourself
+public class GoldPriceCache {
+    @Lock(LockType.READ)
+    @AccessTimeout(value = 30, unit = TimeUnit.SECONDS)
+    public BigDecimal getPrice() { ... }
+
+    @Lock(LockType.WRITE)
+    public void setPrice(BigDecimal price) { ... }
+}
 ```
-Exceptions annotated with `@ApplicationException` don't rollback transactions, by default, this can be changed using `@ApplicationException`(rollback = true)
+
+## Transactions
+**Container-managed** (the default, `@TransactionManagement(TransactionManagementType.CONTAINER)`). Every business method runs in a transaction (`REQUIRED`) unless you change it:
+```java
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+// MANDATORY, NEVER, NOT_SUPPORTED, REQUIRED, REQUIRES_NEW, SUPPORTS
+
+@Resource EJBContext ctx;               // or SessionContext
+ctx.setRollbackOnly();
+```
+**Bean-managed:**
+```java
+@Stateless
+@TransactionManagement(TransactionManagementType.BEAN)
+public class HoardDaoBean {
+    @Resource UserTransaction tx;
+
+    public void transfer(...) throws Exception {
+        tx.begin();
+        // ...
+        tx.commit();
+    }
+}
+```
+**Exceptions and rollback:**
+- *System exceptions* (unchecked, not annotated) roll the transaction back, are wrapped in `EJBException`, and the server logs them.
+- *Application exceptions* (checked exceptions, or anything annotated `@ApplicationException`) reach the client unwrapped and **don't** roll back, unless you use `@ApplicationException(rollback = true)`.
+
+Annotating your runtime exceptions with `@ApplicationException` also stops them from being wrapped before a JAX-RS `ExceptionMapper` sees them; see [Web services](Web%20services%20-%20JAX-RS%20and%20JAX-WS.md).
+
+The CDI equivalent of all this is `@Transactional`; see [CDI](Context%20and%20Dependency%20Injection.md).
+
+## Timers
+**Programmatic:**
+```java
+@Resource TimerService timerService;
+
+Timer timer = timerService.createIntervalTimer(new Date(), 5000, new TimerConfig("gold-count", false));
+
+@Timeout
+public void onTimer(Timer timer) {
+    if ("gold-count".equals(timer.getInfo()) && vaultEmpty()) timer.cancel();
+}
+```
+**Calendar-based:**
+```java
+@Schedule(hour = "3", minute = "0")                 // nightly gold count
+public void countGold() { ... }
+
+@Schedules({ @Schedule(dayOfWeek = "Mon"), @Schedule(dayOfMonth = "Last") })
+public void sendStatements() { ... }
+```
+**Defaults:** `second = "0"`, `minute = "0"`, `hour = "0"`, and `*` for the day and month fields. So `@Schedule(minute = "*/5")` fires only between 00:00 and 00:59; you also need `hour = "*"`. Timers are `persistent = true` by default, so they survive restarts.
+
+| Attribute | Example values |
+|---|---|
+| `second`, `minute`, `hour` | `"14"`, `"*/10"` (every 10), `"25/10"` (from 25, every 10) |
+| `dayOfMonth` | `"3"`, `"Last"`, `"-2"`, `"1st Tue"` |
+| `dayOfWeek` | `"3"`, `"Tue"`, `"Mon-Fri"` |
+| `month` | `"3"`, `"March"`, `"Feb"`, `"1-10"` |
+| `year` | `"2019"` |
+| `timezone` | `"America/New_York"` |

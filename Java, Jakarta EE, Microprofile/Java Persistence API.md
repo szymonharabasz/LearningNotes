@@ -1,233 +1,210 @@
-Entity annotations:
-```Java
-@Entity, @Table(name = "CUSTOMERS"), @Id,
-@GeneratedValue(strategy = GenerationType.AUTO|TABLE|SEQUENCE|IDENTITY)
-@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="MY_SEQ")  
-```
-assuming that the entity class (or maybe the id field) is annotated with:  
-```Java
-@SequenceGenerator(name="MY_SEQ", initialValue=1, allocationSize=50)  
-```
-and a sequence `MY_SEQ` is created in the database
-```Java
-@GeneratedValue(strategy = GenerationType.TABLE, generator="ID_GEN")  
-```
-assuming that the `id` field (or maybe the entity class) is annotated with:  
-```Java
-@TableGenerator(name="ID_GEN", table="ID_GEN_TABLE", pkColumnName="GENERATOR_NAME", pkColumnValue="GENERATED_VALUE", valueColumnName="GEN_VAL")  
-```
-and the specifiec table `ID_GEN_TABLE` with appropriate columns is created in the database
+Everything here is standard JPA and works the same in Jakarta EE, Quarkus and Spring. Repository layers on top of it:
+- Quarkus: Panache, either active record or repository ([Quarkus](Quarkus%20and%20MicroProfile.md#data-access))
+- Spring: Spring Data JPA ([Spring Data JPA](../Spring%20and%20Spring%20Boot/Spring%20Data%20JPA.md))
 
-Some annotations for fields:
-```Java
-@Column(name="FIRST_NAME", nullable=false, unique=true, length=20 /* for String */, precision=19, scale=2 /* for BigInt... */),
-@Enumerated(EnumType.ORDINAL) enum…, @Enumerated(EnumType.STRING) enum…
-@Lob String dataChunck;  
-@Lob @Basic(fetch = FetchType.Lazy) private byte[] picture;
-@Transient
-```
-Mandatory for the `java.util.Date` or `java.util.Calendar` fields, but not for types from the java.sql package and not for temporal types from Java 8:
-```Java
-@Temporal(TemporalType.TIMESTAMP|DATE|TIME)
-```
-```Java
-@CollectionTable(  
-	name = "movie_genres",  
-    joinColumns = @JoinColumn(name = "movie_title", 
-    referencedColumnName = "title"))  // name in the table corresponding to the owning ("current") entity
-@ElementCollection  
-private List<String> genres = new ArrayList<>();  
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE|JOINED|TABLE_PER_CLASS)
-```
-For example in a DAO object:  
-```Java
-@PersistenceContext(unitName = "prod") // param needed if there are many databases and  
-                                           // persistence-units defined in persistence.xml  
-private EntityManager entityManager;  
-@Resource private UserTransaction userTransaction;  
-.…  
-userTransaction.begin();  
-entityManager.persist(customer);  
-customer2 = entityManager.find(Customer.class, 42L);  
-entityManager.remove(customer2);  
-ustomer3 = entityManager.find(Customer.class, 43L);  
-customer3.setName("Gerald");  
-entityManager.merge(customer3);  
-userTransaction.commit();
-```
+Validation on persist: see [Bean Validation](Bean%20Validation.md).
 
-Other way:  
-```Java
-EntityManagerFactory factory = Persistence.createEntiryManagerFactory("prod");  
-EntityManager entityManager = factory.createEntityManager();  
-…  
-entityManager.getTransaction().begin();  
-…  
-entityManager.getTransaction().commit();
-```
-
-Relationships: annotations have attributes like:
-```Java
-cascade = CascadeType.ALL
-fetch = FetchType.EAGER 
-
-```
-Field of the type of a non-entity class can be annotated with `@Embedded` to embed it in the table corresponding to the enity class
-Similarly, we can annotate a superclass of entities with `@MappedSuperclass` to add its fields to the tables corresponding to classes that will inherit from this superclass.
-One-to-one:  
-```Java
-@OneToOne // on the non-owning side  
-@JoinColumn(name="CUSTOMER_ID)  
-private Customer customer;  
-.…  
-@OneToOne(mappedBy="customer") // on the owning side  
-private LoginInfo loginInfo;
-```
-One-to-many (the "many" side is always the owning one):  
-```Java
-@ManyToOne // on the owning side  
-@JoinColumn(name="CUSTOMER_ID)  
-private Customer customer;  
-.…  
-@OneToMany(mappedBy="customer",  // on the non-owning side  
-	fetch=FetchType.EAGER, orphanRemoval=true, cascade=CascadeType.All  
-)  
-private Set<Order> orders;
-```
-Many-to-many  
-```Java
-@ManyToMany  
-@JoinTable(name="ORDER_ITEMS",  
-	joinColumns = @JoinColumn(name="ORDER_ID", referencedColumnName="ORDER_ID"),  
-    inverseJoinColumns = @JoinColumn(name = "ITEM_ID", "referencedColumnName = "ITEM_ID"))  
-private Collection<Item> items;  
-.…  
-@ManyToMany(mappedBy="items")  
-private Collection<Order> orders;
-```
-Composed primary keys:
-```Java
-public class implementing Serializable with appropriate keys
-```
-In the entity:  
-```Java
-@Entity @Table(name="…")  
-@IdClass(value=MyPrimaryKey.class)
-```
-Each field which is part of the key is annotated with `@Id`.
-Second way
-```Java
-// @IdClass is not needed:
-public class MovieId { … }
-@EmbeddedId  
-private MovieId movieId;
-```
-
-```Java
-@MappedSuperclass  
-public abstact class BaseEntity { ... }
-```
-Embedded objects (similar to embedded ids):
-```Java
-@Embeddable  
-public class MovieId { … }
-@Embedded  
-private MovieId movieId;
-```
-Callback methods: `@PrePersist`, `@PreUpdate`, `@PostLoad`, `@PostRemove`. On entity methods - `void` and no parameter. On entity listener methods - `void` and take parameter of `final Object` entity. The listener is registered with entity class using (on the entity class):  
-```Java
-@EntityListeners({AuditingEntityListener.class})
-```
-Example of a listener:
+## Entities and ids
 ```java
-public class AuditingEntityListener {
-    @PrePersist
-    void preCreate(AbstractEntity auditable) {
-        Instant now = Instant.now();
-        auditable.setCreatedDate(now);
-        auditable.setLastModifiedDate(now);
-    }
-
-    @PreUpdate
-    void preUpdate(AbstractEntity auditable) {
-        Instant now = Instant.now();
-        auditable.setLastModifiedDate(now);
-    }
+@Entity
+@Table(name = "DRAGONS")
+@SequenceGenerator(name = "DRAGON_SEQ", sequenceName = "DRAGON_SEQ", initialValue = 1, allocationSize = 50)
+public class Dragon {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DRAGON_SEQ")
+    private Long id;
+    ...
 }
 ```
-Java Persistence Query Language (JPQL) - Read operation (inside a transaction and a` try-catch` block):
-Dynamic query:  
-```Java
-Query query = entityManager.createQuery(  
-	"SELECT state.population FROM UsState state WHERE state.usStateName LIKE :name");  
-query.setParameter("name", "New%");  
-Query query = entityManager.createQuery(  
-	"SELECT state.population FROM UsState state WHERE state.usStateName LIKE ?1");  
-query.setParameter(1, "New%");  
-matchingStatesPopulationStream = query.getResultStream();  
-matchingStatesPopulationList = query.getResultList();  
-matchingStatePopulation = query.getSingleResult();
+**Id generation strategies:** `AUTO` (the provider chooses), `IDENTITY` (an auto-increment column), `SEQUENCE` (needs a `@SequenceGenerator` and the sequence in the DB), `TABLE` (needs a `@TableGenerator` and the table in the DB):
+```java
+@GeneratedValue(strategy = GenerationType.TABLE, generator = "ID_GEN")
+@TableGenerator(name = "ID_GEN", table = "ID_GEN_TABLE",
+    pkColumnName = "GENERATOR_NAME", pkColumnValue = "HOARD_ID",   // the row for this generator
+    valueColumnName = "GEN_VAL")
 ```
-Named query:  
-```Java
-@NamedQuery(name = "fetchPopulation", query = "SELECT state.population FROM UsState state WHERE state.usStateName LIKE ?1")  
-…  
-Query query = entityManager.createNamedQuery("fetchPoulation");
+The generator annotations can go on the class or on the id field.
+
+### Composite primary keys
+The key class must be `Serializable` and implement `equals`/`hashCode`. There are two ways:
+```java
+// 1. @IdClass: the key fields are repeated in the entity, each with @Id
+@Entity @IdClass(TreasureId.class)
+public class Treasure {
+    @Id private Long hoardNumber;
+    @Id private Integer itemNo;
+}
+
+// 2. @EmbeddedId: the key class is @Embeddable
+@Embeddable public class TreasureId { private Long hoardNumber; private Integer itemNo; }
+@Entity public class Treasure { @EmbeddedId private TreasureId id; }
 ```
-Native query:  
-```Java
-Query query = entityManager.createNativeQuery("SELECT m.title, m.producer 
-	FROM Movie m");  
-List<Object[]> results = query.getResultList();  
-Query query = entityManager.createNativeQuery("SELECT m.title, m.producer 
-	FROM Movie m", Movie.class);  
-List<Movie> results = query.getResultList();
+
+## Field mapping
+```java
+@Column(name = "DRAGON_NAME", nullable = false, unique = true, length = 40)   // length: for String
+@Column(precision = 19, scale = 2) BigDecimal goldCoins;                      // precision/scale: for BigDecimal
+
+@Enumerated(EnumType.STRING) TreasureType type;   // ORDINAL (the default) breaks when you reorder the constants
+
+@Lob String biography;
+@Lob @Basic(fetch = FetchType.LAZY) byte[] portrait;
+
+@Transient int cachedFireTemperature;             // not persisted
+
+@Temporal(TemporalType.TIMESTAMP) java.util.Date lastRaid;   // DATE | TIME | TIMESTAMP
 ```
-```SQL
-AND type(person) = Director  
-AND type(person) in (Actor, Director)  
-EMPTY, BETWEEN, NOT, ...
-SELECT u.userCredentials FROM User u [LEFT ]JOIN[ FETCH] u.userCredentials c WHERE c…
-SELECT COUNT(u) FROM USER u WHERE …  
-AVG, MIN, MAX, SUM
+`@Temporal` is **required** for `java.util.Date` and `Calendar`. Don't use it for `java.sql.*` or `java.time.*` types.
+
+**Collections of basic values:**
+```java
+@ElementCollection
+@CollectionTable(name = "DRAGON_NICKNAMES",
+    joinColumns = @JoinColumn(name = "DRAGON_NAME", referencedColumnName = "DRAGON_NAME"))  // column of the owning entity
+private List<String> nicknames = new ArrayList<>();
 ```
-Criteria API (all operations inside transaction and `try-catch` block):
-Read operation:  
-```Java
-CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();  
-CriteriaQuery<UsState> criteriaQuery = 
-	criteriaBuilder.createQuery(UsState.class);  
-Root<UsState> root = criteriaQuery.from(UsState.class);  
-EntityType<UsState> usStateEntityType = entityManager.getMetaModel()  
-    .entity(UsState.class);  
-SingularAttribute<UsState, String> usStateAttribute = usStateEntityType  
-    .getDeclatedSingularAttribute("usStateName", String.class);  
-Path<String> path = root.get(usStateAttribute);  
-Predicate predicate = criteriaBuilder.like(path, "New%");  
-criteriaQuery = criteriaQuery.where(predicate);  
-TypedQuery typedQuery = entityManager.createQuery(criteriaQuery);  
-matchingStatesStream = typedQuery.getResultsStream();
+
+## Embedding and inheritance
+```java
+@Embeddable public class CaveAddress { String kingdom; String mountain; }
+@Entity public class Dragon { @Embedded CaveAddress cave; }    // columns go into the DRAGONS table
+
+@MappedSuperclass                                              // not an entity; its fields are copied into each subclass's table
+public abstract class BaseEntity { @Id @GeneratedValue Long id; Instant createdDate; }
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)          // or JOINED, TABLE_PER_CLASS; goes on the root entity
+public abstract class Treasure { ... }
+@Entity public class Gem extends Treasure { ... }
 ```
-Update operation:  
-```Java
-CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();  
-CriteriaUpdate<Address> criteriaUpdate =  
-	criteriaBuilder.createCriteriaUpdate(Address.class);  
-Root<Address> root = criteriaUpdate.from(Address.class);  
-	citeriaUpdate.set("city", "New York");  
-	criteriaUpdate.where(criteriaBuilder.equal(root.get("city"), "York"));  
-Query query = entityManager.createQuery(criteriaUpdate);  
-int updatedRows = query.executeUpdate();
+
+## Relationships
+**The owning side is the one with the foreign key** (`@JoinColumn`). The inverse side uses `mappedBy`. Only changes on the owning side are written to the DB.
+
+```java
+// One-to-one
+@Entity class VaultKey {
+    @OneToOne
+    @JoinColumn(name = "DRAGON_ID")              // owning side
+    private Dragon dragon;
+}
+@Entity class Dragon {
+    @OneToOne(mappedBy = "dragon")               // inverse side
+    private VaultKey vaultKey;
+}
+
+// One-to-many: the "many" side is always the owning side
+@Entity class Hoard {
+    @ManyToOne
+    @JoinColumn(name = "DRAGON_ID")
+    private Dragon dragon;
+}
+@Entity class Dragon {
+    @OneToMany(mappedBy = "dragon", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Hoard> hoards;
+}
+
+// Many-to-many: either side can own it; the owner defines the join table
+@Entity class Hoard {
+    @ManyToMany
+    @JoinTable(name = "HOARD_TREASURES",
+        joinColumns        = @JoinColumn(name = "HOARD_ID",    referencedColumnName = "ID"),
+        inverseJoinColumns = @JoinColumn(name = "TREASURE_ID", referencedColumnName = "ID"))
+    private Collection<Treasure> treasures;
+}
+@Entity class Treasure {
+    @ManyToMany(mappedBy = "treasures")
+    private Collection<Hoard> hoards;
+}
 ```
-Delete operation:  
-```Java
-CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();  
-CriteriaDelete<Address> criteriaDelete =  
-    criteriaBuilder.createCriteriaDelete(Address.class);  
-Root<Address> root = criteraDelete.from(Address.class);  
-criteriaUpdate.where(criteriaBuilder.or(  
-    criteriaBuilder.equal(root.get("city"), "York"),  
-    criteriaBuilder.equal(root.get("city"), " New York")));  
-Query query = entityManager.createQuery(criteriaDelete);  
-int deletedRows = query.executeUpdate();
+Default fetch types: `*ToOne` is `EAGER`, `*ToMany` is `LAZY`.
+
+## Lifecycle callbacks and listeners
+Callbacks: `@PrePersist`, `@PostPersist`, `@PreUpdate`, `@PostUpdate`, `@PreRemove`, `@PostRemove`, `@PostLoad`.
+- A callback on the entity itself: `void` with no parameters.
+- A callback in a listener class: `void`, taking the entity as a parameter.
+```java
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+public class Hoard extends BaseEntity { ... }
+
+public class AuditingEntityListener {
+    @PrePersist
+    void preCreate(BaseEntity entity) { entity.setCreatedDate(Instant.now()); entity.setLastModifiedDate(Instant.now()); }
+    @PreUpdate
+    void preUpdate(BaseEntity entity) { entity.setLastModifiedDate(Instant.now()); }
+}
 ```
+
+## EntityManager
+```java
+@PersistenceContext(unitName = "dragonbank")   // unitName is needed only with several persistence units in persistence.xml
+EntityManager em;
+@Resource UserTransaction tx;                  // or use @Transactional / an EJB
+
+tx.begin();
+em.persist(dragon);
+Dragon ignatius = em.find(Dragon.class, 42L);
+ignatius.setWingspan(31);                      // managed entity: the change is flushed automatically, no merge needed
+em.remove(em.find(Dragon.class, 43L));
+Dragon managed = em.merge(detachedDragon);     // merge is for DETACHED entities; it returns the managed copy
+tx.commit();
+```
+Outside a container (Java SE):
+```java
+EntityManagerFactory emf = Persistence.createEntityManagerFactory("dragonbank");
+EntityManager em = emf.createEntityManager();
+em.getTransaction().begin();
+// ...
+em.getTransaction().commit();
+```
+
+## JPQL
+```java
+TypedQuery<BigDecimal> q = em.createQuery(
+    "SELECT h.goldCoins FROM Hoard h WHERE h.dragon.name LIKE :name", BigDecimal.class);
+q.setParameter("name", "Ign%");                // positional variant: "... LIKE ?1" with setParameter(1, "Ign%")
+q.getResultList();
+q.getResultStream();
+q.getSingleResult();                           // throws NoResultException or NonUniqueResultException
+
+@NamedQuery(name = "Hoard.byDragon", query = "SELECT h FROM Hoard h WHERE h.dragon.name = ?1")   // on the entity
+em.createNamedQuery("Hoard.byDragon", Hoard.class).setParameter(1, "Ignatius");
+
+// Native SQL
+List<Object[]> rows   = em.createNativeQuery("SELECT d.name, d.wingspan FROM DRAGONS d").getResultList();
+List<Dragon> dragons  = em.createNativeQuery("SELECT * FROM DRAGONS", Dragon.class).getResultList();
+```
+JPQL snippets:
+```sql
+SELECT t FROM Treasure t WHERE TYPE(t) = Gem
+SELECT t FROM Treasure t WHERE TYPE(t) IN (Gem, Artifact)
+SELECT d FROM Dragon d LEFT JOIN FETCH d.hoards h WHERE h.goldCoins > 1000   -- FETCH loads the association too (avoids N+1)
+SELECT COUNT(d) FROM Dragon d WHERE d.hoards IS EMPTY
+-- also: BETWEEN, NOT, MEMBER OF, AVG, MIN, MAX, SUM, GROUP BY, HAVING
+```
+
+## Criteria API
+```java
+CriteriaBuilder cb = em.getCriteriaBuilder();
+
+// SELECT
+CriteriaQuery<Dragon> cq = cb.createQuery(Dragon.class);
+Root<Dragon> root = cq.from(Dragon.class);
+cq.where(cb.like(root.get("name"), "Ign%"));          // type-safe: root.get(Dragon_.name), using the generated static metamodel
+List<Dragon> result = em.createQuery(cq).getResultList();
+
+// UPDATE
+CriteriaUpdate<Dragon> cu = cb.createCriteriaUpdate(Dragon.class);
+Root<Dragon> u = cu.from(Dragon.class);
+Path<String> kingdom = u.get("cave").get("kingdom");      // set(String, ...) only accepts a direct attribute name
+cu.set(kingdom, "New Eriador").where(cb.equal(kingdom, "Eriador"));
+int updated = em.createQuery(cu).executeUpdate();
+
+// DELETE
+CriteriaDelete<Hoard> cd = cb.createCriteriaDelete(Hoard.class);
+Root<Hoard> d = cd.from(Hoard.class);
+cd.where(cb.or(cb.equal(d.get("goldCoins"), BigDecimal.ZERO), cb.isNull(d.get("dragon"))));
+int deleted = em.createQuery(cd).executeUpdate();
+```
+The metamodel can also be queried at runtime: `em.getMetamodel().entity(Dragon.class).getDeclaredSingularAttribute("name", String.class)`.

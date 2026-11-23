@@ -1,252 +1,218 @@
-Basic tags:
-`<h:head>`, `<h:body>`
-`<h:oputputStyleSheet library="css" name="styles.css" />`
-`<h:oputputStyleSheet library="js" name="webpack.js" />`
-`<h:graphicImage library="images" name="image.png" />`
-Note: In the abpve library is a subdirecotry of `src/main/webapp/resources``<h:form id="…"> … </h:form>``
-`<h:messages styleClass="…" globalOnly="true" />`
-`<h:message for="elementId" />``<h:panelGrid columns="3" columnClasses="…"> … </h:panelGrid><h:panelGroup layout="block" style="color: red" > … </h:panelGroup>`
-`<h:outputLabel for="…" value="…"/>`
-`<h:inputText id="…" value="…" label="…" required="true" />`
-`<h:inputSecret … />`
-`<f:attribute name="required" name="true" />` to be nested in other elements instead of putting attributes directly
-`<f:param name="name" value="Szymon" />` to be nested e.g. in a `commandLink` to generate URL parameters
-Selecting things:
-`<h:commandButton action="…" actionListener="…" value="…" />`
-`<h:selectBooleanCheckbox value="#{someClass.check}"/>`
-```JSP
-<h:selectManyCheckbox value="#{someClass.stringList}">  
-	<f:selectItem itemValue="v1" itemLabel="Item 1"/>  
-	<f:selectItem itemValue="v2" itemLabel="Item 2"/>  
-	<f:selectItem itemValue="v3" itemLabel="Item 3"/>  
-</h:selectManyCheckBox>
+JSF (now Jakarta Faces). Backing beans are CDI beans; see [CDI](Context%20and%20Dependency%20Injection.md) for scopes such as `@ConversationScoped`. A JSF-based login page is in [Security](Security.md).
+
+The running example is a page where a dragon opens a new hoard.
+
+## Setup
+Without this, CDI-based features (injecting `FacesContext`, using `@Named` beans in EL) may not work:
+```java
+@ApplicationScoped
+@FacesConfig(version = FacesConfig.Version.JSF_2_3)
+public class FacesConfiguration { }
 ```
-```JSP
-<h:selectManyCheckbox value="#{someClass.stringList}">  
-	<f:selectItems value="#{someClass.mapStringToString}"/>  
-</h:selectManyCheckBox>
+**Objects you can inject:** `FacesContext`, `ExternalContext`, `HttpServletRequest`, `HttpSession`, `ServletContext` (for example `servletContext.getResourceAsStream(path)`).
+
+## Page basics
+```xml
+<h:head>
+    <h:outputStylesheet library="css" name="styles.css"/>   <!-- library = subdirectory of src/main/webapp/resources -->
+    <h:outputScript library="js" name="app.js"/>
+</h:head>
+<h:body>
+    <h:graphicImage library="images" name="dragon.png"/>
+    <h:messages globalOnly="true" styleClass="errors"/>
+
+    <h:form id="hoardForm">
+        <h:panelGrid columns="3" columnClasses="label,field,error">
+            <h:outputLabel for="name" value="Dragon name"/>
+            <h:inputText id="name" value="#{hoardController.dragonName}" label="Dragon name" required="true"/>
+            <h:message for="name"/>
+
+            <h:outputLabel for="pin" value="Vault PIN"/>
+            <h:inputSecret id="pin" value="#{hoardController.pin}"/>
+        </h:panelGrid>
+        <h:panelGroup layout="block" style="color: red">...</h:panelGroup>
+    </h:form>
+</h:body>
 ```
-```JSP
-<h:selectManyListbox value="#{someClass.stringList}"> 
-	<f:selectItems value="#{someClass.mapStringToString}"/>  
-</h:selectManyListBox>
-```
-```JSP
-<h:selectOneListbox value="#{someClass.stringList}">  
-	<f:selectItems value="#{someClass.mapStringToString}"/>  
-</h:selectOneListBox>
-```
-```JSP
-<h:selectManyMenu value="#{someClass.stringList}">  
-	<f:selectItems value="#{someClass.mapStringToString}"/>  
-</h:selectManyMenu>
-```
-```JSP
-<h:selectOneMenu value="#{someClass.stringList}">  
-	<f:selectItems value="#{someClass.mapStringToString}"/>  
+- `<f:attribute name="required" value="true"/>` nested in a component does the same as setting the attribute directly.
+- `<f:param name="dragon" value="Ignatius"/>` nested in a link adds a URL parameter.
+
+## Selection components
+They all follow the same pattern. The `selectMany*` components bind to a collection, the `selectOne*` components to a single value:
+```xml
+<h:selectBooleanCheckbox value="#{hoardController.insured}"/>
+
+<h:selectManyCheckbox value="#{hoardController.treasureTypes}">
+    <f:selectItem itemValue="GOLD" itemLabel="Gold"/>
+    <f:selectItem itemValue="GEM"  itemLabel="Gems"/>
+</h:selectManyCheckbox>
+
+<h:selectOneMenu value="#{hoardController.cave}">
+    <f:selectItems value="#{hoardController.caves}"/>   <!-- a Map<label,value> or a Collection<SelectItem> -->
 </h:selectOneMenu>
-```
-```JSP
-<h:selectOneRadio value="#{someClass.stringList}">  
-	<f:selectItems value="#{someClass.mapStringToString}"/>  
+
+<h:selectOneRadio value="#{hoardController.cave}">
+    <f:selectItems value="#{hoardController.caveList}" var="c" itemLabel="#{c.name}" itemValue="#{c.id}"/>  <!-- POJOs -->
 </h:selectOneRadio>
 ```
-Alternatively:  
-```JSP
-<h:selectManyCheckbox value="#{someClass.stringList}">  
-	<f:selectItems value="#{someClass.collectionOfSelectItem}"/>  
-</h:selectManyCheckBox>
-```
-Alternatively:  
-```JSP
-<h:selectManyCheckbox value="#{someClass.stringList}">  
-	<f:selectItems value="#{someClass.collectionOfPOJOs}" 
-		var="itm" itemLabel="#{itm.lab}" itemValue="#{itm.val}"/>  
-</h:selectManyCheckBox>
-```
-Buttons and links:
-```JSP
-<h:outputLink value="http://www.amnesty.org" target="_blank"/>
-<h:button value"Go" onclick="window.alert('Hi')"/>
-<h:link value="Link text" outcome="#{myClass.whereToGoNext}"/>  
-	<f:param name="param1" value="42/>  
-	<f:param name="param2" value="Hello"/>  
-</h:link>  
-<h:link value="Link text" outcome="result_page"/>
+Others: `selectManyListbox`, `selectOneListbox`, `selectManyMenu`.
 
-<h:commandButton value"Submit" action="#{controller.register}"/><h:commandLink value"Submit" action="#{controller.register}"/><h:commandButton value"Submit" action="result_page"/>
+## Buttons and links
+```xml
+<h:commandButton value="Open hoard" action="#{hoardController.open}"/>   <!-- POST; action returns an outcome -->
+<h:commandLink   value="Open hoard" action="#{hoardController.open}"/>
+<h:commandButton value="Done" action="hoard-summary"/>                   <!-- static outcome = page name -->
+
+<h:button value="Roar" onclick="window.alert('ROAR')"/>                  <!-- GET -->
+<h:link value="My hoards" outcome="#{hoardController.nextPage}">
+    <f:param name="dragon" value="Ignatius"/>
+</h:link>
+<h:outputLink value="https://www.amnesty.org" target="_blank">Plain link</h:outputLink>
 ```
-Creating an HTML table:  
-```JSP
-<h:dataTable value="#{someClass.collection}" var="v">  
-	<h:column>  
-		<f:facet name="header">First name</f:facet>  
-            #{v.firstName}  
-    </h:column>  
-    <h:column>  
-		<f:facet name="header">Last name</f:facet>  
-            #{v.lastName}  
-    </h:column>  
+**Navigating back.** On the main page, pass the current view as a parameter:
+```xml
+<h:link outcome="treasure-details"><f:param name="backref" value="#{view.viewId}"/></h:link>
+<!-- on the sub-page -->
+<h:outputLink value="#{request.contextPath}#{param['backref']}">Back</h:outputLink>
+```
+
+## Tables, loops, conditions
+```xml
+<h:dataTable value="#{hoardController.treasures}" var="t">
+    <h:column>
+        <f:facet name="header">Treasure</f:facet>
+        #{t.name}
+    </h:column>
+    <h:column>
+        <f:facet name="header">Value</f:facet>
+        #{t.value}
+    </h:column>
 </h:dataTable>
+
+<ui:repeat value="#{hoardController.treasures}" var="t">#{t.name}</ui:repeat>   <!-- render-time loop -->
+<c:forEach items="#{hoardController.treasures}" var="t">#{t.name}</c:forEach>   <!-- JSTL: build-time loop -->
+
+<h:outputText value="Cursed!" rendered="#{t.cursed}"/>
 ```
-Conditions:  
-```JSP
-<h:outputText rendered="#{someClass.render} … >
+
+## Validation
+```xml
+<h:inputText value="#{hoardController.goldCoins}">
+    <f:validateLongRange minimum="1" maximum="1000000"/>
+</h:inputText>
 ```
-Loops:  
-```JSP
-<ui:repeat value="#{someClass.collection}" var="x">  
-	Do something with x  
-</ui:repeat>
+Other validators: `<f:validateBean>` (Bean Validation, see [Bean Validation](Bean%20Validation.md)), `<f:validateDoubleRange>`, `<f:validateLength>`, `<f:validateRequired>`, `<f:validateRegex pattern="..."/>`.
+
+**Custom validator class:**
+```java
+@FacesValidator("dragonNameValidator")
+public class DragonNameValidator implements Validator<String> {
+    @Override
+    public void validate(FacesContext ctx, UIComponent component, String value) {
+        if (!value.endsWith("the Terrible"))
+            throw new ValidatorException(new FacesMessage("Every dragon needs an epithet"));
+    }
+}
 ```
-Uploading a file:
+```xml
+<f:validator validatorId="dragonNameValidator"/>
 ```
-<h:form enctype="multipart/form-data" action="#{controller.submit}">  
-    <h:inputFile value="#{controller.upload}" />  
+**Validator method:** a bean method with the same signature as `Validator.validate`:
+```xml
+<h:inputText validator="#{nameValidator.validateAlpha}"/>
+```
+
+## Conversion
+```xml
+<f:convertDateTime pattern="yyyy-MM-dd HH:mm" type="date|time|both"
+                   dateStyle="short|medium|long|full" timeZone="#{bean.timeZone}" locale="#{bean.locale}"/>
+<f:convertNumber type="number|currency|percent" currencyCode="EUR" groupingUsed="true"
+                 minFractionDigits="2" maxFractionDigits="4" pattern="#{bean.decimalFormat}"/>
+<f:converter converterId="treasureConverter"/>
+```
+```java
+@FacesConverter("treasureConverter")      // or @FacesConverter(forClass = Treasure.class) to apply it automatically
+public class TreasureConverter implements Converter<Treasure> { ... }
+```
+
+## Listeners
+```xml
+<h:commandButton value="Open" action="#{hoardController.open}">
+    <f:actionListener type="com.dragonbank.faces.AuditListener"/>
+    <f:setPropertyActionListener target="#{hoardController.cave}" value="North Peak"/>
+</h:commandButton>
+```
+```java
+public class AuditListener implements ActionListener {
+    @Override
+    public void processAction(ActionEvent event) throws AbortProcessingException { ... }
+}
+```
+Also: `<f:valueChangeListener>` (implements `ValueChangeListener`) and `<f:phaseListener>` (implements `PhaseListener`).
+
+## AJAX
+```xml
+<h:inputText id="name" value="#{hoardController.dragonName}">
+    <f:ajax event="keyup" execute="@this" render="greeting"/>
+</h:inputText>
+<h:outputText id="greeting" value="Welcome, #{hoardController.dragonName}!"/>
+```
+- `execute`: the components whose values are sent and processed.
+- `render`: the components to re-render. Both also accept `@this`, `@form`, `@all` and `@none`.
+- `event`: any DOM event (`blur`, `change`, `click`, `dblclick`, `focus`, `keydown`, `keyup`, `mouseover`, `select`, ...) or `valueChange`/`action`.
+- `immediate="true"` processes the component in an earlier phase, which skips validation of the other components.
+- Wrapping several components in `<f:ajax>` applies it to all of them, with each one's default event.
+
+## File upload
+```xml
+<h:form enctype="multipart/form-data">
+    <h:inputFile value="#{deedController.upload}"/>
+    <h:commandButton value="Upload deed" action="#{deedController.submit}"/>
 </h:form>
 ```
-```Java
-@Named  
-@...Scoped  
-public class Controller implements Serializable {  
-	private Part upload;  
-    public void submit() {  
-        try (InputStream input = upload.getInputStream()) {  
-		    String n = upload.getSubmittedFileName();  
-            String path = "…";  
-            String name = "…";  
-            Files.copy(input, new File(path + File.separator + name).toPath());  
-        } catch (Exception e) {  
-            e.printStackTrace(System.err);  
-        }  
-    }  
+```java
+@Named @RequestScoped
+public class DeedController {
+    private Part upload;                                    // jakarta.servlet.http.Part
+    public void submit() throws IOException {
+        try (InputStream in = upload.getInputStream()) {
+            Files.copy(in, Path.of(deedDir, upload.getSubmittedFileName()));
+        }
+    }
 }
 ```
-Validation tags (to be neasted in an input field):
 
-```JSP
-<f:validateBean> <!-- to use Bean Validation in the surrounding element -->
-<f:validateDoubleRange minimum="…" maximum="…"/>
-<f:validateLongRange minimum="…" maximum="…"/>
-<f:validateLength minimum="…" maximum="…"/>
-<f:validateRequired/>
-<f:validateRegex/>
-```
-Conversion tags (also to be nested):
-```JSP
-<f:convertDate pattern="yyyy-MM-dd HH:mm:ss" type="date|time|both" 
-		dateStyle="default|short|medium|long|full" 
-		timeStyle="default|short|medium|long|full" locale="#
-		{someClass.theLocale}" timeZone="#{someClass.theTimeZone}"/>
-<f:convertNumber currencyCode="CNY" currencySymbol="CNY" groupingUsed="true" 
-	integerOnly="true" locale="#{someClass.theLocale}" maxFractionDigits="4" 
-	minFractionDigits="2" maxIntegerDigits="4" minIntegerDigits="2" pattern="#
-	{someClass.decimalFormatString}" type="number|currency"percent" />
-<f:converter converterId="com.example.MyConverter"/>  
-```
-```Java
-@FacesConverter("com.example.MyConverter")  
-public class TheConverter implements Converter {/*implementation*/}
-```
-Event listener tags:
-```JSP
-<h:commandButton value="Submit" action="#{user.register}">  
-	<f:actionListener type="com.example.listeners.RegisterListener"/>  
-</h:commandButton>  
-```
-```Java
-public class RegisterListener implements ActionListener {  
-    @Override  
-	public void processAction(ActionEvent event) throws AbortProcessingEvent 
-	{  
-		System.out.println("action!");  
-	}      
-}
-```
-```JSP
-<h:valueChangedListener> … implements ValueChangedListener
-<h:phaseListener> … implements PhaseListener
-<h:setPropertyActionListener value="valueToSet" target="#
-	{myClass.fieldToReceiveValue}"/>
-```
-Other useful tags:
-```JSP
-<c:forEach items="#{userController.userList}" var="user">  
-	<br/> #{user}  
-</c:forEach>****
-```
-Using expression language: `value="#{custromerController.firstName}"`
-Custom validation using Validator annotation:
-```Java
-@FacesValidator(name="emailValidator")  
-public class EmailValidator implements Validator {
+## HTML5-friendly markup
+- **Plain HTML elements with JSF attributes:** `<input type="text" jsf:id="name" jsf:value="#{hoardController.dragonName}"/>`, with the namespace `xmlns:jsf="http://xmlns.jcp.org/jsf"`.
+- **HTML5 attributes that JSF doesn't know**, passed through to the output: `<h:inputText p:placeholder="Dragon name"/>`, with the namespace `xmlns:p="http://xmlns.jcp.org/jsf/passthrough"`.
 
-// If not valid:  
-FacesMessage facesMessage = .…  
-throw new ValidastorException(facesMessage);
+## Faces Flow
+A flow is a group of pages with its own bean scope:
 ```
-```JSP
-<f:validator validatorId="emailValidator/>
+hoardopening/                      (directory named after the flow, in the webapp root)
+    hoardopening-flow.xml          (can be empty)
+    hoardopening.xhtml             (entry page = flow name)
+    hoardopening-page2.xhtml
+    hoardopening-page3.xhtml
+hoardopening-return.xhtml          (outside the flow)
 ```
-Custom validation using validation method - request scoped bean with method with the same arguments and the same behaviour as in the Validator interface
-```JSP
-<h:inputText validator="#{alphaValidator.validateAlpha}"/>
-```
-Then one possibility is a nested tag inside e.g. a `commandButton`.
-AJAX:
-```JSP
-<f:ajax execute="…" renders="…" event="action" immediate="true"/>  
-```
-execute: ids of elements which have to be executed to get up-to-date values in the controller  render: Id(s) of element(s) that have to be rendered by the Ajax call
-For, e.g., `inputText` one can use `event"keyup"` or other JavaScript event: `blur`, `change`, `click`, `dbclick`, `focus`, `keydown`, `keypress`, `keyup`, `mousedown`, `mousemove`, mouseup, `mouseover`, `select`, `valueChange`
-One can wrap several elements in `<f:ajax>`, then the default event will be used.
-`immediate` serves for short-circuiting the processing
-
-HTML 5-friendly markup:
-
-Normal `<!DCTYPE html>` with `<head>`, `<body>`,` <form>` etc. and JSF-specific attributes like `jsf:value="#{customerController.firstName}"` (appropriate `xmlns` is needed)
-Facelets page with passthrough namespace for new HTML 5 attributes like `p:placeholder="First Name"`
-Faces Flow:
-Directory structure:  
-```
-WEB-INF  
--  customerinfo  
-	    -- customerinfo-flow.xml (can be empty)  
-	    -- customerinfo-page2.xhtml  
-	    -- customerinfo-page3.xhtml  
-	    -- customerinfo-page4.xhtml  
-	    -- customerinfo.xhtml  
-	    - customerinfo-return.xhtml
-``` 
-Pages navigate between each other
-Their controller is a named beam wtth  
-```Java
-@FlowScoped("customerinfo")
-```
-Beans which can be automatically injected:
-```Java
-FacesContext
-HttpServletRequest
-ExternalContext
-ServletContext
-
-.getResourceAsStream(path);
-
-HttpSession
+The pages navigate to each other by name. Their controller has:
+```java
+@Named @FlowScoped("hoardopening")
+public class HoardOpeningFlow implements Serializable { ... }
 ```
 
-Configuration to inject named beans into JSF pages, injecting FacesContext may not work without this:  
-```Java
-    @AllpicationScope  
-    @FacesConfig(version=FacesConfig.Version.JSF_2_3)  
-    public class ConfigurationBean {}
+## Push (WebSocket)
+```java
+@Inject @Push                 // channel name = field name ("raidAlerts"), or @Push(channel = "...")
+PushContext raidAlerts;
+// ...
+raidAlerts.send("Knight approaching!");
 ```
-Navigating backwards:
-On the main page, inside a button which links to a subpage:  
-```JSP
-<f:param name="backref" value="#{view-viewId}"/>
+```xml
+<f:websocket channel="raidAlerts" onmessage="onRaidAlert"/>
+<script>
+    function onRaidAlert(message, channel, event) { ... }
+</script>
 ```
-On the subpage:  
-```JSP
-	    <h:outputLink value="#{request.contextPath}#{param['backref']}">
-```
+For plain WebSockets see [Servlets and WebSockets](Servlets%20and%20WebSockets.md).
