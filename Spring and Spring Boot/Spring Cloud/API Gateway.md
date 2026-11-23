@@ -1,92 +1,70 @@
-Dependencies
-```
-spring-cloud-starter-gateway
-```
-Should also be an Eureka client.
-Configuration:
-```YAML
+> **Compare:** MicroProfile and Quarkus have no gateway component. The usual choices are a Kubernetes Ingress or Gateway API, a service mesh (Istio), or a dedicated gateway (Kong, Envoy). Spring Cloud Gateway is a reactive app built on WebFlux and Reactor, which is why its filters work with `Mono` and `ServerWebExchange`.
+
+Dependency: `spring-cloud-starter-gateway`. The gateway should also be a Eureka client, so that it can route to `lb://service-id`; see [Service discovery](Service%20discovery%20and%20load%20balancing.md).
+```yaml
 spring:
   cloud:
     gateway:
-        discovery.locator:
-          enabled: true
-          lowerCaseServiceId: true
-          
-        # Manual rootes on top of those discovered automatically" 
-        routes:
-        - id: dogs-service
-          uri: lb://dogs-service
-
+      discovery.locator:             # automatic routes: /treasure-service/** -> lb://treasure-service
+        enabled: true
+        lowerCaseServiceId: true
+      routes:                        # manual routes, on top of the automatic ones
+        - id: appraisal-service
+          uri: lb://appraisal-service
           predicates:
-          - Path=/dog/**
-
+            - Path=/appraisal/**
           filters:
-          - RewritePath=/dog/
-                       (?<path>.*), /$\{path}
+            - RewritePath=/appraisal/(?<path>.*), /$\{path}
 ```
-###### Builtin predicates:
-```YAML
-Before=2020-03-11T...
-After=2020-03-11T...
-Between=2020-03-11T...,2020-04-11T...
-Header=X-Request-Id, \d+
-Host=**.example.com
-Method=GET
-Path=/organization/{id}
-Query=id, 1
-RemoteAddr=192.168.3.5/24
+
+## Built-in predicates
+```yaml
+- After=2026-03-11T10:00:00+01:00[Europe/Warsaw]     # also Before, Between=...,...
+- Header=X-Request-Id, \d+
+- Host=**.dragonbank.example
+- Method=GET
+- Path=/hoard/{number}
+- Query=dragon, Ign.*
+- RemoteAddr=192.168.3.5/24
 ```
-###### Builtin filter factories
-```YAML
-AddRequestHeader=X-Organization-ID,F39s2
-AddResponseHeader=X-Organization-ID,F39s2
-AddRequestParameter=X-Organization-ID,F39s2
-PrefixPath=/api
-RequestRateLimiter=10, 20, #{@userKeyResolver}
-RedirectTo=302, http://localhost:8072
-RemoveNonProxy
-RemoveRequestHeader=X-Request-Foo
-RemoveResponseHeader=X-Request-Foo
-RewritePath=/organization/(?<path>.*), /$\{path}
-SecureHeaders
-SetPath=/{organization}
-SetStatus=500
-SetResponseHeader=X-Response-ID,123
+
+## Built-in filters
+```yaml
+- AddRequestHeader=X-Bank, DragonBank          # also AddResponseHeader, AddRequestParameter
+- RemoveRequestHeader=X-Knight-Token           # also RemoveResponseHeader
+- SetResponseHeader=X-Response-ID, 123
+- PrefixPath=/api
+- SetPath=/{segment}
+- RewritePath=/hoard/(?<path>.*), /$\{path}
+- RedirectTo=302, https://dragonbank.example
+- SetStatus=500
+- SecureHeaders
+- RequestRateLimiter=10, 20, #{@dragonKeyResolver}   # replenish rate, burst capacity, key resolver bean (needs Redis)
 ```
-###### Custom pre-filter
-```Java
+
+## Custom global filters
+A **pre-filter** runs before the request is routed:
+```java
 @Order(1)
 @Component
-public class TrackingFilter implements GlobalFilter {
-	@Override
-    public Mono<Void> filter(ServerWebExchange exchange,
-                      GatewayFilterChain chain) {
-
-       HttpHeaders requestHeaders = 
-           exchange.getRequest().getHeaders();
-       // ...
-	   return chain.filter(exchange);
+public class CorrelationIdFilter implements GlobalFilter {
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        HttpHeaders headers = exchange.getRequest().getHeaders();
+        if (!headers.containsKey("X-Correlation-Id")) {
+            exchange = exchange.mutate()                              // requests are immutable: mutate() makes a copy
+                .request(exchange.getRequest().mutate().header("X-Correlation-Id", UUID.randomUUID().toString()).build())
+                .build();
+        }
+        return chain.filter(exchange);
     }
 }
 ```
-For example, adding a custom header:
-```Java
-public ServerWebExchange setRequestHeader(ServerWebExchange exchange, String name, String value) { 
-	return exchange.mutate().request( 
-		exchange.getRequest().mutate() 
-		.header(name, value) 
-		.build()) 
-	.build(); 
-}
-```
-###### Custom post-filter
-```Java
+A **post-filter** runs after the downstream response comes back:
+```java
 @Bean
-public GlobalFilter postGlobalFilter() {
-    return (exchange, chain) -> {
-	    return chain.filter(exchange).then(
-		    Mono.fromRunnable(() -> { ... })
-		);
-    };
+GlobalFilter responseLogger() {
+    return (exchange, chain) -> chain.filter(exchange)
+        .then(Mono.fromRunnable(() -> log.info("Status {}", exchange.getResponse().getStatusCode())));
 }
 ```

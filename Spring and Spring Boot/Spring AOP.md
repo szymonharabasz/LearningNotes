@@ -1,74 +1,65 @@
-Definitions:
-**Join Point** - a point in the execution of a program such as a method call or exception thrown
-**Pointcut** - an expression that selects one of more Join Points
-**Advice** - code to be executed at each selected Join Point
-**Aspect** - a module that encapsulates pointcuts and advice
-**Weaving** - technique by which aspects are combined with main code
-There are standard Java annotations:  
-```Java
-@PostConstruct  
-@PreDestroy
-```
-Alternative is to use `@Bean` annotation attributes:  
-```Java
-@Bean(initMethod="populateCache", destroyMethod="flushCache")
-```
-Most basic dependency:
-```xml
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-aspects</artifactId>
-    <version>5.3.8</version>
-</dependency>
-```
-On the configuration class:  
-```Java
-@Configuration  
-@EnableAspectJAutoProxy  
-public class MyConfig {}
-```
-Defining aspect:  
-```Java
-@Component  
-@Aspect  
-public class LoggingAspect {  
-    @Around(  
-        "execution(public * com.example.UserController.getUsers(..)) 
-			throws MyException"  
-    )  
-    publuc Object log(ProceedingJoinPoint joinPoint) {  
-        String methodName = joinPoint.getSignature().getName();  
-        Object [] args = joinPoint.getArgs();  
-        Object [] newArgs = {"fake news"};    
-        Object returnedFromMethod = joinPoint.proceed(newArgs);  
-        System.out.println("getUser method called on bean " +  
-	        joinPoint.getTarget);  
-        return "new returned value"; // returnedFromMethod;    
-    }     
+> **Compare:** the Jakarta counterpart is [CDI interceptors](../Java,%20Jakarta%20EE,%20Microprofile/Context%20and%20Dependency%20Injection.md#interceptors). The two models differ:
+> - **Selecting methods.** A CDI interceptor applies only where you put its binding annotation, or `@Interceptors`. A Spring aspect selects methods with a **pointcut expression** (by package, name pattern or annotation), so the target code can stay unaware of it.
+> - **Writing the advice.** CDI has `@AroundInvoke` with `InvocationContext.proceed()`. Spring has `@Around` with `ProceedingJoinPoint.proceed()`, plus the specialized `@Before`/`@After...` advice.
+>
+> Lifecycle callbacks (`@PostConstruct`/`@PreDestroy`) are not AOP; see [Spring core](Spring%20core%20and%20Spring%20Boot.md).
+
+## Vocabulary
+- **Join point:** a point in the program's execution. In Spring AOP this is always a method execution.
+- **Pointcut:** an expression that selects join points.
+- **Advice:** the code that runs at the selected join points.
+- **Aspect:** a module that groups pointcuts and advice.
+- **Weaving:** combining aspects with the target code. Spring AOP does it at runtime with **proxies**, while full AspectJ does it at compile or load time.
+
+Because Spring AOP is proxy-based, **a call from one method of a bean to another method of the same bean (`this.foo()`) is not advised**. The same pitfall applies to `@Transactional`, `@Cacheable` and `@Async`.
+
+## Setup
+Spring Boot: add `spring-boot-starter-aop`. Plain Spring: add `org.springframework:spring-aspects` and put `@EnableAspectJAutoProxy` on a `@Configuration` class.
+
+## An aspect
+The aspect must be a bean:
+```java
+@Aspect
+@Component
+@Order(1)                                     // ordering between aspects; lower runs first (outermost)
+public class GoblinAuditAspect {
+
+    @Around("execution(public * com.dragonbank.appraisal.AppraisalService.appraise(..))")
+    public Object audit(ProceedingJoinPoint jp) throws Throwable {
+        String method = jp.getSignature().getName();
+        Object[] args = jp.getArgs();
+        Object result = jp.proceed(args);     // you can pass modified arguments, or skip proceed() entirely
+        log.info("{}({}) on {} returned {}", method, Arrays.toString(args), jp.getTarget(), result);
+        return result;                        // ...and you can return something else
+    }
 }
 ```
-Aspect must be a bean, other methods of creating beans are also valid
-Other useful pointcut definition, based on a given annotation (which should habe RUNTIME retention):
-```Java
-@Around("execution(@ToLog void send*(..))")  
-@Around("@annotation(ToLog)")`
+
+## Pointcut expressions
+```java
+"execution(public * com.dragonbank..*Service.*(..))"   // any public method of *Service classes in any sub-package
+"execution(@Audited void send*(..))"                    // void methods named send* annotated with @Audited
+"@annotation(com.dragonbank.Audited)"                   // methods annotated with @Audited (the annotation needs RUNTIME retention)
+"within(com.dragonbank.appraisal..*)"                   // all methods of the types in a package
 ```
-Other advices:` @Before`, `@After` (which is after `finally`), `@AfterReturning`, `@AfterThrowing`
-```Java
-@AfterReturning(value = "@annotation(ToLog), returning = "returnedValue")  
-public void log(Returned returnedValue) { … }
-```
-```Java
-@AfterReturning(value = "@annotation(ToLog), throwing = "exception")  
-public void log(DataAccessException exception) {  
-    …  
-    // Optionally one can apply exception translation:  
-    throw new RewardException(e);  
+- `*`: exactly one element (return type, package segment, class, method name or argument).
+- `..`: zero or more (packages, or arguments).
+- A class name also matches its subclasses.
+- Combine expressions with `&&`, `||` and `!`.
+
+## Other kinds of advice
+```java
+@Before("@annotation(Audited)")
+public void before(JoinPoint jp) { ... }
+
+@After("@annotation(Audited)")                         // like finally: runs after both success and failure
+public void after(JoinPoint jp) { ... }
+
+@AfterReturning(value = "@annotation(Audited)", returning = "appraisal")
+public void afterReturning(Appraisal appraisal) { ... }
+
+@AfterThrowing(value = "@annotation(Audited)", throwing = "ex")
+public void afterThrowing(DataAccessException ex) {
+    throw new AppraisalFailedException(ex);            // exception translation
 }
 ```
-Aspect class can also be annotated with `@Order(1)`, `@Order(2)` etc.
-Pointcut designators can be combined with `&&`, `||`, and `!`
-Wildcards in pointcut designator are:
-`*` - exactly one (return type, package, class, method name, argument)
-`..` - zero or more (method arguments or packages)
-A class name in the pointcut designator matches also subclasses

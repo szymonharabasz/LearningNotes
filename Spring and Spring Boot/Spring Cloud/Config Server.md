@@ -1,58 +1,50 @@
-Create an application with
-```Java
+> **Compare:** MicroProfile Config ([Quarkus - Configuration](../../Java,%20Jakarta%20EE,%20Microprofile/Quarkus%20and%20MicroProfile.md#configuration)) has no config *server*. Its answer is a pluggable `ConfigSource`. In practice Quarkus apps read Kubernetes ConfigMaps and Secrets (ordinal 270), and there is also a `quarkus-spring-cloud-config-client` extension that reads from a Spring Config Server. Spring profiles in `{application}-{profile}.properties` correspond to the `%profile.` prefixes. `@RefreshScope` has no MicroProfile equivalent, because MP Config values are read at injection time. Inject `Provider<T>` or `ConfigValue` to re-read them.
+
+## Server
+Dependency: `spring-cloud-config-server`.
+```java
 @EnableConfigServer
-@SpringBootApplicatio
+@SpringBootApplication
 public class ConfigServerApplication { ... }
 ```
-In the `bootstrap.[properties|yml]`:
+```properties
+server.port=8071
+spring.profiles.active=native,git                 # backends; "native" = filesystem/classpath. With several, the LAST one wins
+spring.cloud.config.server.native.search-locations=classpath:/config,file:///opt/dragonbank/config
+spring.cloud.config.server.git.uri=https://github.com/dragonbank/config.git
+spring.cloud.config.server.git.search-paths=appraisal-service
 ```
-spring.profiles.active=native,git
-spring.cloud.config.server.native.search-locations=
-	file:///{FILE_PATH},file:///Users/szymon,classpath:/config
-spring.cloud.config.server.git.uri=https://github.com/myusername/config.git
-spring.cloud.config.server.git.searchPaths=catsservice
+Files are named `{application}-{profile}.properties` (or `.yml`), for example `appraisal-service-dev.yml`. The server serves them at:
 ```
-where `native` is the name of the profile, this one is necessary for the configuration stored in the filesystem.
-In `spring.profiles.active` the last is the winner.
-Configuration files have names:
+http://config-server:8071/appraisal-service/default
+http://config-server:8071/appraisal-service/dev
 ```
-cats-service.env.[properties|yms]
-```
-Can be accessed through:
-```
-http://config-server:port/cats-service/[default|env]
-```
-Properties come from `default` unless they are overriden by a specific environment.
+A profile's values override those in `default`.
 
-In the client service we need to add dependency to `pom.xml`:
-```
-spring-cloud-starter-config
-```
-In the `bootstrap.[properties|yml` of the service:
-```
-spring.application.name=cats-service
+## Client
+Dependency: `spring-cloud-starter-config`.
+```properties
+spring.application.name=appraisal-service
 spring.profiles.active=dev
-spring.cloud.config.uri=http://localhost:8071
+spring.config.import=optional:configserver:http://localhost:8071   # Boot 2.4+; older: spring.cloud.config.uri in bootstrap.properties
 ```
-They can be overriden at startup, for example:
-```sh
-java -Dspring.profiles.active=prod -jar target/cats-service-0.0.1-SNAPSHOT.jar
+Override these at startup with `java -Dspring.profiles.active=prod -jar appraisal-service.jar`, or with environment variables (for example in `docker-compose.yml`):
+```yaml
+appraisal-service:
+  environment:
+    SPRING_PROFILES_ACTIVE: "staging"
 ```
-They can also be overriden with environment variables, for example in `docker-compose.yml`:
-```YAML
-cats-service:
-	environment:
-		SPRING_PROFILES_ACTIVE: "stagging"
-```
-The annotation from Spring Boot Actuator:
-```Java
-@RefreshScope
-@SpringBootApplication
-publicClass CarServiceApplication { ... }
-```
-Exposes the `/refresh` endpoint that can be used to refresh **custom** Spring properties.
 
-If a property `encrypt.key` is defined in the Config Server, perhaps as the environment variable `ENCRYPT_KEY`, additional POST endpoints are exposed: `/encrypt` and `/decrypt`. The first one can then be used to encrypt sensitive information. Then it can be used in the property file as:
+## Refreshing at runtime
+```java
+@RefreshScope          // Spring Cloud Context: the bean is re-created when the configuration is refreshed
+@Component
+public class CommissionSettings { @Value("${appraisal.goblin-commission}") BigDecimal commission; }
 ```
-spring.datasource.password=[cipher]<ENCRYPTED PASSWORD>
+`POST /actuator/refresh` (which must be exposed through Actuator) reloads the configuration and re-creates `@RefreshScope` beans. This refreshes your **custom** properties; infrastructure like the data source is not rebuilt.
+
+## Encrypted values
+If the server has `encrypt.key` set (for example through the environment variable `ENCRYPT_KEY`), it exposes `POST /encrypt` and `POST /decrypt`. Encrypted values are stored with a prefix and decrypted by the server:
+```properties
+spring.datasource.password={cipher}d1a9f7c3...
 ```

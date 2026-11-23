@@ -1,216 +1,157 @@
-Security: adding `spring-boot-starter-security` provides skeleton functionality. This already protects all endpoints, in the browser a pop-up window will be displayed.
-Annotate a `@Configuration` class with extra `@EnableWebSecurity` and extend `WebSecurityConfigurerAdapter`  
-This already creates a rudimentary web page for login
-Securing endpoints by creating a bean:  
-```Java
-@Bean  
-public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {  
-    httpSecurity.authorizeHttpRequests((authz) -> authz  
-	    .requestMatchers("/signup","/about").permitAll()  
-        .requestMatchers(HttpMethod.PUT, "/accounts/edit*").hasRole("ADMIN")  
-        .requestMatchers("/accounts/**").hasRole("ADMIN")  
-        .requestMatchers("/admin/**").hasAnyRole("USER", "ADMIN")  
-        // securing Spring Boot Actuator endpoints             
-       .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
-       .anyRequest.authenticated())  
-        // Basic authentication:  
-        .httpBasic(withDefaults());  
-        // or HTTP form authentication:  
-        .formLogin(form -> form  
-        .loginPage("/login")  
-        .permitAll())  
-        .logout(logout -> logout  
-        .logoutSuccessUrl("/home")  
-        .permitAll());   
-        return httpSecurity.build();  
-}
-    
-@Bean  
-public WebSecurityCustomizer webSecurityCustomizer() {  
-    // no filter applied, by-passing any security  
-    return (web) -> web.ignoring()
-        .requestMatchers("/ignore1", "/ignore2");  
-}
-    
-@Bean  
-public InMemoryUserDetailsManager userDetailsManager() {  
-    // Currently: BCryptPasswordEncoder (recommended), creates 
-    //{bcrypt}hash  
-    PasswordEncoder passwordEncoder =  
-        PasswordEncoderFactories.createDelegatingPasswordEncoder();  
-      
-    UserDetails user = User  
-        .withUsername("user")  
-        .password(passwordEncoder.encode("user"))  
-        .roles("USER")  
-        .build();  
-    UserDetails admin = User  
-        .withUsername("admin")  
-        .password(passwordEncoder.encode("admin"))  
-        .roles("ADMIN")  
-        .build();  
-    return new InMemoryUserDetailsManager(user, admin);  
-}  
+> **Compare:**
+> - **Jakarta Security** ([Security](../../Java,%20Jakarta%20EE,%20Microprofile/Security.md)) has the same two building blocks under different names. An *identity store* (database, LDAP, custom) corresponds to Spring's `UserDetailsService`/`AuthenticationProvider`. An *authentication mechanism* (`@BasicAuthenticationMechanismDefinition`, form login) corresponds to `httpBasic()`/`formLogin()`.
+> - **Quarkus** configures URL rules in properties (`quarkus.http.auth.permission.<name>.paths=/api/*`, `.policy=authenticated`) instead of with a `SecurityFilterChain` bean. It uses `@RolesAllowed`/`@Authenticated` on methods.
+> - Token-based security is in [Using OAuth2](Using%20OAuth2.md).
 
-// In production:  
-UserDetailsManager userDetailsManager(DataSource dataSource) {  
-    return new JdbcUserFryailsManager(dataSource);  
-}
-```
-Securing business methods:  
-```Java
-// In one of configuration methods  
-@EnableMethodSecurity        
-@PreAuthorize("hasRole('MEMBER') && #order.owner.name == principal.username") public Item findItem(Order order, long itemNumber) { … }  
-// or  
-@PostAuthorize(…)
-// or
-@RolesAllowed({"ADMIN"})
-```
-In memory user store (in the config class as described before:  
-```Java
-@Override  
-protected void configure(AuthenticationManagerBuilder auth)  
-    throws Exception {  
-    auth  
-        .inMemoryAuthentication()  
-            .withUser("buzz")  
-                .password("infinity")  
-                .authorities("ROLE_USER")  
-        .and()  
-            .withUser("woody")  
-                .password("bullseye")  
-                .authorities("ROLE_USER");  
-}
-```
-**JPA data store.** Add:
-`sprring-boot-starter-data-jpa`
-`mysql-connector-java`
-Define datasource properties in `application.properties`
-Define user entity
-Define user repository:  
-```Java
-interface UserRepository exptends JpaRepository<User, Long> {  
-    User findByUsername(String username);  
-}
-```
-Implement user details:  
-```Java
-public class UserPrinciplal implements UserDetails {  
-    private User user;  
-    public UserPrincipal(User user) { this.user = user; }  
-      
-    @Override  
-    public String getUsername() { return user.getUsername(); }  
-      
-    @Override  
-    public String getPassword() { return user.getPassword(); }  
-      
-    @Override  
-    public Collection<? extends GrantedAuthority> getAuthorities() {  
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));  
-    }  
-      
-}
-```
-Define user details service:  
-```Java
-@Service  
-public class MyUserDetailsService implements UserDetailsService {  
-      
-    @Autowired    
-    UserRepository userRepository;  
-      
-    @Override 
-    UserDetails loadUserByUsername(String unsername)  
-        throws UsernameNotFoundException {  
-      
-        User user = userRepository.findByUsername(username);  
-        if (user == null) 
-	        throw new UsernameNotFoundException("User not found");  
-      
-        return new UserPrincipal(user);  
-             
-    }  
-}
-```
-Security configuration:  
-```Java
-@Configuration  
-@EnableWebSecurity  
-public class AppSecurityCOnfig extends WebSecurityConfigurerAdapter {  
-      
-    @Autowired  
-    private UserDetailsService userDetailsService;  
-      
-    @Bean  
-    public AuthenticationProvider authenticationProvider() {  
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();  
-        provider.setUserDetailsService(userDetailsService);  
-        provider.setPasswordEncoder(new BCryptPasswordEncoder);  
-    }  
-      
-    @Bean  
-    @Override  
-    protected UserDetailsService userDetailsService() {  
-        List<UserDetails> users = new ArrayList<>();  
-        users.add(User.withDefaultParrwordEncoder()  
-            .username("alice")  
-            .password("1234")  
-            .rolses("USER")  
-            .build());  
-        return new InMemoryUserDetailsManager(users);  
-    }  
-}
-```
-Other JDBC-based approach (in the config class extending `WebSecurityConfigurerAdapter`) - is it safe against injection attack?
+Adding `spring-boot-starter-security` **secures every endpoint immediately**. You get a generated login page, HTTP Basic, and a user `user` whose random password is printed in the log.
 
-```Java
-@Autowired  
-DataSource dataSource;  
-  
-@Override  
-protected void configure(AuthenticationManagerBuilder auth) throws Exception {  
-    auth  
-        .jdbcAuthentication()  
-        .dataSource(dataSource);  
-            .usersByUsernameQuery(  
-                "select username, password, enabled from Users " +    
-                "where username=?")  
-            .authoritiesByUsernameQuery(  
-                "select username, authority from UserAuthorities " +  
-                "where username=?")  
-            .passwordEncoder(new StandardPasswordEncoder("53cr3t");  
+## The security filter chain
+Spring Security 6 style: configure `SecurityFilterChain` beans. `WebSecurityConfigurerAdapter` was removed in Spring Security 6; see the legacy section below.
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(jsr250Enabled = true)            // @PreAuthorize/@PostAuthorize; jsr250Enabled adds @RolesAllowed
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth             // the first matching rule wins, so put specific rules first
+                .requestMatchers("/signup", "/about").permitAll()
+                .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()   // Actuator
+                .requestMatchers(HttpMethod.PUT, "/appraisals/**").hasRole("APPRAISER")
+                .requestMatchers("/admin/**").hasAnyRole("HEAD_GOBLIN", "ADMIN")
+                .anyRequest().authenticated())
+            .httpBasic(withDefaults())                      // and/or:
+            .formLogin(form -> form.loginPage("/login").permitAll())
+            .logout(logout -> logout.logoutSuccessUrl("/home").permitAll());
+        return http.build();
+    }
+
+    @Bean
+    WebSecurityCustomizer ignoring() {                      // no security filters at all for these paths
+        return web -> web.ignoring().requestMatchers("/css/**", "/images/**");
+    }
+}
+```
+**Roles vs authorities:** `hasRole("ADMIN")` checks for the authority **`ROLE_ADMIN`**. `.roles("ADMIN")` adds the prefix for you, but `.authorities(...)` and your own `GrantedAuthority` implementations don't.
+
+## Method security
+```java
+@PreAuthorize("hasRole('DRAGON') and #hoard.owner.name == authentication.name")
+public Treasure findTreasure(Hoard hoard, long itemNo) { ... }
+
+@PostAuthorize("returnObject.owner == authentication.name")
+public Hoard getHoard(long number) { ... }
+
+@RolesAllowed("ADMIN")                                  // JSR-250 / Jakarta: same annotation as in Jakarta EE and Quarkus
+public void closeHoard(long number) { ... }
+```
+> **Compare:** `@RolesAllowed` works out of the box in Jakarta EE and Quarkus. Spring needs `jsr250Enabled = true`. SpEL expressions like `@PreAuthorize` have no standard Jakarta equivalent; Quarkus has `@PermissionsAllowed`.
+
+## Users
+**Password encoders:**
+```java
+PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+// stores "{bcrypt}$2a$10$...": the prefix records the algorithm, so you can migrate later
+```
+`BCryptPasswordEncoder` (the default, recommended), `Pbkdf2PasswordEncoder`, `SCryptPasswordEncoder`, `Argon2PasswordEncoder`. **Don't use** `NoOpPasswordEncoder` or the legacy `StandardPasswordEncoder`.
+
+**In memory** (demos and tests):
+```java
+@Bean
+InMemoryUserDetailsManager users(PasswordEncoder encoder) {
+    return new InMemoryUserDetailsManager(
+        User.withUsername("grizzlegut").password(encoder.encode("shiny")).roles("APPRAISER").build(),
+        User.withUsername("head-goblin").password(encoder.encode("shinier")).roles("ADMIN").build());
+}
+```
+**JDBC** (the standard `users`/`authorities` tables):
+```java
+@Bean
+UserDetailsManager users(DataSource dataSource) { return new JdbcUserDetailsManager(dataSource); }
+```
+**Custom store, for example with JPA.** Dependencies: `spring-boot-starter-data-jpa` plus a driver. You implement `UserDetailsService`:
+```java
+public interface GoblinRepository extends JpaRepository<Goblin, Long> {
+    Optional<Goblin> findByUsername(String username);
+}
+
+@Service
+public class GoblinUserDetailsService implements UserDetailsService {
+    private final GoblinRepository goblins;
+    public GoblinUserDetailsService(GoblinRepository goblins) { this.goblins = goblins; }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return goblins.findByUsername(username)
+            .map(GoblinPrincipal::new)
+            .orElseThrow(() -> new UsernameNotFoundException("No such goblin"));
+    }
+}
+
+public class GoblinPrincipal implements UserDetails {
+    private final Goblin goblin;
+    public GoblinPrincipal(Goblin goblin) { this.goblin = goblin; }
+    @Override public String getUsername() { return goblin.getUsername(); }
+    @Override public String getPassword() { return goblin.getPasswordHash(); }
+    @Override public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + goblin.getRole()));   // the ROLE_ prefix is needed for hasRole()
+    }
+}
+```
+A `UserDetailsService` bean plus a `PasswordEncoder` bean is enough; Boot wires up the `DaoAuthenticationProvider` for you.
+
+> **Compare:** this corresponds to a custom `IdentityStore` in Jakarta Security. In Quarkus it corresponds to `quarkus-security-jpa`, where you annotate the entity with `@UserDefinition`, `@Username`, `@Password` and `@Roles`, and there is no service to write.
+
+**LDAP:**
+```java
+@Bean
+EmbeddedLdapServerContextSourceFactoryBean contextSource() {     // embedded server, for development
+    return EmbeddedLdapServerContextSourceFactoryBean.fromEmbeddedLdapServer();
+}
+// real server instead: new DefaultSpringSecurityContextSource("ldap://ldap.dragonbank.example:389/dc=dragonbank,dc=example")
+
+@Bean
+AuthenticationManager ldapAuthenticationManager(BaseLdapPathContextSource contextSource) {
+    LdapPasswordComparisonAuthenticationManagerFactory factory =
+        new LdapPasswordComparisonAuthenticationManagerFactory(contextSource, new BCryptPasswordEncoder());
+    factory.setUserDnPatterns("uid={0},ou=goblins");
+    factory.setPasswordAttribute("passcode");
+    return factory.createAuthenticationManager();
 }
 ```
 
-`BCryptPasswordEncoder`— The strongest
-`NoOpPasswordEncoder`— Don't use
-`Pbkdf2PasswordEncoder`
-`SCryptPasswordEncoder`
-`StandardPasswordEncoder`
+## Legacy style (Spring Security 5.x and older)
+You will still see this in older code and books. `WebSecurityConfigurerAdapter` was deprecated in 5.7 and removed in 6.0:
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired DataSource dataSource;
 
-LDAP-based:  
-```Java
-@Override  
-protected void configure(AuthenticationManagerBuilder auth) throws Exception 
-{
-	auth.ldapAuthentication()  
-	    .userSearchBase("ou=people")  
-        .userSearchFilter("(uid={0})")  
-        .groupSearchBase("ou=groups")  
-        .groupSearchFilter("member={0}")  
-        .passwordCompare()  
-        .passwordEncoder(new BCryptPasswordEncoder())  
-        .passwordAttribute("passcode")  
-        .contextSource()  
-        .url("ldap://tacocloud.com:389/dc=tacocloud,dc=com");  
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("grizzlegut").password("{noop}shiny").authorities("ROLE_APPRAISER");
+        // or JDBC. The "?" placeholders are bound as PreparedStatement parameters, so this is safe against SQL injection:
+        auth.jdbcAuthentication().dataSource(dataSource)
+            .usersByUsernameQuery("SELECT username, password, enabled FROM goblins WHERE username = ?")
+            .authoritiesByUsernameQuery("SELECT username, authority FROM goblin_authorities WHERE username = ?")
+            .passwordEncoder(new BCryptPasswordEncoder());
+        // or LDAP
+        auth.ldapAuthentication()
+            .userSearchBase("ou=goblins").userSearchFilter("(uid={0})")
+            .groupSearchBase("ou=groups").groupSearchFilter("member={0}")
+            .passwordCompare().passwordEncoder(new BCryptPasswordEncoder()).passwordAttribute("passcode")
+            .and().contextSource().url("ldap://ldap.dragonbank.example:389/dc=dragonbank,dc=example");
+            // .root("dc=dragonbank,dc=example") for an embedded LDAP server
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated()
+            .and().httpBasic();
+    }
 }
 ```
-or
-```Java
-.root("dc=tacocloud,dc=com");  
-```
-when an embedded LDAP server is used
-
-Using OAuth2:
