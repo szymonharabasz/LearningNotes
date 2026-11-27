@@ -1,0 +1,108 @@
+deck: Spring
+source: Spring and Spring Boot/Spring AOP.md
+tag: spring-aop
+
+sections:
+  - section: Vocabulary
+    cards:
+      - id: aop-vocabulary
+        q: |-
+          AOP vocabulary: join point, pointcut, advice, aspect, weaving?
+        a: |-
+          **Join point:** a point in execution (in Spring AOP always a method execution). **Pointcut:** an expression selecting join points. **Advice:** the code run there. **Aspect:** groups pointcuts and advice. **Weaving:** combining them with the target code.
+      - id: aop-weaving-spring
+        q: |-
+          How does Spring AOP weave, compared to full AspectJ?
+        a: |-
+          At **runtime with proxies**. AspectJ weaves at compile or load time.
+      - id: aop-self-invocation
+        q: |-
+          Which call is never advised by Spring AOP, and which other annotations share this pitfall?
+        a: |-
+          A call to another method of the **same bean** (`this.foo()`), because it bypasses the proxy. Same for `@Transactional`, `@Cacheable`, `@Async`.
+
+  - section: Setup and aspects
+    cards:
+      - id: aop-setup
+        q: |-
+          How do you enable AOP in Spring Boot, and in plain Spring?
+        a: |-
+          Boot: `spring-boot-starter-aop`. Plain Spring: `spring-aspects` + `@EnableAspectJAutoProxy` on a `@Configuration`.
+      - id: aop-aspect-bean
+        q: |-
+          Your `@Aspect` class is never applied. A likely cause?
+        a: |-
+          It isn't a **bean**: add `@Component`.
+      - id: aop-around
+        prompt: |-
+          Write an around advice that logs the method name and result of `AppraisalService.appraise`.
+        cloze: |-
+          ```java
+          @{{c1::Around}}("execution(public * com.dragonbank.appraisal.AppraisalService.appraise(..))")
+          public Object audit({{c2::ProceedingJoinPoint}} jp) throws Throwable {
+              Object result = jp.{{c3::proceed()}};
+              log.info("{} returned {}", jp.getSignature().getName(), result);
+              return result;
+          }
+          ```
+      - id: aop-around-powers
+        q: |-
+          What can an `@Around` advice do that other advice types can't?
+        a: |-
+          Pass **modified arguments** (`jp.proceed(args)`), **skip** the call, or **return something else**.
+      - id: aop-order
+        q: |-
+          How do you order several aspects, and which runs outermost?
+        a: |-
+          `@Order(n)` on the aspect; the **lower** value runs first (outermost).
+
+  - section: Pointcut expressions
+    cards:
+      - id: aop-wildcards
+        q: |-
+          In pointcut expressions, what do `*` and `..` match?
+        a: |-
+          `*`: exactly **one** element (return type, package segment, class, method, argument). `..`: **zero or more** (packages, or arguments).
+      - id: aop-service-pointcut
+        prompt: |-
+          Pointcut: any public method of `*Service` classes in `com.dragonbank` or any sub-package.
+        cloze: |-
+          ```java
+          "execution(public * com.dragonbank{{c1::..}}*Service.*({{c2::..}}))"
+          ```
+      - id: aop-annotation-pointcut
+        q: |-
+          How do you select all methods annotated with `@Audited`, and what does the annotation need?
+        a: |-
+          `"@annotation(com.dragonbank.Audited)"`. The annotation needs **RUNTIME** retention.
+      - id: aop-within
+        q: |-
+          What does `within(com.dragonbank.appraisal..*)` select?
+        a: |-
+          All methods of the types in that package and its sub-packages.
+      - id: aop-subclasses-combine
+        q: |-
+          Does a class name in a pointcut match subclasses? How do you combine expressions?
+        a: |-
+          Yes, subclasses match too. Combine with `&&`, `||`, `!`.
+
+  - section: Other kinds of advice
+    cards:
+      - id: aop-after
+        q: |-
+          When does `@After` advice run?
+        a: |-
+          Like `finally`: after both success and failure. (`@AfterReturning` only on success, `@AfterThrowing` only on failure.)
+      - id: aop-afterreturning
+        prompt: |-
+          Get the return value in an after-returning advice.
+        cloze: |-
+          ```java
+          @AfterReturning(value = "@annotation(Audited)", {{c1::returning}} = "appraisal")
+          public void afterReturning(Appraisal appraisal) { ... }
+          ```
+      - id: aop-afterthrowing
+        q: |-
+          How can an aspect translate exceptions?
+        a: |-
+          `@AfterThrowing(value = "...", throwing = "ex")` with a parameter `DataAccessException ex`, and throw a different exception from it.

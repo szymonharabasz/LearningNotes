@@ -1,0 +1,35 @@
+deck: Spring
+source: Spring and Spring Boot/Validation.md
+tag: spring-validation
+
+sections:
+  - section: Validation
+    cards:
+      - id: sv-starter
+        q: |-
+          `@Valid` on a request body has no effect in a fresh Spring Boot 3 app. What's missing?
+        a: |-
+          `spring-boot-starter-validation`: since Boot 2.3 it isn't included in the web starter.
+      - id: sv-rest-400
+        q: |-
+          What happens when a `@Valid @RequestBody` argument is invalid?
+        a: |-
+          `MethodArgumentNotValidException` → **400**. Handle it in a `@RestControllerAdvice` for nicer errors.
+      - id: sv-binding-result
+        q: |-
+          How does an MVC form handler get validation errors instead of an exception?
+        a: |-
+          Add a `BindingResult`/`Errors` parameter **right after** the validated argument; the method is called anyway and checks `hasErrors()`.
+      - id: sv-validated
+        prompt: |-
+          Enable validation of method parameters on a Spring service.
+        cloze: |-
+          ```java
+          @Service
+          @{{c1::Validated}}
+          public class AppraisalService {
+              public Appraisal appraise(@NotNull @Positive Long treasureId) { ... }
+          }
+          ```
+        extra: |-
+          Violations throw `ConstraintViolationException`. Implemented with an AOP proxy, so self-invocation isn't validated.

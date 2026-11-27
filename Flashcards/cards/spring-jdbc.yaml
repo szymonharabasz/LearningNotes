@@ -1,0 +1,99 @@
+deck: Spring
+source: Spring and Spring Boot/JDBC in Spring.md
+tag: spring-jdbc
+
+sections:
+  - section: DataAccessException
+    cards:
+      - id: jdbc-dataaccessexception
+        q: |-
+          Why does Spring translate `SQLException` into `DataAccessException`?
+        a: |-
+          `SQLException` is **checked**, so every intermediate method would have to declare it. `DataAccessException` is **unchecked** and has a meaningful hierarchy (`DuplicateKeyException`, `EmptyResultDataAccessException`, `DataIntegrityViolationException`...).
+      - id: jdbc-repository-translation
+        q: |-
+          Which beans get exception translation automatically?
+        a: |-
+          `@Repository` beans.
+
+  - section: Data source
+    cards:
+      - id: jdbc-sql-init
+        q: |-
+          `schema.sql` / `data.sql` aren't run against your MariaDB. Which property is needed?
+        a: |-
+          `spring.sql.init.mode=always`. By default the scripts run only for **embedded** DBs. (Locations: `spring.sql.init.schema-locations` / `data-locations`.)
+      - id: jdbc-h2-console
+        q: |-
+          How do you enable the H2 web console, and where is it?
+        a: |-
+          `spring.h2.console.enabled=true`, at `/h2-console`.
+      - id: jdbc-pool
+        q: |-
+          Which connection pool does Spring Boot use by default? And Quarkus?
+        a: |-
+          **HikariCP** (`HikariDataSource`). Quarkus uses **Agroal**.
+
+  - section: JdbcTemplate
+    cards:
+      - id: jdbc-queryforobject
+        prompt: |-
+          Count the treasures, then load one by id with a row mapper.
+        cloze: |-
+          ```java
+          jdbc.{{c1::queryForObject}}("SELECT COUNT(*) FROM treasure", {{c2::Integer.class}});
+          jdbc.queryForObject("SELECT id, name, type FROM treasure WHERE id = ?", {{c3::this::mapRow}}, id);
+          ```
+      - id: jdbc-queryforobject-empty
+        q: |-
+          What does `queryForObject` do when there are 0 rows?
+        a: |-
+          Throws `EmptyResultDataAccessException` (and an exception for more than one row too).
+      - id: jdbc-query-update
+        q: |-
+          Which `JdbcTemplate` methods return a list of objects, and execute an INSERT/UPDATE?
+        a: |-
+          `jdbc.query(sql, rowMapper, args...)` → `List<T>`. `jdbc.update(sql, args...)` → number of affected rows.
+      - id: jdbc-queryformap
+        q: |-
+          `queryForMap` vs `queryForList` (without a type)?
+        a: |-
+          `queryForMap`: one row as `Map<String, Object>`. `queryForList`: `List<Map<String, Object>>`, one map per row.
+      - id: jdbc-queryforint
+        q: |-
+          What replaced `queryForInt`/`queryForLong`, and what newer API exists since Spring 6.1?
+        a: |-
+          `queryForObject(sql, Integer.class)`. Since 6.1, the fluent **`JdbcClient`**: `jdbcClient.sql("...").param(id).query(Treasure.class).single()`.
+      - id: jdbc-named-params
+        q: |-
+          Which class supports `:name` parameters?
+        a: |-
+          `NamedParameterJdbcTemplate`
+
+  - section: Callback types
+    cards:
+      - id: jdbc-callbacks
+        q: |-
+          `RowMapper` vs `ResultSetExtractor` vs `RowCallbackHandler`?
+        a: |-
+          **RowMapper** `mapRow(rs, rowNum)`: one object per row. **ResultSetExtractor** `extractData(rs)`: the whole result set to one object; you call `rs.next()` (good for joins). **RowCallbackHandler** `processRow(rs)`: processes rows, returns nothing.
+      - id: jdbc-join-extractor
+        q: |-
+          You need one `Hoard` with its many treasures from a JOIN. Which callback type, and why?
+        a: |-
+          `ResultSetExtractor<Hoard>`: it sees all rows, creates the hoard once and adds a treasure per row.
+
+  - section: SimpleJdbcInsert
+    cards:
+      - id: jdbc-simplejdbcinsert
+        prompt: |-
+          Insert a hoard and get the generated `number` key back.
+        cloze: |-
+          ```java
+          new {{c1::SimpleJdbcInsert}}(jdbc)
+              .withTableName("hoard")
+              .{{c2::usingGeneratedKeyColumns}}("number");
+          long number = hoardInserter.{{c3::executeAndReturnKey}}(values).longValue();
+          ```
+        extra: |-
+          The INSERT is built from table metadata; `values` is a column → value map.

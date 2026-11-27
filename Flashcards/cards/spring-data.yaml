@@ -1,0 +1,45 @@
+deck: Spring
+source: Spring and Spring Boot/Spring Data JPA.md
+tag: spring-data
+
+sections:
+  - section: Spring Data JPA
+    cards:
+      - id: sd-interface-only
+        q: |-
+          What do you write for a Spring Data JPA repository, and who implements it?
+        a: |-
+          **Only an interface** extending e.g. `JpaRepository<Hoard, Long>`; Spring generates the implementation at runtime.
+      - id: sd-derived-query
+        prompt: |-
+          Derived queries: hoards with more gold than a minimum, richest first; and a paged search by the dragon's cave kingdom.
+        cloze: |-
+          ```java
+          List<Hoard> {{c1::findByGoldCoinsGreaterThanOrderByGoldCoinsDesc}}(BigDecimal min);
+          Page<Hoard> {{c2::findByDragonCaveKingdom}}(String kingdom, {{c3::Pageable}} pageable);
+          ```
+      - id: sd-query
+        q: |-
+          How do you give a repository method an explicit JPQL query?
+        a: |-
+          `@Query("SELECT h FROM Hoard h WHERE h.goldCoins = 0")` on the method.
+      - id: sd-paging-crud
+        q: |-
+          Since Spring Data 3, your `PagingAndSortingRepository` has no `save()`. Why?
+        a: |-
+          It **no longer extends `CrudRepository`**. Extend both, or use `JpaRepository`.
+      - id: sd-repo-types
+        q: |-
+          Which repository base interfaces does Spring Data offer?
+        a: |-
+          `CrudRepository`, `ListCrudRepository`, `PagingAndSortingRepository`, `JpaRepository`.
+      - id: sd-ddl-auto
+        q: |-
+          What are the values of `spring.jpa.hibernate.ddl-auto`, and the default for embedded DBs?
+        a: |-
+          `none`, `validate`, `update`, `create`, `create-drop` (default for embedded DBs).
+      - id: sd-show-sql
+        q: |-
+          Which properties log formatted SQL in Spring Boot?
+        a: |-
+          `spring.jpa.show-sql=true` and `spring.jpa.properties.hibernate.format_sql=true`.

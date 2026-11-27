@@ -1,0 +1,106 @@
+deck: Spring
+source: Spring and Spring Boot/Testing Spring applications.md
+tag: spring-testing
+
+sections:
+  - section: Spring test context
+    cards:
+      - id: st-springjunitconfig
+        q: |-
+          What does `@SpringJUnitConfig(AppraisalTestConfig.class)` combine?
+        a: |-
+          `@ExtendWith(SpringExtension.class)` + `@ContextConfiguration(classes = AppraisalTestConfig.class)`.
+      - id: st-autowired-param
+        q: |-
+          Where can `@Autowired` go in tests that it can't go elsewhere?
+        a: |-
+          On **test method parameters**.
+      - id: st-context-cache
+        q: |-
+          What happens to the Spring context between test classes, and how do you force a fresh one?
+        a: |-
+          It is **cached** and reused for the same configuration. `@DirtiesContext` discards it (slow; use sparingly).
+      - id: st-testpropertysource
+        q: |-
+          How do you override properties and activate profiles for a test class?
+        a: |-
+          `@TestPropertySource(properties = {"appraisal.goblin-commission=0.5"}, locations = "...")` and `@ActiveProfiles({"jdbc", "dev"})`.
+
+  - section: SpringBootTest
+    cards:
+      - id: st-webenvironment
+        q: |-
+          What are the `webEnvironment` options of `@SpringBootTest`, and the default?
+        a: |-
+          `MOCK` (default, no real server), `RANDOM_PORT`, `DEFINED_PORT`, `NONE`.
+      - id: st-config-search
+        q: |-
+          How does `@SpringBootTest` find the configuration without `classes = ...`?
+        a: |-
+          It searches **up the package tree** for the `@SpringBootConfiguration` (the `@SpringBootApplication` class).
+      - id: st-testresttemplate
+        q: |-
+          How does `TestRestTemplate` differ from `RestTemplate`?
+        a: |-
+          Takes relative URLs and knows the random port. Does **not** throw on 4xx/5xx, doesn't follow redirects or keep cookies.
+
+  - section: MockMvc
+    cards:
+      - id: st-mockmvc-setup
+        q: |-
+          How do you get a `MockMvc` with a full `@SpringBootTest`?
+        a: |-
+          `@SpringBootTest` (webEnvironment `MOCK`) + `@AutoConfigureMockMvc`, then `@Autowired MockMvc`.
+      - id: st-mockmvc-perform
+        prompt: |-
+          MockMvc: GET treasure 100 as JSON and check the status and name.
+        cloze: |-
+          ```java
+          mockMvc.{{c1::perform}}(get("/treasures/{id}", 100).accept(MediaType.APPLICATION_JSON))
+              .andExpect({{c2::status().isOk()}})
+              .andExpect({{c3::jsonPath("$.name")}}.value("Crown"));
+          ```
+      - id: st-mockitobean
+        q: |-
+          How do you replace a bean in the Spring test context with a mock? What was it called before?
+        a: |-
+          `@MockitoBean`; formerly `@MockBean`, deprecated since Boot 3.4.
+      - id: st-static-imports
+        q: |-
+          Which classes provide MockMvc's `get`/`post` and `status`/`jsonPath`?
+        a: |-
+          `MockMvcRequestBuilders.*` and `MockMvcResultMatchers.*`.
+
+  - section: Slice tests
+    cards:
+      - id: st-webmvctest
+        q: |-
+          What does `@WebMvcTest(AppraisalController.class)` load?
+        a: |-
+          Only the MVC infrastructure and that controller, with MockMvc auto-configured. Mock its services with `@MockitoBean`.
+      - id: st-datajpatest
+        q: |-
+          What does `@DataJpaTest` load and configure?
+        a: |-
+          Only JPA: the repositories (no other `@Component`s), a `TestEntityManager`, an in-memory DB; every test is `@Transactional` (rolled back).
+
+  - section: Database scripts per test
+    cards:
+      - id: st-sql
+        prompt: |-
+          Run a cleanup script after the test method.
+        cloze: |-
+          ```java
+          @{{c1::Sql}}(scripts = "/testdata/cleanup.sql",
+               executionPhase = Sql.ExecutionPhase.{{c2::AFTER_TEST_METHOD}})
+          ```
+      - id: st-sql-class
+        q: |-
+          `@Sql` on the class and on a method: which runs?
+        a: |-
+          The class-level one runs before **each** test, unless the method has its own `@Sql`.
+      - id: st-sql-errormode
+        q: |-
+          What are the `@SqlConfig` error modes?
+        a: |-
+          `FAIL_ON_ERROR`, `CONTINUE_ON_ERROR`, `IGNORE_FAILED_DROPS`, `DEFAULT` (inherit class-level, otherwise fail).

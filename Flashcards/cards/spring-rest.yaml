@@ -1,0 +1,145 @@
+deck: Spring
+source: Spring and Spring Boot/REST with Spring Boot.md
+tag: spring-rest
+
+sections:
+  - section: Controllers
+    cards:
+      - id: rest-created
+        prompt: |-
+          Return 201 Created with a `Location` header from a `@PostMapping`.
+        cloze: |-
+          ```java
+          URI location = {{c1::ServletUriComponentsBuilder}}.fromCurrentRequestUri()
+              .path("/{id}").{{c2::buildAndExpand}}(a.id()).toUri();
+          return ResponseEntity.{{c3::created}}(location).body(a);
+          ```
+      - id: rest-responsestatus
+        q: |-
+          How do you make a `void` handler return 204 instead of 200?
+        a: |-
+          `@ResponseStatus(HttpStatus.NO_CONTENT)` on the method.
+      - id: rest-produces
+        q: |-
+          How do you declare which media types a Spring handler produces and consumes?
+        a: |-
+          Attributes of the mapping: `@GetMapping(path = "/{id}", produces = {...})`, `@PostMapping(consumes = "application/json")`.
+      - id: rest-responseentity
+        q: |-
+          How do you build a response with a custom status, header and body?
+        a: |-
+          `ResponseEntity.status(HttpStatus.ACCEPTED).header("X-Goblin-Mood", "grumpy").body(appraisal)` (also `ok()`, `badRequest()`, `notFound()`, `noContent()`).
+      - id: rest-xml
+        q: |-
+          How do you let clients request XML from a Spring REST controller?
+        a: |-
+          Add `jackson-dataformat-xml`; the client sends `Accept: application/xml`.
+      - id: rest-json-lib
+        q: |-
+          Which library handles JSON in Spring, Jakarta EE and Quarkus?
+        a: |-
+          Spring: **Jackson**. Jakarta EE: **JSON-B**. Quarkus: either.
+
+  - section: Error handling
+    cards:
+      - id: rest-controlleradvice
+        q: |-
+          `@ExceptionHandler` in a controller vs in a `@RestControllerAdvice`?
+        a: |-
+          In a controller it handles exceptions of **that controller only**; in a `@RestControllerAdvice` it's **global**.
+      - id: rest-exceptionhandler
+        prompt: |-
+          Globally map `TreasureNotFoundException` to 404 with an error body.
+        cloze: |-
+          ```java
+          @{{c1::RestControllerAdvice}}
+          public class AppraisalErrors {
+              @{{c2::ExceptionHandler}}(TreasureNotFoundException.class)
+              public ResponseEntity<ErrorDetails> notFound(TreasureNotFoundException ex) {
+                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDetails(ex.getMessage()));
+              }
+          }
+          ```
+      - id: rest-problemdetail
+        q: |-
+          What standard error format does Spring 6 support, and how is it enabled?
+        a: |-
+          **RFC 7807 Problem Details**: `ProblemDetail`, `ErrorResponseException`, `spring.mvc.problemdetails.enabled=true`.
+
+  - section: Spring HATEOAS
+    cards:
+      - id: rest-hateoas-link
+        prompt: |-
+          Add a self link to an appraisal, built from the controller method.
+        cloze: |-
+          ```java
+          appraisal.add({{c1::linkTo}}({{c2::methodOn}}(AppraisalController.class).one(appraisal.getId())).{{c3::withSelfRel()}});
+          ```
+        extra: |-
+          The class extends `RepresentationModel<Appraisal>`.
+      - id: rest-assembler
+        q: |-
+          What is a HATEOAS model assembler for?
+        a: |-
+          A `RepresentationModelAssembler<Appraisal, EntityModel<Appraisal>>` whose `toModel` wraps the object in `EntityModel.of(a, links...)`, keeping link building **out of the controller**.
+
+  - section: Spring Data REST
+    cards:
+      - id: rest-data-rest
+        q: |-
+          What does Spring Data REST do, and where is a derived finder exposed?
+        a: |-
+          Exposes repositories as HAL/REST resources with **no controller** (`@RepositoryRestResource(path = "treasures")`). `findByType(@Param("type") ...)` → `GET /api/treasures/search/findByType?type=GEM`.
+      - id: rest-data-rest-base
+        q: |-
+          How do you put Spring Data REST resources under `/api`?
+        a: |-
+          `spring.data.rest.base-path=/api`
+
+  - section: Calling other services
+    cards:
+      - id: rest-resttemplate-status
+        q: |-
+          What's the status of `RestTemplate`, and what's recommended instead?
+        a: |-
+          **Maintenance mode**. Use `RestClient` (fluent, synchronous; Spring 6.1+) or `WebClient` (reactive).
+      - id: rest-getforobject-entity
+        q: |-
+          `getForObject` vs `getForEntity`?
+        a: |-
+          `getForObject` returns the body. `getForEntity` returns a `ResponseEntity` with status, headers and body.
+      - id: rest-exchange
+        q: |-
+          When do you use `RestTemplate.exchange`?
+        a: |-
+          For full control: any HTTP method, custom headers (`new HttpEntity<>(body, headers)` or a `RequestEntity`), and the full `ResponseEntity`.
+      - id: rest-interceptor
+        prompt: |-
+          Add a correlation id header to every `RestTemplate` request.
+        cloze: |-
+          ```java
+          public class CorrelationIdInterceptor implements {{c1::ClientHttpRequestInterceptor}} {
+              public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
+                  request.getHeaders().add("X-Correlation-Id", CorrelationContext.current());
+                  return execution.{{c2::execute(request, body)}};
+              }
+          }
+          template.{{c3::getInterceptors()}}.add(new CorrelationIdInterceptor());
+          ```
+      - id: rest-webclient
+        prompt: |-
+          `WebClient`: POST an appraisal request and get the result as a `Mono`.
+        cloze: |-
+          ```java
+          webClient.post().uri("/appraisals")
+              .{{c1::bodyValue}}(request)
+              .{{c2::retrieve()}}
+              .{{c3::bodyToMono}}(Appraisal.class);
+          ```
+        extra: |-
+          With `retrieve()`, 4xx/5xx become `WebClientResponseException`. `bodyToFlux` for streams.
+      - id: rest-resttemplatebuilder
+        q: |-
+          How should you create a `RestTemplate` / `WebClient` in Spring Boot to get its auto-configuration?
+        a: |-
+          From the injected `RestTemplateBuilder` / `WebClient.Builder`.

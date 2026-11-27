@@ -1,0 +1,102 @@
+deck: Spring
+source: Spring and Spring Boot/Spring MVC.md
+tag: spring-mvc
+
+sections:
+  - section: Controllers and request mappings
+    cards:
+      - id: mvc-restcontroller
+        q: |-
+          `@Controller` vs `@RestController`?
+        a: |-
+          `@RestController` = `@Controller` + `@ResponseBody` on every method: return values are the response body, not view names.
+      - id: mvc-dispatcherservlet
+        q: |-
+          What is Spring MVC's `DispatcherServlet`?
+        a: |-
+          A normal servlet acting as the **front controller**: it dispatches requests to handler methods.
+      - id: mvc-prg
+        q: |-
+          What should a form POST handler return, and why?
+        a: |-
+          A redirect, e.g. `"redirect:/appraisals/confirmation"` (**Post/Redirect/Get**), so reloading doesn't resubmit.
+      - id: mvc-injectable-params
+        q: |-
+          Which parameter types can Spring inject into handler methods?
+        a: |-
+          `HttpServletRequest`, `HttpSession`, `Principal`, `Locale`, `Model`, `Errors`/`BindingResult`, ...
+
+  - section: Request data
+    cards:
+      - id: mvc-requestparam
+        prompt: |-
+          Read an optional `coins` parameter and a `bribe` parameter defaulting to 0.
+        cloze: |-
+          ```java
+          @RequestParam({{c1::required = false}}) Integer coins,
+          @RequestParam({{c2::defaultValue = "0"}}) int bribe
+          ```
+      - id: mvc-primitive-optional
+        q: |-
+          `@RequestParam(required = false) int coins` fails when the parameter is missing. Why?
+        a: |-
+          `null` can't be assigned to a primitive. Use `Integer`, `Optional<Integer>` or `defaultValue`.
+      - id: mvc-parameters-flag
+        q: |-
+          When can you omit the name in `@RequestParam` / `@PathVariable`?
+        a: |-
+          When the method parameter has the same name and the code is compiled with **`-parameters`** (Spring Boot's build plugins enable it).
+      - id: mvc-required-default
+        q: |-
+          Are `@RequestParam` parameters required by default?
+        a: |-
+          Yes (`required = true`). In JAX-RS a missing parameter is just `null`.
+
+  - section: Model and view
+    cards:
+      - id: mvc-model-variants
+        q: |-
+          What are the ways to pass model data to a view?
+        a: |-
+          A `Model` parameter + returning the view name; returning a `ModelAndView`; or (avoid) request/session attributes via the servlet API.
+      - id: mvc-modelattribute-name
+        q: |-
+          Under what name is `@ModelAttribute AppraisalForm form` available to the view?
+        a: |-
+          `appraisalForm`: the class name with a lowercase first letter (unless named explicitly).
+
+  - section: Validating forms
+    cards:
+      - id: mvc-valid-errors
+        prompt: |-
+          Validate a form and show it again on errors.
+        cloze: |-
+          ```java
+          public String appraise(@Valid AppraisalForm appraisalForm, {{c1::Errors errors}}) {
+              if (errors.{{c2::hasErrors()}}) return "appraisal-form";
+              ...
+          }
+          ```
+
+  - section: Views
+    cards:
+      - id: mvc-jsp-prefix
+        q: |-
+          Which properties configure JSP views, and why put them under `WEB-INF`?
+        a: |-
+          `spring.mvc.view.prefix=/WEB-INF/views/`, `spring.mvc.view.suffix=.jsp`. Under `WEB-INF` the pages can't be requested directly.
+      - id: mvc-jsp-boot
+        q: |-
+          JSPs aren't compiled in a Spring Boot app. What's missing?
+        a: |-
+          The `tomcat-embed-jasper` dependency. (Also put `<%@ page isELIgnored="false" %>` on the page to be safe.)
+      - id: mvc-view-controller
+        q: |-
+          How do you map `/` straight to the view `home` without a controller method?
+        a: |-
+          In a `WebMvcConfigurer`: `registry.addViewController("/").setViewName("home")` in `addViewControllers`.
+      - id: mvc-without-boot
+        q: |-
+          Without Spring Boot, how is the `DispatcherServlet` configured, and which config file does it load by convention?
+        a: |-
+          Declared in `web.xml`; it loads `WEB-INF/<servlet-name>-servlet.xml` (with `component-scan` and an `InternalResourceViewResolver`).

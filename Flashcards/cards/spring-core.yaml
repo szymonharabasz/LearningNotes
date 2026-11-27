@@ -1,0 +1,143 @@
+deck: Spring
+source: Spring and Spring Boot/Spring core and Spring Boot.md
+tag: spring-core
+
+sections:
+  - section: Application class
+    cards:
+      - id: spc-springbootapplication
+        q: |-
+          Which three annotations does `@SpringBootApplication` combine?
+        a: |-
+          `@SpringBootConfiguration` (a `@Configuration`), `@EnableAutoConfiguration`, `@ComponentScan`.
+      - id: spc-component-scan-root
+        q: |-
+          Why put the application class in the root package?
+        a: |-
+          `@ComponentScan` scans the **package of the application class and its sub-packages**.
+      - id: spc-exclude-autoconfig
+        q: |-
+          How do you switch off one auto-configuration, e.g. `DataSourceAutoConfiguration`?
+        a: |-
+          `@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)` (also on `@SpringBootApplication`), or `spring.autoconfigure.exclude=...` in properties.
+
+  - section: Beans and dependency injection
+    cards:
+      - id: spc-stereotypes
+        q: |-
+          Which stereotype annotations mark Spring beans, and which one adds a feature?
+        a: |-
+          `@Component`, `@Service`, `@Controller`, `@Repository`. `@Repository` adds **exception translation** (to `DataAccessException`).
+      - id: spc-single-constructor
+        q: |-
+          Does a bean with a single constructor need `@Autowired`?
+        a: |-
+          No: a single constructor is used for injection automatically.
+      - id: spc-bean-init-destroy
+        prompt: |-
+          Declare a `@Bean` with init and destroy methods (alternative to `@PostConstruct`/`@PreDestroy`).
+        cloze: |-
+          ```java
+          @Bean({{c1::initMethod}} = "warmUp", {{c2::destroyMethod}} = "shutdown")
+          GoblinAbacus abacus() { return new GoblinAbacus(); }
+          ```
+      - id: spc-several-candidates
+        q: |-
+          Several beans match an injection point. What are the two ways to resolve it?
+        a: |-
+          `@Qualifier("fireproof")` at the injection point, or `@Primary` on the preferred bean.
+      - id: spc-jakarta-annotations
+        q: |-
+          Which JSR-330 / Jakarta annotations does Spring also understand?
+        a: |-
+          `@Inject`, `@Named`, `@PostConstruct`, `@PreDestroy`.
+      - id: spc-eager
+        q: |-
+          When are Spring singletons created? How do you change that?
+        a: |-
+          **Eagerly at startup**, unless annotated `@Lazy`.
+
+  - section: Scopes
+    cards:
+      - id: spc-scopes
+        q: |-
+          What are the Spring bean scopes, and which is the default?
+        a: |-
+          singleton (default), `@Scope("prototype")`, `@RequestScope`, `@SessionScope`, `@ApplicationScope` (per `ServletContext`).
+      - id: spc-prototype
+        q: |-
+          What does the `prototype` scope mean?
+        a: |-
+          A **new instance** every time the bean is injected or requested.
+
+  - section: Configuration
+    cards:
+      - id: spc-value-default
+        prompt: |-
+          Inject a property with a default value of 0.05.
+        cloze: |-
+          ```java
+          @Value("{{c1::${appraisal.goblin-commission:0.05} }}")
+          BigDecimal commission;
+          ```
+      - id: spc-configprops-enable
+        q: |-
+          A `@ConfigurationProperties(prefix = "appraisal")` record isn't populated. What enables it?
+        a: |-
+          `@ConfigurationPropertiesScan` or `@EnableConfigurationProperties(AppraisalProperties.class)`.
+      - id: spc-profile-activate
+        q: |-
+          What are three ways to activate the `dev` profile, and what does it load?
+        a: |-
+          `spring.profiles.active=dev`, `-Dspring.profiles.active=dev`, `SPRING_PROFILES_ACTIVE=dev`. It loads `application-dev.properties` on top of `application.properties`.
+      - id: spc-profile-bean
+        q: |-
+          How do you register a bean only in the `dev` profile?
+        a: |-
+          `@Profile("dev")`
+      - id: spc-logging-level
+        q: |-
+          How do you set the log level for one package in Spring Boot?
+        a: |-
+          `logging.level.com.dragonbank=DEBUG` (and `logging.level.root=WARN` for everything else).
+      - id: spc-relaxed-binding
+        q: |-
+          Which environment variable sets `appraisal.goblin-commission`?
+        a: |-
+          `APPRAISAL_GOBLIN_COMMISSION` (relaxed binding: dots and dashes become `_`, uppercase).
+
+  - section: Internationalization
+    cards:
+      - id: spc-messagesource
+        q: |-
+          Which beans do you define for i18n messages in Spring, and what does `setUseCodeAsDefaultMessage(true)` do?
+        a: |-
+          A `LocaleResolver` (e.g. `SessionLocaleResolver`) and a `ResourceBundleMessageSource` with `setBasenames("messages")`. The flag shows the **key** when a translation is missing.
+      - id: spc-getmessage
+        q: |-
+          How do you resolve a message with arguments for the request's locale?
+        a: |-
+          Take `@RequestHeader(value = "Accept-Language", required = false) Locale locale`, then `messageSource.getMessage("appraisal.done", new Object[]{id, value}, locale)`. A `null` locale means the server default.
+
+  - section: Running and packaging
+    cards:
+      - id: spc-commandlinerunner
+        q: |-
+          How do you run some code once after the application has started?
+        a: |-
+          A `@Bean CommandLineRunner` (`args -> ...`).
+      - id: spc-uber-jar
+        q: |-
+          How do you build an executable JAR with Maven and with Gradle?
+        a: |-
+          Maven: `spring-boot-maven-plugin` + `mvn package`. Gradle: `gradle bootJar` (also run by `build`).
+      - id: spc-devtools
+        q: |-
+          What does `spring-boot-devtools` give you?
+        a: |-
+          Automatic restarts and LiveReload in development (runtime scope, dev only).
+      - id: spc-war
+        q: |-
+          How do you deploy a Spring Boot app as a WAR to an external servlet container?
+        a: |-
+          Extend `SpringBootServletInitializer` and override `configure(builder)` to return `builder.sources(App.class)`. `main()` isn't called there; keep it for a hybrid WAR.

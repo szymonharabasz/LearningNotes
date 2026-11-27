@@ -1,0 +1,205 @@
+deck: Spring Security
+source: Spring and Spring Boot/Spring Security/Spring Boot Security.md
+tag: spring-security
+
+sections:
+  - section: Basics and the filter chain
+    cards:
+      - id: ss-starter-default
+        q: |-
+          What happens as soon as you add `spring-boot-starter-security`?
+        a: |-
+          **Every endpoint is secured**: a generated login page, HTTP Basic, and a user `user` with a random password printed in the log.
+      - id: ss-filter-chain
+        prompt: |-
+          Spring Security 6: allow `/signup` to everyone, require `APPRAISER` for PUT on appraisals, authenticate everything else, with HTTP Basic.
+        cloze: |-
+          ```java
+          @Bean
+          {{c1::SecurityFilterChain}} filterChain(HttpSecurity http) throws Exception {
+              http.{{c2::authorizeHttpRequests}}(auth -> auth
+                      .requestMatchers("/signup").{{c3::permitAll()}}
+                      .requestMatchers(HttpMethod.PUT, "/appraisals/**").{{c4::hasRole("APPRAISER")}}
+                      .anyRequest().authenticated())
+                  .httpBasic(withDefaults());
+              return http.{{c5::build()}};
+          }
+          ```
+      - id: ss-rule-order
+        q: |-
+          In `authorizeHttpRequests`, which rule applies when several match?
+        a: |-
+          The **first** matching rule wins, so put specific rules before general ones.
+      - id: ss-adapter-removed
+        q: |-
+          What replaced `WebSecurityConfigurerAdapter`, and when was it removed?
+        a: |-
+          `SecurityFilterChain` beans (and `UserDetailsService`/`AuthenticationManager` beans). Deprecated in 5.7, **removed in 6.0**.
+      - id: ss-ignoring
+        q: |-
+          How do you skip **all** security filters for static resources?
+        a: |-
+          A `WebSecurityCustomizer` bean: `web -> web.ignoring().requestMatchers("/css/**", "/images/**")`.
+      - id: ss-role-prefix
+        q: |-
+          `hasRole("ADMIN")` fails although your custom `GrantedAuthority` is `ADMIN`. Why?
+        a: |-
+          `hasRole("ADMIN")` checks for **`ROLE_ADMIN`**. `.roles(...)` adds the prefix for you; `.authorities(...)` and custom authorities don't.
+      - id: ss-enable-method-security
+        q: |-
+          How do you enable `@PreAuthorize` and `@RolesAllowed`?
+        a: |-
+          `@EnableMethodSecurity` (enables `@PreAuthorize`/`@PostAuthorize`); `jsr250Enabled = true` adds `@RolesAllowed`.
+
+  - section: Method security
+    cards:
+      - id: ss-preauthorize
+        prompt: |-
+          Allow only dragons to read a treasure, and only from their own hoard.
+        cloze: |-
+          ```java
+          @{{c1::PreAuthorize}}("hasRole('DRAGON') and {{c2::#hoard}}.owner.name == {{c3::authentication.name}}")
+          public Treasure findTreasure(Hoard hoard, long itemNo) { ... }
+          ```
+      - id: ss-postauthorize
+        q: |-
+          How do you check the **returned** object in method security?
+        a: |-
+          `@PostAuthorize("returnObject.owner == authentication.name")`
+
+  - section: Users
+    cards:
+      - id: ss-delegating-encoder
+        q: |-
+          What does `PasswordEncoderFactories.createDelegatingPasswordEncoder()` store, and why?
+        a: |-
+          `{bcrypt}$2a$10$...`: the **prefix records the algorithm**, so you can migrate to another one later.
+      - id: ss-encoders
+        q: |-
+          Which password encoders are recommended, and which must you avoid?
+        a: |-
+          `BCryptPasswordEncoder` (default), `Pbkdf2`, `SCrypt`, `Argon2`. Avoid `NoOpPasswordEncoder` and legacy `StandardPasswordEncoder`.
+      - id: ss-inmemory
+        q: |-
+          How do you define in-memory users in Spring Security 6?
+        a: |-
+          A `@Bean InMemoryUserDetailsManager` with `User.withUsername("grizzlegut").password(encoder.encode("shiny")).roles("APPRAISER").build()`.
+      - id: ss-jdbc-users
+        q: |-
+          What does `JdbcUserDetailsManager` expect?
+        a: |-
+          The standard `users` and `authorities` tables.
+      - id: ss-userdetailsservice
+        q: |-
+          What do you need for users stored with JPA?
+        a: |-
+          Implement `UserDetailsService.loadUserByUsername` (throwing `UsernameNotFoundException`), returning a `UserDetails`. With a `PasswordEncoder` bean, Boot wires up the `DaoAuthenticationProvider`.
+      - id: ss-userdetails-authorities
+        q: |-
+          In a custom `UserDetails.getAuthorities()`, how must role names look for `hasRole()`?
+        a: |-
+          With the prefix: `new SimpleGrantedAuthority("ROLE_" + goblin.getRole())`.
+      - id: ss-ldap
+        q: |-
+          How do you authenticate against LDAP in Spring Security 6 (password comparison)?
+        a: |-
+          An `AuthenticationManager` from `LdapPasswordComparisonAuthenticationManagerFactory(contextSource, encoder)` with `setUserDnPatterns("uid={0},ou=goblins")` and `setPasswordAttribute(...)`. For development: `EmbeddedLdapServerContextSourceFactoryBean`.
+
+  - section: Legacy style
+    cards:
+      - id: ss-legacy-configure
+        q: |-
+          In the legacy `WebSecurityConfigurerAdapter`, which two methods did you override?
+        a: |-
+          `configure(AuthenticationManagerBuilder auth)` for users (`inMemoryAuthentication()`, `jdbcAuthentication()`, `ldapAuthentication()`), and `configure(HttpSecurity http)` for URL rules (`authorizeRequests().antMatchers(...)`).
+      - id: ss-legacy-noop
+        q: |-
+          What does `{noop}` mean in `.password("{noop}shiny")`?
+        a: |-
+          The password is stored **in plain text** (no encoding), for the delegating encoder.
+      - id: ss-legacy-jdbc-queries
+        q: |-
+          Legacy `jdbcAuthentication()`: which two queries can you customize, and are they safe against SQL injection?
+        a: |-
+          `usersByUsernameQuery` and `authoritiesByUsernameQuery`. Yes: the `?` placeholders are bound as `PreparedStatement` parameters.
+
+  - section: OAuth2 resource server
+    source: Spring and Spring Boot/Spring Security/Using OAuth2.md
+    cards:
+      - id: ss-resource-server
+        prompt: |-
+          Accept JWT bearer tokens from Keycloak in a REST API.
+        cloze: |-
+          ```properties
+          spring.security.oauth2.resourceserver.jwt.{{c1::issuer-uri}}=http://localhost:9080/realms/dragonbank-realm
+          ```
+          ```java
+          http.authorizeHttpRequests(a -> a.anyRequest().authenticated())
+              .{{c2::oauth2ResourceServer}}(o -> o.{{c3::jwt}}(withDefaults()))
+              .csrf(csrf -> csrf.disable());
+          ```
+      - id: ss-resource-server-dep
+        q: |-
+          Which dependency is needed for a resource server vs an OIDC login web app?
+        a: |-
+          `spring-boot-starter-oauth2-resource-server` vs `spring-boot-starter-oauth2-client`.
+      - id: ss-csrf-api
+        q: |-
+          Why is CSRF protection usually disabled for a resource server?
+        a: |-
+          It's a **stateless** API authenticated with bearer tokens, not session cookies.
+      - id: ss-authenticationprincipal
+        q: |-
+          How does a controller get the claims of the caller's JWT?
+        a: |-
+          `@AuthenticationPrincipal Jwt jwt`, then `jwt.getClaims()`.
+      - id: ss-default-authorities
+        q: |-
+          Which authorities does a Spring resource server derive from a JWT by default? What about Keycloak realm roles?
+        a: |-
+          The `scope` claim → `SCOPE_xxx` authorities. Realm roles (`realm_access.roles`) need a custom `JwtAuthenticationConverter`.
+
+  - section: OIDC login
+    source: Spring and Spring Boot/Spring Security/Using OAuth2.md
+    cards:
+      - id: ss-oauth2-login
+        q: |-
+          How do you make users sign in at Keycloak in a Spring web app?
+        a: |-
+          `spring.security.oauth2.client.registration.keycloak.client-id/client-secret/scope` + `provider.keycloak.issuer-uri`, and `http.oauth2Login(withDefaults())`.
+      - id: ss-oauth2-legacy
+        q: |-
+          Which two legacy OAuth2/Keycloak approaches will you meet in older books?
+        a: |-
+          `spring-security-oauth2-autoconfigure` + `@EnableOAuth2Sso` (Boot 1.5/2.x), and the Keycloak Spring adapter `keycloak-spring-boot-starter` (deprecated in 2022).
+      - id: ss-keycloak-adapter-roles
+        q: |-
+          Keycloak adapter: what did `SimpleAuthorityMapper` do?
+        a: |-
+          Added the `ROLE_` prefix to Keycloak roles (set as `GrantedAuthoritiesMapper` on the `KeycloakAuthenticationProvider`).
+      - id: ss-token-propagation
+        q: |-
+          How do you propagate the caller's token to other services today?
+        a: |-
+          An OAuth2-aware `WebClient`/`RestClient` (`ServletOAuth2AuthorizedClientExchangeFilterFunction`) or a client interceptor. (Legacy: `KeycloakRestTemplate`.)
+
+  - section: Self-signed SSL certificate
+    source: Spring and Spring Boot/Spring Security/Self-signed SSL certificate.md
+    cards:
+      - id: ss-openssl
+        q: |-
+          How do you create a self-signed certificate packaged as PKCS#12?
+        a: |-
+          ```shell
+          openssl req -newkey rsa:2048 -x509 -keyout key.pem -out cert.pem -days 365
+          openssl pkcs12 -export -in cert.pem -inkey key.pem -out dragonbank.p12 -name "dragonbank"
+          ```
+      - id: ss-server-ssl
+        prompt: |-
+          Enable HTTPS in Spring Boot with `dragonbank.p12` from the classpath.
+        cloze: |-
+          ```properties
+          server.ssl.{{c1::key-store-type}}=PKCS12
+          server.ssl.{{c2::key-store}}=classpath:dragonbank.p12
+          server.ssl.key-store-password=12345
+          ```

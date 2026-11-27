@@ -1,0 +1,47 @@
+deck: Spring
+source: Spring and Spring Boot/Thymeleaf.md
+tag: thymeleaf
+
+sections:
+  - section: Thymeleaf
+    cards:
+      - id: th-prototype
+        q: |-
+          Why can Thymeleaf templates be opened in a browser directly?
+        a: |-
+          They are plain HTML with `th:` attributes; the placeholder content is shown statically and replaced when rendered.
+      - id: th-cache
+        q: |-
+          Template changes don't show up without restarting. Which property?
+        a: |-
+          `spring.thymeleaf.cache=false`
+      - id: th-url-vs-var
+        q: |-
+          What's the difference between `@{...}` and `${...}`?
+        a: |-
+          `@{/styles.css}`: a URL relative to the **context path**. `${treasure.name}`: a **model attribute** expression.
+      - id: th-each-if
+        prompt: |-
+          Loop over treasures and show "cursed!" only for cursed ones.
+        cloze: |-
+          ```html
+          <div {{c1::th:each}}="t : ${treasures}">
+              <span th:text="${t.name}">NAME</span>
+              <span {{c2::th:if}}="${t.cursed}">cursed!</span>
+          </div>
+          ```
+      - id: th-object-field
+        prompt: |-
+          Bind a form to `appraisalForm` and show the error for `coins`.
+        cloze: |-
+          ```html
+          <form method="POST" th:action="@{/appraisals}" {{c1::th:object}}="${appraisalForm}">
+              <input type="text" {{c2::th:field}}="{{c3::*{coins} }}"/>
+              <span th:if="${#fields.hasErrors('coins')}" th:errors="*{coins}"></span>
+          </form>
+          ```
+      - id: th-selection
+        q: |-
+          Inside a `th:object`, what do `*{name}` and `#object` refer to?
+        a: |-
+          `*{name}`: a property of the selected object. `#object`: the selected object itself.

@@ -1,0 +1,77 @@
+deck: Spring
+source: Spring and Spring Boot/Transactions in Spring.md
+tag: spring-tx
+
+sections:
+  - section: Transactions in Spring
+    cards:
+      - id: stx-two-annotations
+        q: |-
+          Which `@Transactional` annotations does Spring accept, and what does its own one add?
+        a: |-
+          `jakarta.transaction.Transactional` (JTA) and `org.springframework...Transactional`, which adds `readOnly`, `timeout`, `isolation`, `NESTED` propagation and `transactionManager`.
+      - id: stx-rollback-default
+        q: |-
+          Which exceptions roll back a Spring transaction by default?
+        a: |-
+          **Unchecked** ones; checked exceptions don't (same as JTA and EJB).
+      - id: stx-rollbackfor
+        prompt: |-
+          Spring: also roll back on the checked `AppraisalDisputedException`, but not on `GoblinTypoException`.
+        cloze: |-
+          ```java
+          @Transactional({{c1::rollbackFor}} = AppraisalDisputedException.class,
+                         {{c2::noRollbackFor}} = GoblinTypoException.class)
+          ```
+        extra: |-
+          JTA spells these `rollbackOn` / `dontRollbackOn`.
+      - id: stx-setup
+        q: |-
+          Without Spring Boot, what do you need for `@Transactional` to work?
+        a: |-
+          `@EnableTransactionManagement` and a `PlatformTransactionManager` bean (`DataSourceTransactionManager`, `JpaTransactionManager`, `JmsTransactionManager`, `JtaTransactionManager`).
+      - id: stx-local-vs-jta
+        q: |-
+          What kind of transaction does Spring use by default, vs a Jakarta EE server?
+        a: |-
+          Spring: a **local** (resource) transaction unless `JtaTransactionManager` is configured. A Jakarta EE server always uses **JTA**.
+      - id: stx-nested
+        q: |-
+          What does Spring-only `Propagation.NESTED` do?
+        a: |-
+          Creates a **savepoint** inside the current transaction; rolling back the nested part doesn't roll back the outer one.
+      - id: stx-required-requiresnew
+        q: |-
+          `REQUIRED` vs `REQUIRES_NEW`?
+        a: |-
+          `REQUIRED` (default): join the current transaction or start one. `REQUIRES_NEW`: **suspend** the current one and start a new one.
+      - id: stx-self-invocation
+        q: |-
+          A `@Transactional` method calls a `REQUIRES_NEW` method in the same class. What happens?
+        a: |-
+          The call bypasses the proxy, so `REQUIRES_NEW` is **ignored** and the inner method runs in the outer transaction.
+      - id: stx-class-level
+        q: |-
+          `@Transactional` on a class vs on a method?
+        a: |-
+          On a class it applies to all public methods; method-level settings override it.
+      - id: stx-programmatic
+        q: |-
+          How do you manage a Spring transaction programmatically (two ways)?
+        a: |-
+          `transactionManager.getTransaction(new DefaultTransactionDefinition())`, then `commit(status)` / `rollback(status)`. More convenient: `transactionTemplate.execute(status -> ...)`.
+      - id: stx-datasourceutils
+        q: |-
+          How do you get the JDBC connection bound to the current Spring transaction?
+        a: |-
+          `DataSourceUtils.getConnection(dataSource)`
+      - id: stx-tests
+        q: |-
+          What happens to a `@Transactional` test method's DB changes, and how do you keep them?
+        a: |-
+          They're **rolled back** after the test. Keep them with `@Commit` (or `@Rollback(false)`).
+      - id: stx-tests-random-port
+        q: |-
+          A `@Transactional` `@SpringBootTest(webEnvironment = RANDOM_PORT)` test leaves data behind. Why?
+        a: |-
+          The HTTP request is handled in a **server thread** with its own transaction, so the test's rollback doesn't affect it.

@@ -1,0 +1,66 @@
+deck: Spring
+source: Spring and Spring Boot/Spring Boot Actuator.md
+tag: actuator
+
+sections:
+  - section: Spring Boot Actuator
+    cards:
+      - id: act-exposure
+        q: |-
+          `/actuator/metrics` returns 404. Why, and how do you fix it?
+        a: |-
+          Only `health` is exposed over HTTP by default. `management.endpoints.web.exposure.include=health,info,metrics,prometheus`.
+      - id: act-show-details
+        q: |-
+          How do you show health details only to authorized users?
+        a: |-
+          `management.endpoint.health.show-details=when-authorized`
+      - id: act-probes
+        q: |-
+          How do you enable `/actuator/health/liveness` and `/readiness`?
+        a: |-
+          `management.endpoint.health.probes.enabled=true` (on automatically in Kubernetes).
+      - id: act-health-indicator
+        prompt: |-
+          Write a custom health indicator for the furnace.
+        cloze: |-
+          ```java
+          @Component
+          public class FurnaceHealthIndicator implements {{c1::HealthIndicator}} {
+              public Health health() {
+                  return furnaceIsHot() ? Health.{{c2::up()}}.withDetail("temperatureC", 1200).build()
+                                        : Health.down().build();
+              }
+          }
+          ```
+      - id: act-indicator-name
+        q: |-
+          Under what name does `FurnaceHealthIndicator` appear in `/actuator/health`?
+        a: |-
+          `furnace`: the bean name without `HealthIndicator`.
+      - id: act-timer
+        prompt: |-
+          Time each appraisal and record its value with Micrometer.
+        cloze: |-
+          ```java
+          Timer timer = registry.{{c1::timer}}("appraisals.duration");
+          DistributionSummary value = {{c2::DistributionSummary}}.builder("appraisals.value").baseUnit("gold-coins").register(registry);
+
+          Appraisal a = timer.{{c3::record}}(() -> service.appraise(req));
+          value.record(a.value().doubleValue());
+          ```
+      - id: act-timed
+        q: |-
+          `@Timed` on a method of an arbitrary bean records nothing. What's needed?
+        a: |-
+          A `TimedAspect` bean.
+      - id: act-meters
+        q: |-
+          Which Micrometer meter types are there?
+        a: |-
+          `Counter`, `Gauge`, `Timer`, `DistributionSummary`, `LongTaskTimer`.
+      - id: act-secure
+        q: |-
+          How do you refer to actuator endpoints in Spring Security rules?
+        a: |-
+          `EndpointRequest.to(...)` / `EndpointRequest.toAnyEndpoint()` request matchers.
