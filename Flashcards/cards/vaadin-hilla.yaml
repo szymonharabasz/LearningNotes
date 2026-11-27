@@ -1,0 +1,94 @@
+deck: Vaadin
+source: Java, Jakarta EE, Microprofile/Vaadin Hilla and Fusion.md
+tag: vaadin-hilla
+
+sections:
+  - section: Hilla
+    cards:
+      - id: vh-fusion-hilla
+        q: |-
+          Vaadin Fusion vs Hilla?
+        a: |-
+          **Fusion** (Lit/TypeScript) was renamed and reworked into **Hilla** (Spring Boot + React). Both are client-side front ends calling Java endpoints.
+      - id: vh-browsercallable
+        prompt: |-
+          Expose a Java service to the Hilla front end without requiring login.
+        cloze: |-
+          ```java
+          @{{c1::BrowserCallable}}     // older name: @Endpoint
+          @{{c2::AnonymousAllowed}}
+          public class HoardService { ... }
+          ```
+        extra: |-
+          Endpoints are secured (**deny all**) by default.
+      - id: vh-endpointexposed
+        q: |-
+          Methods inherited from a base class are missing from the generated TypeScript client. Why?
+        a: |-
+          Inherited methods are exposed only if the base class is annotated **`@EndpointExposed`**.
+      - id: vh-reactive
+        q: |-
+          What does a reactive Hilla endpoint return, and how can you react to the client unsubscribing?
+        a: |-
+          A `Flux<T>`. Wrap it as `EndpointSubscription.of(flux, () -> ...)` to run code on unsubscribe.
+      - id: vh-subscribe-client
+        q: |-
+          How does the TypeScript client subscribe to and cancel a reactive endpoint?
+        a: |-
+          `const sub = goldPriceCancellable().onNext(p => ...)` (also `onError`, `onComplete`), then `sub.cancel()`.
+      - id: vh-signal-value
+        q: |-
+          `if (subscription)` is always true for a `useSignal` value. What should you check?
+        a: |-
+          `subscription.value`; the signal object itself is always truthy.
+      - id: vh-middleware
+        q: |-
+          What is a Hilla client middleware, and what can it do?
+        a: |-
+          An async function `(context, next)` intercepting every endpoint call. It can log, **replace `context.request`**, or return its own `Response` without calling `next`.
+      - id: vh-middleware-register
+        q: |-
+          How do you register a middleware on the generated client?
+        a: |-
+          `import client from 'Frontend/generated/connect-client.default'; client.middlewares = [LogMiddleware];` (or `new ConnectClient({ middlewares: [...] })`).
+
+  - section: File-based routing
+    cards:
+      - id: vh-route-files
+        q: |-
+          Hilla file router: what do `@index.tsx`, `@layout.tsx`, `{id}.tsx`, `{{id}}.tsx`, `{...path}.tsx`, `_helper.tsx` mean?
+        a: |-
+          Index page; layout for the directory and subdirectories (renders `<Outlet />`); required parameter; optional parameter; wildcard; ignored by the router.
+      - id: vh-route-dir
+        q: |-
+          Where do Hilla file-based views go?
+        a: |-
+          `src/main/frontend/views`
+      - id: vh-wildcard-param
+        q: |-
+          How do you read the wildcard parameter of `{...path}.tsx`?
+        a: |-
+          `const { '*': path } = useParams();`: React Router always names the wildcard `*`.
+      - id: vh-menu
+        q: |-
+          How do you build a side menu from the file routes?
+        a: |-
+          `createMenuItems()` from `@vaadin/hilla-file-router/runtime.js`, mapped to `SideNavItem`s inside a `SideNav`.
+
+  - section: Fusion (legacy)
+    cards:
+      - id: vh-lit-state-query
+        q: |-
+          In a Lit component, what do `@state()` and `@query('#greeting')` do?
+        a: |-
+          `@state()`: a private property that **re-renders on change**. `@query`: a reference to an element in the template.
+      - id: vh-lit-bindings
+        q: |-
+          Lit template syntax: what do `@click=${...}` and `.items=${...}` mean?
+        a: |-
+          `@event` adds an event listener; `.prop` sets a **property** (not an attribute).
+      - id: vh-server-side-routes
+        q: |-
+          When mixing Fusion client routes with server-side views, where must `...serverSideRoutes` go?
+        a: |-
+          It **must be the last** entry in the routes array in `index.ts`.

@@ -1,0 +1,256 @@
+deck: Vaadin
+source: Java, Jakarta EE, Microprofile/Vaadin Flow.md
+tag: vaadin-flow
+
+sections:
+  - section: Basics
+    cards:
+      - id: vf-serializable
+        q: |-
+          Why should everything referenced from Vaadin UI classes be `Serializable`?
+        a: |-
+          For **session persistence** (e.g. Tomcat storing sessions on disk across restarts). Vaadin components already are.
+      - id: vf-composite
+        q: |-
+          Why build a view as `Composite<Component>` rather than extending a layout?
+        a: |-
+          It exposes only the content returned from `initContent()`, **not the layout's API**.
+
+  - section: Input components
+    cards:
+      - id: vf-value-change-mode
+        prompt: |-
+          Make a `TextField` fire value changes on every keystroke instead of on blur.
+        cloze: |-
+          ```java
+          name.{{c1::setValueChangeMode}}(ValueChangeMode.{{c2::EAGER}});
+          ```
+      - id: vf-event-getvalue
+        q: |-
+          In a value-change listener, why prefer `event.getValue()` over `field.getValue()`?
+        a: |-
+          It doesn't couple the lambda to the field variable.
+      - id: vf-textfield-validation
+        q: |-
+          Which `TextField` setters give client-side validation, and how do you check the result?
+        a: |-
+          `setRequired`, `setMinLength`, `setMaxLength`, `setPattern`, `setErrorMessage`. Check with `isInvalid()`.
+      - id: vf-number-fields
+        q: |-
+          Which Vaadin fields are there for numbers, and how do you show +/- buttons?
+        a: |-
+          `NumberField` (double; `setMin/Max/Step`) and `IntegerField`. `setHasControls(true)` shows the controls (newer: `setStepButtonsVisible`).
+      - id: vf-date-pickers
+        q: |-
+          Which date and time pickers does Vaadin have, and how do you restrict the date range?
+        a: |-
+          `DatePicker`, `TimePicker`, `DateTimePicker`. `setMin(...)` / `setMax(...)`; `setInitialPosition` sets the month shown when opening.
+      - id: vf-combobox-label
+        q: |-
+          A `ComboBox<Cave>` shows `Cave@1a2b3c`. How do you fix the labels?
+        a: |-
+          `cave.setItemLabelGenerator(Cave::getName)`
+      - id: vf-selection-components
+        q: |-
+          Which Vaadin components select one item, and which select several?
+        a: |-
+          One: `ComboBox`, `RadioButtonGroup`, `ListBox`. Several: `CheckboxGroup`, `MultiSelectListBox` (`getValue()` returns a `Set`).
+      - id: vf-upload
+        q: |-
+          How does a Vaadin `Upload` give you the file's content?
+        a: |-
+          Construct it with a receiver such as `MemoryBuffer` (or `FileBuffer`, `MultiFile...`), then read `buffer.getInputStream()` in `addSucceededListener`.
+      - id: vf-login-overlay
+        q: |-
+          What ready-made login component does Vaadin have?
+        a: |-
+          `LoginOverlay` (with `LoginI18n`): `addLoginListener`, `addForgotPasswordListener`, `setOpened(true)`.
+
+  - section: Display components
+    cards:
+      - id: vf-tabs
+        q: |-
+          You click a `Tab` but the content doesn't change. Why?
+        a: |-
+          `Tabs` only switch the selection; **you swap the content yourself** in `addSelectedChangeListener`.
+      - id: vf-dialog
+        q: |-
+          Which `Dialog` settings control modality and closing?
+        a: |-
+          `setModal`, `setCloseOnOutsideClick`, `setCloseOnEsc` (also `setDraggable`). Show it with `open()`.
+      - id: vf-menus
+        q: |-
+          How do you build a menu bar with a submenu, and a right-click menu?
+        a: |-
+          `menu.addItem("Hoards").getSubMenu().addItem("Open new")` (`setCheckable(true)` for toggles). Right-click: `new ContextMenu(target)`.
+      - id: vf-image-resource
+        q: |-
+          How do you show an image from the classpath in Vaadin Flow?
+        a: |-
+          `new Image(new StreamResource("logo", () -> getClass().getClassLoader().getResourceAsStream("logo.png")), "Logo")`
+
+  - section: Layouts and events
+    cards:
+      - id: vf-formlayout
+        prompt: |-
+          Make a `FormLayout` use 1 column on narrow screens, 2 from 600px, 3 from 800px.
+        cloze: |-
+          ```java
+          form.{{c1::setResponsiveSteps}}(
+              new FormLayout.{{c2::ResponsiveStep}}("0", 1),
+              new FormLayout.ResponsiveStep("600px", 2),
+              new FormLayout.ResponsiveStep("800px", 3));
+          ```
+      - id: vf-applayout
+        q: |-
+          What does `AppLayout` give you?
+        a: |-
+          A navbar and a drawer: `addToNavbar(new DrawerToggle(), logo)`, `addToDrawer(tabs)`.
+      - id: vf-disable-on-click
+        q: |-
+          How do you stop a double click from sending two requests?
+        a: |-
+          `button.setDisableOnClick(true)`: the button is disabled **on the client** immediately.
+
+  - section: Routing
+    cards:
+      - id: vf-programmatic-route
+        q: |-
+          How do you register a route programmatically, for the current session only?
+        a: |-
+          `RouteConfiguration.forSessionScope().setRoute("admin", AdminView.class)` (optionally with a layout class).
+      - id: vf-navigate
+        q: |-
+          How do you navigate in code, and create a link to a view?
+        a: |-
+          `UI.getCurrent().navigate(AdminView.class)` (or `"admin"`); `new RouterLink("My hoards", HoardsView.class)`.
+      - id: vf-route-templates
+        q: |-
+          What do these route templates mean: `:hoardNumber`, `:hoardNumber?`, `:path*`, `:hoardNumber?([0-9]*)`?
+        a: |-
+          Required parameter; optional; wildcard (rest of the path); optional with a regex.
+      - id: vf-route-params-read
+        q: |-
+          How do you read a route template parameter and the query parameters?
+        a: |-
+          In `beforeEnter(BeforeEnterEvent event)`: `event.getRouteParameters().get("hoardNumber")` (also `getInteger`, `getLong`); `event.getLocation().getQueryParameters().getParameters()`.
+      - id: vf-hasurlparameter
+        prompt: |-
+          Typed URL parameter (the alternative to route templates), optional.
+        cloze: |-
+          ```java
+          public class TreasureView extends Composite<Component> implements {{c1::HasUrlParameter<Integer>}} {
+              public void {{c2::setParameter}}(BeforeEvent event, {{c3::@OptionalParameter}} Integer itemNo) { ... }
+          }
+          ```
+      - id: vf-before-leave
+        q: |-
+          How do you ask "discard changes?" before the user leaves a view?
+        a: |-
+          Implement `BeforeLeaveObserver`; in `beforeLeave`, `ContinueNavigationAction action = event.postpone()`, then later `action.proceed()`.
+      - id: vf-reroute
+        q: |-
+          Where do you check access and redirect before a view is shown?
+        a: |-
+          `BeforeEnterObserver.beforeEnter(event)`, with `event.rerouteTo(...)`.
+      - id: vf-dynamic-title
+        q: |-
+          How do you set a page title that changes at runtime?
+        a: |-
+          Implement `HasDynamicTitle.getPageTitle()` (`@PageTitle` is static).
+      - id: vf-router-layout
+        q: |-
+          How do you write a router layout, and how does a view use it?
+        a: |-
+          Implement `RouterLayout` and override `showRouterLayoutContent(HasElement content)` to insert the view into a container. The view says `@Route(value = "hoards", layout = TellerLayout.class)`.
+      - id: vf-session-attr
+        q: |-
+          How do you store an object in the Vaadin session?
+        a: |-
+          `VaadinSession.getCurrent().setAttribute("teller", teller)` / `getAttribute("teller")`.
+
+  - section: Data binding
+    cards:
+      - id: vf-binder-bind
+        q: |-
+          What are the ways to bind a field with `Binder<Hoard>`?
+        a: |-
+          Explicit: `binder.bind(field, Hoard::getDragonName, Hoard::setDragonName)`. By name: `binder.bind(field, "cave.contactPhone")` (needs `new Binder<>(Hoard.class)`). Automatic: `binder.bindInstanceFields(this)`, with `@PropertyId` where names differ.
+      - id: vf-setbean-vs-readbean
+        q: |-
+          `binder.setBean(hoard)` vs `readBean` / `writeBean`?
+        a: |-
+          `setBean`: **unbuffered**, every change goes straight into the bean. `readBean`/`writeBean`: **buffered** editing; changes are written only on `writeBean`.
+      - id: vf-binder-chain
+        prompt: |-
+          Bind a required treasure code field with a validator and a converter.
+        cloze: |-
+          ```java
+          binder.{{c1::forField}}(itemCode)
+              .{{c2::asRequired}}("Every treasure needs a code")
+              .{{c3::withValidator}}(code -> code.length() > 3, "Code too short")
+              .{{c4::withConverter}}(new StringToTreasureCodeConverter())
+              .bind(Treasure::getCode, Treasure::setCode);
+          ```
+      - id: vf-converter
+        q: |-
+          Which two methods does a Vaadin `Converter<String, TreasureCode>` have, and what do they return?
+        a: |-
+          `convertToModel(String, ValueContext)` → `Result<TreasureCode>` (`Result.ok(...)` / `Result.error(...)`), and `convertToPresentation(TreasureCode, ValueContext)` → `String`.
+      - id: vf-validate-on-save
+        q: |-
+          How do you validate the whole form before saving?
+        a: |-
+          `if (binder.validate().isOk()) ...`
+      - id: vf-beanvalidationbinder
+        q: |-
+          How do you use Bean Validation annotations instead of binder validators?
+        a: |-
+          `new BeanValidationBinder<>(Hoard.class)`
+      - id: vf-builtin-validators
+        q: |-
+          Which built-in validators does Vaadin have?
+        a: |-
+          `EmailValidator`, `RegexpValidator`, `StringLengthValidator`, `RangeValidator`, and `*RangeValidator` for numeric and date types.
+
+  - section: JavaScript interop
+    cards:
+      - id: vf-executejs
+        q: |-
+          How do you call JavaScript from Java and use its result? How are arguments passed?
+        a: |-
+          `UI.getCurrent().getPage().executeJs("return ns.roar($0)", image).then(result -> ...)`. `$0`, `$1`... are the arguments; elements arrive as DOM nodes. Load the module with `@JsModule`.
+      - id: vf-clientcallable
+        prompt: |-
+          Let JavaScript call a Java method of the view.
+        cloze: |-
+          ```java
+          @{{c1::ClientCallable}}
+          public void clicked(int x, int y) { ... }
+          ```
+          ```javascript
+          element.onclick = e => view.{{c2::$server}}.clicked(e.clientX, e.clientY);
+          ```
+
+  - section: Styling
+    cards:
+      - id: vf-theme-variant
+        q: |-
+          How do you make a button primary, and add a CSS class to a component?
+        a: |-
+          `button.addThemeVariants(ButtonVariant.LUMO_PRIMARY)`; `div.addClassName("hoard-card")`.
+      - id: vf-cssimport-themefor
+        q: |-
+          How do you style the inside of a component's shadow DOM, e.g. `vaadin-grid` headers?
+        a: |-
+          `@CssImport(value = "./styles/grid.css", themeFor = "vaadin-grid")`, with `:host` selectors in the CSS (`:host th { ... }`).
+      - id: vf-theme-annotation
+        q: |-
+          How do you select the dark Lumo theme (Vaadin 14) vs a custom theme (newer)?
+        a: |-
+          `@Theme(themeClass = Lumo.class, variant = Lumo.DARK)`. Newer: `@Theme("my-theme")` on the `AppShellConfigurator`.
+      - id: vf-lumo-props
+        q: |-
+          Where do you set Lumo theme properties like `--lumo-primary-color`, and which families exist?
+        a: |-
+          In global CSS on `html`. Families: font family/size, line height, border radius, size, space, shade, and primary/error/success colors (with `-10pct`/`-50pct` variants).
