@@ -151,12 +151,13 @@ class CardNote(genanki.Note):
 
 def build(out_path):
     seen = {}
-    decks = []
+    decks = {}  # several YAML files may feed the same deck
     errors = []
     for yaml_file in sorted((ROOT / "cards").glob("*.yaml")):
         data = yaml.safe_load(yaml_file.read_text(encoding="utf-8"))
         deck_name = f"{DECK_ROOT}::{data['deck']}"
-        deck = genanki.Deck(stable_int(deck_name), deck_name)
+        deck = decks.setdefault(deck_name, genanki.Deck(stable_int(deck_name), deck_name))
+        before = len(deck.notes)
         defaults = data.get("defaults", {})
         for section in data["sections"]:
             src_file = section.get("source", data["source"])
@@ -206,14 +207,15 @@ def build(out_path):
                     continue
                 note._card_id = cid
                 deck.add_note(note)
-        decks.append(deck)
-        print(f"{deck_name}: {len(deck.notes)} notes")
+        print(f"{yaml_file.name:32} -> {deck_name}: {len(deck.notes) - before} notes")
 
     if errors:
         print("\n".join(["ERRORS:"] + errors), file=sys.stderr)
         sys.exit(1)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    genanki.Package(decks).write_to_file(str(out_path))
+    for name, deck in decks.items():
+        print(f"  {name}: {len(deck.notes)}")
+    genanki.Package(list(decks.values())).write_to_file(str(out_path))
     print(f"Total: {len(seen)} notes -> {out_path}")
 
 
