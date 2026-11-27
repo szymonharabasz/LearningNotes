@@ -3,9 +3,16 @@ Anki flashcards generated from the notes in `Java, Jakarta EE, Microprofile/` an
 ## Decks
 All decks are under **Java & Spring**:
 
-| Subdeck | Source file | Contents |
+There is one YAML file per note; several files can feed the same subdeck.
+
+| Subdeck | Source files | Contents |
 |---|---|---|
+| `Java` | `cards/java-*.yaml` | Language, concurrency, JUnit and Mockito |
+| `Jakarta EE` | `cards/jakarta-*.yaml` | CDI, EJB, JPA, Bean Validation, JAX-RS/JAX-WS, JSON/XML, JMS, Servlets/WebSockets, Security, JSF |
 | `Quarkus` | `cards/quarkus.yaml` | Quarkus and MicroProfile |
+| `Vaadin` | `cards/vaadin-*.yaml` | Vaadin Flow, Hilla and Fusion |
+| `Spring` | `cards/spring-*.yaml` (except below) | Core and Boot, AOP, JDBC, Data JPA, transactions, validation, MVC, Thymeleaf, REST, Actuator, testing |
+| `Spring Security` | `cards/spring-security.yaml` | Filter chain, users, method security, OAuth2, SSL |
 | `Spring Cloud` | `cards/spring-cloud.yaml` | Config Server, Eureka/Feign, Gateway, Resilience4j, Cloud Stream |
 | `Comparisons` | `cards/comparisons.yaml` | Spring ↔ Jakarta EE / MicroProfile / Quarkus, mostly generated in **both directions** |
 

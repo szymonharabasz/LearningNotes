@@ -214,3 +214,285 @@ sections:
           **Spring Boot:** Testcontainers + `@ServiceConnection`
         a: |-
           **Quarkus:** Dev Services (automatic), or a `QuarkusTestResourceLifecycleManager`
+
+  - section: Dependency injection
+    source: Spring and Spring Boot/Spring core and Spring Boot.md
+    cards:
+      - id: cmp-component
+        q: |-
+          **Spring:** `@Component` / `@Service`
+        a: |-
+          **CDI:** a bean with a bean-defining annotation, e.g. `@ApplicationScoped`
+      - id: cmp-bean-produces
+        q: |-
+          **Spring:** a `@Bean` method in a `@Configuration` class
+        a: |-
+          **CDI:** a `@Produces` method
+      - id: cmp-autowired-inject
+        q: |-
+          **Spring:** `@Autowired`
+        a: |-
+          **CDI:** `@Inject`
+        extra: |-
+          Spring also accepts `@Inject`.
+      - id: cmp-qualifier
+        q: |-
+          Qualifiers: how do Spring and CDI differ?
+        a: |-
+          **Spring:** `@Qualifier("fireproof")` is **string-based** (custom qualifier annotations work too).
+          **CDI:** qualifiers are **type-safe annotations** (`@Qualifier` on your own annotation).
+        reverse: false
+      - id: cmp-primary
+        q: |-
+          **Spring:** `@Primary`
+        a: |-
+          **CDI:** `@Alternative` + `@Priority` (Quarkus also has `@DefaultBean`)
+      - id: cmp-singleton-eager
+        q: |-
+          A Spring singleton vs a CDI `@ApplicationScoped` bean: when created, and what is injected?
+        a: |-
+          **Spring:** created **eagerly** at startup (unless `@Lazy`), injected **directly**.
+          **CDI:** created **lazily**, injected through a **client proxy**.
+        reverse: false
+      - id: cmp-prototype
+        q: |-
+          **Spring:** `@Scope("prototype")`
+        a: |-
+          **CDI:** `@Dependent` (the CDI default)
+      - id: cmp-app-class
+        q: |-
+          Spring Boot's application class and classpath scanning: what is the Quarkus counterpart?
+        a: |-
+          None: beans are discovered **at build time** from the Jandex index, and extensions do the "auto-configuration" at build time. Excluding an auto-configuration = not adding the extension.
+        reverse: false
+      - id: cmp-profile-annotation
+        q: |-
+          **Spring:** `@Profile("dev")` on a bean
+        a: |-
+          **Quarkus:** `@IfBuildProfile("dev")` (decided at build time), or `@LookupIfProperty`
+      - id: cmp-devtools
+        q: |-
+          **Spring Boot:** `spring-boot-devtools`
+        a: |-
+          **Quarkus:** `mvn quarkus:dev`
+
+  - section: AOP and interceptors
+    source: Spring and Spring Boot/Spring AOP.md
+    cards:
+      - id: cmp-aspect-interceptor
+        q: |-
+          **Spring:** an `@Aspect` with `@Around` advice
+        a: |-
+          **CDI:** an `@Interceptor` with an `@AroundInvoke` method
+      - id: cmp-proceedingjoinpoint
+        q: |-
+          **Spring AOP:** `ProceedingJoinPoint.proceed()`
+        a: |-
+          **CDI:** `InvocationContext.proceed()`
+      - id: cmp-pointcut-vs-binding
+        q: |-
+          How does a Spring aspect select its methods, vs a CDI interceptor?
+        a: |-
+          **Spring:** a **pointcut expression** (package, name pattern, annotation), so the target code can stay unaware of it.
+          **CDI:** only where you put the **interceptor binding** annotation (or `@Interceptors`).
+        reverse: false
+
+  - section: Persistence and transactions
+    source: Spring and Spring Boot/Spring Data JPA.md
+    cards:
+      - id: cmp-spring-data-panache
+        q: |-
+          **Spring Data JPA:** an **interface** extending `JpaRepository`, with derived queries from method names
+        a: |-
+          **Quarkus Panache:** a **class** implementing `PanacheRepository`; finders written with short queries like `find("dragonName", name)`
+      - id: cmp-active-record
+        q: |-
+          Which persistence style does Panache offer that Spring Data doesn't?
+        a: |-
+          **Active record**: `Hoard extends PanacheEntity`, `Hoard.find(...)`.
+        reverse: false
+      - id: cmp-jakarta-data
+        q: |-
+          **Spring:** Spring Data repositories
+        a: |-
+          **Jakarta EE 11:** Jakarta Data (`@Repository` interfaces, `CrudRepository`, derived queries, `@Find`/`@Query`)
+      - id: cmp-data-rest
+        q: |-
+          **Spring:** Spring Data REST
+        a: |-
+          **Quarkus:** REST Data with Panache
+      - id: cmp-ddl-auto
+        q: |-
+          **Spring:** `spring.jpa.hibernate.ddl-auto` / `spring.jpa.show-sql`
+        a: |-
+          **Quarkus:** `quarkus.hibernate-orm.database.generation` / `quarkus.hibernate-orm.log.sql`
+      - id: cmp-datasource-pool
+        q: |-
+          **Spring Boot:** `spring.datasource.*`, HikariCP pool
+        a: |-
+          **Quarkus:** `quarkus.datasource.*`, Agroal pool
+      - id: cmp-rollbackfor
+        q: |-
+          **Spring `@Transactional`:** `rollbackFor` / `noRollbackFor`
+        a: |-
+          **JTA `@Transactional`:** `rollbackOn` / `dontRollbackOn`
+      - id: cmp-nested
+        q: |-
+          Which transaction propagation exists only in Spring?
+        a: |-
+          `NESTED` (a savepoint inside the current transaction).
+        reverse: false
+      - id: cmp-transactiontemplate
+        q: |-
+          **Spring:** `transactionTemplate.execute(status -> ...)`
+        a: |-
+          **Quarkus:** `QuarkusTransaction.requiringNew().run(...)` (JTA: `UserTransaction`)
+      - id: cmp-test-transaction
+        q: |-
+          **Spring test:** `@Transactional` on a test method (rolled back)
+        a: |-
+          **Quarkus test:** `@TestTransaction`
+
+  - section: REST
+    source: Spring and Spring Boot/REST with Spring Boot.md
+    cards:
+      - id: cmp-requestmapping-path
+        q: |-
+          **Spring:** `@RestController` + `@RequestMapping("/appraisals")`
+        a: |-
+          **JAX-RS:** `@Path("/appraisals")` on the class
+      - id: cmp-getmapping
+        q: |-
+          **Spring:** `@GetMapping("/{id}")`
+        a: |-
+          **JAX-RS:** `@GET` + `@Path("{id}")`
+      - id: cmp-requestparam
+        q: |-
+          **Spring:** `@RequestParam`
+        a: |-
+          **JAX-RS:** `@QueryParam` or `@FormParam`
+        extra: |-
+          Spring parameters are **required by default**; a missing JAX-RS parameter is just `null` (or its `@DefaultValue`).
+      - id: cmp-pathvariable
+        q: |-
+          **Spring:** `@PathVariable`
+        a: |-
+          **JAX-RS:** `@PathParam`
+      - id: cmp-requestheader
+        q: |-
+          **Spring:** `@RequestHeader`
+        a: |-
+          **JAX-RS:** `@HeaderParam`
+      - id: cmp-requestbody
+        q: |-
+          **Spring:** a `@RequestBody` parameter
+        a: |-
+          **JAX-RS:** an unannotated entity parameter
+      - id: cmp-produces
+        q: |-
+          **Spring:** `produces` / `consumes` attributes of `@GetMapping`
+        a: |-
+          **JAX-RS:** `@Produces` / `@Consumes` annotations
+      - id: cmp-responseentity
+        q: |-
+          **Spring:** `ResponseEntity<T>`
+        a: |-
+          **JAX-RS:** `Response`
+      - id: cmp-exceptionhandler
+        q: |-
+          **Spring:** `@RestControllerAdvice` + `@ExceptionHandler`
+        a: |-
+          **JAX-RS:** an `ExceptionMapper` (Quarkus: `@ServerExceptionMapper`)
+      - id: cmp-hateoas
+        q: |-
+          **Spring HATEOAS:** `linkTo(methodOn(...))`
+        a: |-
+          **JAX-RS:** only basic `Link` support (`Response.links(...)`, `Link.fromUri(...)`)
+        reverse: false
+      - id: cmp-json
+        q: |-
+          **Spring:** Jackson
+        a: |-
+          **Jakarta EE:** JSON-B (Quarkus: either)
+      - id: cmp-valid-validated
+        q: |-
+          Method validation on a bean: what does Spring need that CDI/Quarkus doesn't?
+        a: |-
+          **Spring:** `@Validated` on the class (AOP proxy; no self-invocation).
+          **CDI / Quarkus:** works out of the box.
+        reverse: false
+      - id: cmp-validation-exception
+        q: |-
+          **Spring:** an invalid `@Valid @RequestBody` → `MethodArgumentNotValidException` → 400
+        a: |-
+          **JAX-RS:** an invalid `@Valid` parameter → `ConstraintViolationException` → 400
+
+  - section: Web UI
+    source: Spring and Spring Boot/Spring MVC.md
+    cards:
+      - id: cmp-mvc-jsf
+        q: |-
+          **Spring:** Spring MVC (controllers returning a view name)
+        a: |-
+          **Jakarta EE:** JSF (component-based, backing beans), or the action-based Jakarta MVC
+      - id: cmp-thymeleaf-qute
+        q: |-
+          **Spring:** Thymeleaf
+        a: |-
+          **Quarkus:** Qute (`{expression}` syntax, type-safe at build time)
+
+  - section: Security (Spring)
+    source: Spring and Spring Boot/Spring Security/Spring Boot Security.md
+    cards:
+      - id: cmp-userdetailsservice
+        q: |-
+          **Spring Security:** `UserDetailsService` / `AuthenticationProvider`
+        a: |-
+          **Jakarta Security:** an identity store (`IdentityStore`)
+      - id: cmp-httpbasic
+        q: |-
+          **Spring Security:** `httpBasic()` / `formLogin()`
+        a: |-
+          **Jakarta Security:** `@BasicAuthenticationMechanismDefinition` / `@FormAuthenticationMechanismDefinition`
+      - id: cmp-filterchain-quarkus
+        q: |-
+          **Spring Security:** URL rules in a `SecurityFilterChain` bean
+        a: |-
+          **Quarkus:** properties `quarkus.http.auth.permission.<name>.paths=/api/*` + `.policy=authenticated`
+      - id: cmp-rolesallowed
+        q: |-
+          `@RolesAllowed`: what does Spring need that Jakarta EE and Quarkus don't?
+        a: |-
+          `@EnableMethodSecurity(jsr250Enabled = true)`. In Jakarta EE and Quarkus it works out of the box.
+        reverse: false
+      - id: cmp-preauthorize
+        q: |-
+          **Spring Security:** `@PreAuthorize` (SpEL)
+        a: |-
+          **Quarkus:** `@PermissionsAllowed` (no standard Jakarta equivalent)
+      - id: cmp-security-jpa
+        q: |-
+          **Spring Security:** a custom `UserDetailsService` loading users with JPA
+        a: |-
+          **Quarkus:** `quarkus-security-jpa`: annotate the entity with `@UserDefinition`, `@Username`, `@Password`, `@Roles`; no service to write
+
+  - section: Testing (Spring)
+    source: Spring and Spring Boot/Testing Spring applications.md
+    cards:
+      - id: cmp-springboottest
+        q: |-
+          **Spring:** `@SpringBootTest` (context cached between test classes)
+        a: |-
+          **Quarkus:** `@QuarkusTest` (the app is started **once** for all tests)
+      - id: cmp-mockmvc
+        q: |-
+          **Spring:** MockMvc
+        a: |-
+          **Quarkus:** none; tests call the app over HTTP with REST Assured
+        reverse: false
+      - id: cmp-slices
+        q: |-
+          **Spring:** slice tests and different contexts (`@WebMvcTest`, `@DataJpaTest`, `@ActiveProfiles`)
+        a: |-
+          **Quarkus:** no slices; a different setup is a `@TestProfile`, which restarts the app
+        reverse: false
