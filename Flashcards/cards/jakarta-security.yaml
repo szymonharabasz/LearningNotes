@@ -1,0 +1,83 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Security.md
+tag: security
+
+sections:
+  - section: Identity stores
+    cards:
+      - id: sec-store-vs-mechanism
+        q: |-
+          Jakarta Security: identity store vs authentication mechanism?
+        a: |-
+          The **identity store** is where users and groups are kept (DB, LDAP, custom). The **authentication mechanism** is how credentials are collected (Basic, form, custom form).
+      - id: sec-where-annotations
+        q: |-
+          Where do you put `@...IdentityStoreDefinition` and `@...AuthenticationMechanismDefinition` annotations?
+        a: |-
+          On any CDI bean, typically an `@ApplicationScoped` configuration class.
+      - id: sec-db-store
+        prompt: |-
+          Define a database identity store.
+        cloze: |-
+          ```java
+          @{{c1::DatabaseIdentityStoreDefinition}}(
+              dataSourceLookup = "jdbc/dragonAuth",
+              {{c2::callerQuery}} = "SELECT password FROM dragons WHERE name = ?",
+              {{c3::groupsQuery}} = "SELECT g.name FROM ... WHERE d.name = ?")
+          ```
+      - id: sec-pbkdf2
+        q: |-
+          Logins against a `@DatabaseIdentityStoreDefinition` never succeed, though the passwords in the DB are correct. Why?
+        a: |-
+          The default `hashAlgorithm` is **`Pbkdf2PasswordHash`**: passwords must be stored as PBKDF2 hashes, not plain text.
+      - id: sec-custom-store
+        q: |-
+          How do you write a custom identity store?
+        a: |-
+          An `@ApplicationScoped` bean implementing `IdentityStore`, whose `validate(Credential)` returns `new CredentialValidationResult(name, groups)` or `CredentialValidationResult.INVALID_RESULT`.
+      - id: sec-wildfly-elytron
+        q: |-
+          A custom identity store is ignored in WildFly. What's missing?
+        a: |-
+          Running the **Elytron** configuration script (`configure-elytron.cli` from the WildFly ee-security quickstart).
+
+  - section: Authentication mechanisms
+    cards:
+      - id: sec-form-fields
+        prompt: |-
+          A plain HTML login form for `@FormAuthenticationMechanismDefinition`.
+        cloze: |-
+          ```html
+          <form method="POST" action="{{c1::j_security_check}}">
+              <input type="text" name="{{c2::j_username}}"/>
+              <input type="password" name="{{c3::j_password}}"/>
+          </form>
+          ```
+      - id: sec-login-to-continue
+        q: |-
+          How does a form mechanism know the login and error pages?
+        a: |-
+          `loginToContinue = @LoginToContinue(loginPage = "/login.html", errorPage = "/login-error.html")`
+      - id: sec-custom-form
+        q: |-
+          With `@CustomFormAuthenticationMechanismDefinition`, how does your own login page authenticate the user?
+        a: |-
+          It calls `securityContext.authenticate(request, response, AuthenticationParameters.withParams().credential(new UsernamePasswordCredential(name, password)))`.
+      - id: sec-auth-status
+        q: |-
+          After `securityContext.authenticate(...)` in JSF, what do you do for `SEND_CONTINUE` and `SEND_FAILURE`?
+        a: |-
+          `SEND_CONTINUE`: `facesContext.responseComplete()` (the mechanism takes over, e.g. a redirect). `SEND_FAILURE`: show an error message.
+
+  - section: Authorization
+    cards:
+      - id: sec-rolesallowed
+        q: |-
+          Which annotations restrict access to methods, and where do they work?
+        a: |-
+          `@RolesAllowed({"dragon", "teller"})`, `@PermitAll`, `@DenyAll`. On EJBs, JAX-RS resources, and CDI beans (in most servers).
+      - id: sec-programmatic
+        q: |-
+          How do you check roles and the user programmatically with Jakarta Security?
+        a: |-
+          `securityContext.isCallerInRole("teller")`, `securityContext.getCallerPrincipal()`.

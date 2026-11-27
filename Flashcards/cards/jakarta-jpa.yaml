@@ -1,0 +1,234 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Java Persistence API.md
+tag: jpa
+
+sections:
+  - section: Entities and ids
+    cards:
+      - id: jpa-id-strategies
+        q: |-
+          What are the four `GenerationType` strategies, and what does each need?
+        a: |-
+          `AUTO` (provider chooses), `IDENTITY` (auto-increment column), `SEQUENCE` (`@SequenceGenerator` + the sequence in the DB), `TABLE` (`@TableGenerator` + the table in the DB).
+      - id: jpa-sequence
+        prompt: |-
+          Generate `Dragon` ids from the DB sequence `DRAGON_SEQ`, fetching 50 at a time.
+        cloze: |-
+          ```java
+          @{{c1::SequenceGenerator}}(name = "DRAGON_SEQ", sequenceName = "DRAGON_SEQ", {{c2::allocationSize}} = 50)
+          ...
+          @Id
+          @GeneratedValue(strategy = GenerationType.SEQUENCE, {{c3::generator}} = "DRAGON_SEQ")
+          private Long id;
+          ```
+      - id: jpa-table-generator
+        q: |-
+          In `@TableGenerator`, what do `pkColumnName`, `pkColumnValue` and `valueColumnName` mean?
+        a: |-
+          The column naming the generator, **this generator's row** in it (e.g. `"HOARD_ID"`), and the column holding the next value.
+      - id: jpa-composite-key-req
+        q: |-
+          What must a composite primary key class be?
+        a: |-
+          `Serializable`, with `equals` and `hashCode`.
+      - id: jpa-idclass-vs-embeddedid
+        q: |-
+          `@IdClass` vs `@EmbeddedId` for composite keys?
+        a: |-
+          `@IdClass(TreasureId.class)`: the key fields are **repeated** in the entity, each with `@Id`.
+          `@EmbeddedId`: the entity has **one field** of an `@Embeddable` key class.
+
+  - section: Field mapping
+    cards:
+      - id: jpa-column-length-precision
+        q: |-
+          Which `@Column` attributes apply to `String`, and which to `BigDecimal`?
+        a: |-
+          `length` for `String`; `precision` and `scale` for `BigDecimal`.
+      - id: jpa-enumerated
+        q: |-
+          Why use `@Enumerated(EnumType.STRING)`?
+        a: |-
+          The default `ORDINAL` stores the position, which **breaks when you reorder** the constants.
+      - id: jpa-temporal
+        q: |-
+          When is `@Temporal` required, and when must you not use it?
+        a: |-
+          Required for `java.util.Date` and `Calendar` (`DATE`/`TIME`/`TIMESTAMP`). Not for `java.sql.*` or `java.time.*`.
+      - id: jpa-lob-lazy
+        q: |-
+          How do you map a large byte array that should be loaded lazily?
+        a: |-
+          `@Lob @Basic(fetch = FetchType.LAZY) byte[] portrait;`
+      - id: jpa-element-collection
+        prompt: |-
+          Map a `List<String>` of a dragon's nicknames to its own table.
+        cloze: |-
+          ```java
+          @{{c1::ElementCollection}}
+          @{{c2::CollectionTable}}(name = "DRAGON_NICKNAMES",
+              joinColumns = @JoinColumn(name = "DRAGON_NAME", referencedColumnName = "DRAGON_NAME"))
+          private List<String> nicknames;
+          ```
+        extra: |-
+          `referencedColumnName` is the column of the **owning entity**.
+
+  - section: Embedding and inheritance
+    cards:
+      - id: jpa-embedded
+        q: |-
+          Where do the columns of an `@Embedded` `@Embeddable` object go?
+        a: |-
+          Into the owning entity's table (e.g. `DRAGONS`).
+      - id: jpa-mappedsuperclass
+        q: |-
+          `@MappedSuperclass` vs an `@Entity` superclass with `@Inheritance`?
+        a: |-
+          A `@MappedSuperclass` is **not an entity** (no table, can't be queried); its fields are copied into each subclass's table. An entity hierarchy can be queried polymorphically.
+      - id: jpa-inheritance
+        q: |-
+          What are the three `@Inheritance` strategies, and where does the annotation go?
+        a: |-
+          `SINGLE_TABLE` (default), `JOINED`, `TABLE_PER_CLASS`. On the **root** entity.
+
+  - section: Relationships
+    cards:
+      - id: jpa-owning-side
+        q: |-
+          Which side of a relationship is the **owning** side, and why does it matter?
+        a: |-
+          The side with the **foreign key** (`@JoinColumn` / `@JoinTable`). The other side uses `mappedBy`. **Only changes on the owning side are written** to the DB.
+      - id: jpa-one-to-many-owner
+        q: |-
+          In a one-to-many relationship, which side owns it?
+        a: |-
+          Always the **many** side (`@ManyToOne @JoinColumn`). The `@OneToMany` side has `mappedBy`.
+      - id: jpa-one-to-many-code
+        prompt: |-
+          Map `Dragon` 1 → n `Hoard` bidirectionally, deleting hoards removed from the collection.
+        cloze: |-
+          ```java
+          // Hoard
+          @{{c1::ManyToOne}}
+          @JoinColumn(name = "DRAGON_ID")
+          private Dragon dragon;
+
+          // Dragon
+          @OneToMany({{c2::mappedBy = "dragon"}}, cascade = CascadeType.ALL, {{c3::orphanRemoval = true}})
+          private Set<Hoard> hoards;
+          ```
+      - id: jpa-many-to-many
+        q: |-
+          Many-to-many: which side owns it, and what do `joinColumns` vs `inverseJoinColumns` in `@JoinTable` refer to?
+        a: |-
+          **Either** side can own it; the owner defines the `@JoinTable`. `joinColumns` reference the **owner**; `inverseJoinColumns` reference the **other** entity.
+      - id: jpa-default-fetch
+        q: |-
+          What are the default fetch types of the relationship annotations?
+        a: |-
+          `*ToOne`: `EAGER`. `*ToMany`: `LAZY`.
+
+  - section: Lifecycle callbacks and listeners
+    cards:
+      - id: jpa-callbacks
+        q: |-
+          What are the seven JPA lifecycle callback annotations?
+        a: |-
+          `@PrePersist`, `@PostPersist`, `@PreUpdate`, `@PostUpdate`, `@PreRemove`, `@PostRemove`, `@PostLoad`
+      - id: jpa-callback-signature
+        q: |-
+          Callback signature: on the entity itself vs in an `@EntityListeners` class?
+        a: |-
+          On the entity: `void`, **no parameters**. In a listener class: `void`, taking **the entity** as a parameter.
+
+  - section: EntityManager
+    cards:
+      - id: jpa-persistencecontext-unitname
+        q: |-
+          When do you need `unitName` in `@PersistenceContext(unitName = "dragonbank")`?
+        a: |-
+          Only when `persistence.xml` defines **several** persistence units.
+      - id: jpa-managed-no-merge
+        q: |-
+          You `find` a dragon, call `setWingspan(31)` and commit. Do you need `merge`?
+        a: |-
+          No. The entity is **managed**, so the change is flushed automatically. `merge` is for **detached** entities, and it **returns the managed copy** (the argument stays detached).
+      - id: jpa-java-se
+        q: |-
+          How do you get an `EntityManager` and a transaction **outside** a container?
+        a: |-
+          ```java
+          EntityManagerFactory emf = Persistence.createEntityManagerFactory("dragonbank");
+          EntityManager em = emf.createEntityManager();
+          em.getTransaction().begin(); ... em.getTransaction().commit();
+          ```
+
+  - section: JPQL
+    cards:
+      - id: jpa-parameters
+        q: |-
+          What are the two kinds of JPQL query parameters?
+        a: |-
+          Named: `... LIKE :name` + `setParameter("name", ...)`. Positional: `... LIKE ?1` + `setParameter(1, ...)`.
+      - id: jpa-single-result
+        q: |-
+          What can `getSingleResult()` throw?
+        a: |-
+          `NoResultException` or `NonUniqueResultException`.
+      - id: jpa-named-query
+        q: |-
+          Where is a `@NamedQuery` declared, and how is it executed?
+        a: |-
+          On the **entity**: `@NamedQuery(name = "Hoard.byDragon", query = "...")`. Run with `em.createNamedQuery("Hoard.byDragon", Hoard.class)`.
+      - id: jpa-native-query
+        q: |-
+          What does a native query return without and with a result class?
+        a: |-
+          `createNativeQuery(sql).getResultList()` → `List<Object[]>`. `createNativeQuery(sql, Dragon.class)` → entities.
+      - id: jpa-type
+        prompt: |-
+          JPQL: select only treasures that are gems or artifacts.
+        cloze: |-
+          ```sql
+          SELECT t FROM Treasure t WHERE {{c1::TYPE(t)}} IN (Gem, Artifact)
+          ```
+      - id: jpa-join-fetch
+        q: |-
+          What does `LEFT JOIN FETCH` do in `SELECT d FROM Dragon d LEFT JOIN FETCH d.hoards`, and why use it?
+        a: |-
+          It loads the association **in the same query**, avoiding the N+1 select problem.
+      - id: jpa-is-empty
+        prompt: |-
+          JPQL: count dragons without any hoards.
+        cloze: |-
+          ```sql
+          SELECT COUNT(d) FROM Dragon d WHERE d.hoards {{c1::IS EMPTY}}
+          ```
+
+  - section: Criteria API
+    cards:
+      - id: jpa-criteria-select
+        prompt: |-
+          Criteria API: select dragons whose name starts with "Ign".
+        cloze: |-
+          ```java
+          CriteriaBuilder cb = em.{{c1::getCriteriaBuilder()}};
+          CriteriaQuery<Dragon> cq = cb.createQuery(Dragon.class);
+          Root<Dragon> root = cq.{{c2::from}}(Dragon.class);
+          cq.where(cb.like(root.get("name"), "Ign%"));
+          ```
+      - id: jpa-metamodel
+        q: |-
+          How do you make `root.get("name")` type-safe?
+        a: |-
+          Use the generated **static metamodel**: `root.get(Dragon_.name)`.
+      - id: jpa-criteria-update
+        q: |-
+          Criteria API: how do you write a bulk UPDATE or DELETE, and how do you set a **nested** attribute?
+        a: |-
+          `cb.createCriteriaUpdate(Dragon.class)` / `cb.createCriteriaDelete(...)`, then `em.createQuery(cu).executeUpdate()`. `set(String, ...)` takes only a direct attribute, so for nested ones pass a `Path`: `u.get("cave").get("kingdom")`.
+      - id: jpa-runtime-metamodel
+        q: |-
+          How do you inspect the metamodel at runtime?
+        a: |-
+          `em.getMetamodel().entity(Dragon.class).getDeclaredSingularAttribute("name", String.class)`

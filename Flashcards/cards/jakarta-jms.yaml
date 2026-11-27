@@ -1,0 +1,88 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Java Message Service.md
+tag: jms
+
+sections:
+  - section: Basics
+    cards:
+      - id: jms-queue-vs-topic
+        q: |-
+          JMS queue vs topic?
+        a: |-
+          **Queue:** each message is handled by **one** consumer. **Topic:** every subscriber gets it.
+      - id: jms-lookup-mappedname
+        q: |-
+          `@Resource(lookup = ...)` vs `@Resource(mappedName = ...)`?
+        a: |-
+          `lookup` is the **standard, portable** JNDI name (Java EE 6+). `mappedName` is vendor-specific; prefer `lookup`.
+
+  - section: Sending and receiving
+    cards:
+      - id: jms-send
+        prompt: |-
+          JMS 2.0: send a text message to the queue `raidAlerts` with a hand-made context.
+        cloze: |-
+          ```java
+          try (JMSContext ctx = connectionFactory.{{c1::createContext()}}) {
+              ctx.{{c2::createProducer()}}.send(raidAlerts, "Sir Reginald approaches cave 7");
+          }
+          ```
+      - id: jms-receive
+        q: |-
+          JMS 2.0: how do you synchronously receive the body of a text message?
+        a: |-
+          `ctx.createConsumer(raidAlerts).receiveBody(String.class)`. It blocks (there are timeout variants).
+      - id: jms-queue-topic-code
+        q: |-
+          How does the sending code differ between a queue and a topic?
+        a: |-
+          It doesn't; only the injected `Destination` type differs (`Queue` / `Topic`).
+      - id: jms-inject-context
+        q: |-
+          Must you close an `@Inject`ed `JMSContext`?
+        a: |-
+          No, the container manages it. Only a `JMSContext` you create yourself must be closed.
+      - id: jms-message-types
+        q: |-
+          Which JMS message types are there?
+        a: |-
+          `TextMessage`, `MapMessage`, `BytesMessage`, `StreamMessage`, `ObjectMessage`, and `Message` (headers and properties only).
+
+  - section: Message-driven bean
+    cards:
+      - id: jms-mdb
+        prompt: |-
+          Write an MDB listening on the queue `jms/RaidAlertQueue`.
+        cloze: |-
+          ```java
+          @MessageDriven(activationConfig = {
+              @ActivationConfigProperty(propertyName = "{{c1::destinationLookup}}", propertyValue = "jms/RaidAlertQueue"),
+              @ActivationConfigProperty(propertyName = "{{c2::destinationType}}",   propertyValue = "jakarta.jms.Queue")
+          })
+          public class RaidAlertListener implements {{c3::MessageListener}} {
+              public void {{c4::onMessage}}(Message message) { ... }
+          }
+          ```
+      - id: jms-mdb-rollback
+        q: |-
+          In an MDB, how do you make a failed message be redelivered?
+        a: |-
+          `@Resource MessageDrivenContext mdc;` then `mdc.setRollbackOnly()`.
+
+  - section: Browsing and durable subscriptions
+    cards:
+      - id: jms-browser
+        q: |-
+          How do you look at the messages in a queue **without consuming** them?
+        a: |-
+          `ctx.createBrowser(queue).getEnumeration()`
+      - id: jms-durable-id
+        q: |-
+          What identifies a durable topic subscription, and what's the limitation?
+        a: |-
+          The **client ID + subscription name**. Only one connection can use a given client ID at a time.
+      - id: jms-shared-durable
+        q: |-
+          What does `createSharedDurableConsumer(topic, name)` (JMS 2.0) add?
+        a: |-
+          No client ID needed, and **several consumers share** the subscription.

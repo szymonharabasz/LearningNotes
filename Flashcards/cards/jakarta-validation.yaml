@@ -1,0 +1,88 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Bean Validation.md
+tag: validation
+
+sections:
+  - section: Built-in constraints
+    cards:
+      - id: bv-notnull-empty-blank
+        q: |-
+          `@NotNull` vs `@NotEmpty` vs `@NotBlank`?
+        a: |-
+          `@NotNull`: not null. `@NotEmpty`: not null and size > 0 (strings, collections). `@NotBlank`: a string with at least one non-whitespace character.
+      - id: bv-digits
+        prompt: |-
+          Allow at most 4 integer digits and 2 fraction digits.
+        cloze: |-
+          ```java
+          @{{c1::Digits}}(integer = 4, fraction = 2) BigDecimal fee;
+          ```
+      - id: bv-common-attrs
+        q: |-
+          Which three attributes does every constraint have?
+        a: |-
+          `message`, `groups`, `payload`.
+      - id: bv-hibernate-extras
+        q: |-
+          Name some non-standard constraints added by Hibernate Validator. In which package?
+        a: |-
+          `@CreditCardNumber`, `@URL`, `@Length`, `@Range`, in `org.hibernate.validator.constraints`.
+      - id: bv-valid
+        q: |-
+          What does `@Valid` do on a field or parameter?
+        a: |-
+          **Cascades** validation into the nested object, or into each element of a collection.
+
+  - section: Where validation runs automatically
+    cards:
+      - id: bv-auto
+        q: |-
+          Where does Bean Validation run automatically in Jakarta EE?
+        a: |-
+          **JAX-RS** constrained parameters, **JPA** entities on persist/update, **CDI** method parameters and return values.
+      - id: bv-jaxrs-400
+        q: |-
+          What happens when a JAX-RS parameter like `@Valid Dragon dragon` violates a constraint?
+        a: |-
+          A `ConstraintViolationException` is thrown, which becomes a **400** response. Map it yourself for nicer errors.
+
+  - section: Custom constraint
+    cards:
+      - id: bv-custom-annotation
+        q: |-
+          What does a custom constraint annotation need?
+        a: |-
+          `@Constraint(validatedBy = NotCursedValidator.class)`, `@Retention(RUNTIME)`, `@Target`, and the three members `message()`, `groups()`, `payload()` with defaults.
+      - id: bv-validator-class
+        prompt: |-
+          Write the validator class for `@NotCursed` on a `Treasure`.
+        cloze: |-
+          ```java
+          public class NotCursedValidator implements {{c1::ConstraintValidator<NotCursed, Treasure>}} {
+              public boolean {{c2::isValid}}(Treasure t, ConstraintValidatorContext ctx) {
+                  return t == null || !t.isCursed();
+              }
+          }
+          ```
+      - id: bv-null-in-validator
+        q: |-
+          What should a custom validator return for `null`, and why?
+        a: |-
+          `true`: leave `null` checks to `@NotNull`, so the constraints stay composable.
+      - id: bv-composing
+        q: |-
+          How do you build a constraint out of existing ones?
+        a: |-
+          Annotate your constraint annotation with them (e.g. `@NotNull @Size(...)`); they're applied together with it.
+
+  - section: Programmatic validation
+    cards:
+      - id: bv-programmatic
+        q: |-
+          How do you validate an object programmatically and print the violations?
+        a: |-
+          ```java
+          Validator v = Validation.buildDefaultValidatorFactory().getValidator();  // or @Inject
+          for (ConstraintViolation<Dragon> cv : v.validate(dragon))
+              System.err.println(cv.getPropertyPath() + ": " + cv.getMessage());
+          ```

@@ -1,0 +1,208 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Java Server Faces 2.3.md
+tag: jsf
+
+sections:
+  - section: Setup
+    cards:
+      - id: jsf-facesconfig
+        q: |-
+          Injecting `FacesContext` or using `@Named` beans in EL doesn't work in JSF 2.3. What's missing?
+        a: |-
+          ```java
+          @ApplicationScoped
+          @FacesConfig(version = FacesConfig.Version.JSF_2_3)
+          public class FacesConfiguration { }
+          ```
+      - id: jsf-injectable
+        q: |-
+          Which objects can you `@Inject` in JSF 2.3?
+        a: |-
+          `FacesContext`, `ExternalContext`, `HttpServletRequest`, `HttpSession`, `ServletContext`.
+
+  - section: Page basics
+    cards:
+      - id: jsf-library
+        q: |-
+          What does `library="css"` mean in `<h:outputStylesheet library="css" name="styles.css"/>`?
+        a: |-
+          A subdirectory of `src/main/webapp/resources`.
+      - id: jsf-messages
+        q: |-
+          `<h:messages globalOnly="true"/>` vs `<h:message for="name"/>`?
+        a: |-
+          The first shows messages **not tied to a component**; the second shows those for one component.
+      - id: jsf-f-attribute-param
+        q: |-
+          What do `<f:attribute>` and `<f:param>` do when nested in a component?
+        a: |-
+          `<f:attribute name="required" value="true"/>` sets an attribute of the parent. `<f:param name="dragon" value="Ignatius"/>` adds a URL parameter to a link.
+
+  - section: Selection components
+    cards:
+      - id: jsf-select-binding
+        q: |-
+          What do `selectMany*` and `selectOne*` components bind to?
+        a: |-
+          `selectMany*`: a **collection**. `selectOne*`: a **single value**.
+      - id: jsf-selectitems-pojo
+        prompt: |-
+          Fill a radio group from a list of `Cave` POJOs.
+        cloze: |-
+          ```xml
+          <h:selectOneRadio value="#{hoardController.cave}">
+              <f:selectItems value="#{hoardController.caveList}" {{c1::var="c"}}
+                             {{c2::itemLabel}}="#{c.name}" {{c3::itemValue}}="#{c.id}"/>
+          </h:selectOneRadio>
+          ```
+        extra: |-
+          `f:selectItems` also takes a `Map<label,value>` or a `Collection<SelectItem>`.
+
+  - section: Buttons and links
+    cards:
+      - id: jsf-command-vs-button
+        q: |-
+          `<h:commandButton>` vs `<h:button>`?
+        a: |-
+          `commandButton` submits the form (**POST**) and its `action` returns an outcome. `<h:button>` / `<h:link>` do a **GET** to an `outcome`.
+      - id: jsf-static-outcome
+        q: |-
+          What does `action="hoard-summary"` (a plain string) do?
+        a: |-
+          A static outcome: navigates to the page `hoard-summary.xhtml`.
+      - id: jsf-backref
+        q: |-
+          How can a sub-page link back to whichever page opened it?
+        a: |-
+          Pass `<f:param name="backref" value="#{view.viewId}"/>`, then on the sub-page link to `#{request.contextPath}#{param['backref']}`.
+
+  - section: Tables, loops, conditions
+    cards:
+      - id: jsf-datatable
+        q: |-
+          How do you give an `<h:dataTable>` column a header?
+        a: |-
+          `<h:column><f:facet name="header">Treasure</f:facet>#{t.name}</h:column>`
+      - id: jsf-repeat-vs-foreach
+        q: |-
+          `<ui:repeat>` vs `<c:forEach>`?
+        a: |-
+          `ui:repeat` loops at **render time**. JSTL `c:forEach` loops at **view build time** (creates components).
+      - id: jsf-rendered
+        q: |-
+          How do you show a component only conditionally?
+        a: |-
+          The `rendered` attribute: `rendered="#{t.cursed}"`.
+
+  - section: Validation and conversion
+    cards:
+      - id: jsf-validators
+        q: |-
+          Which standard JSF validator tags are there?
+        a: |-
+          `f:validateLongRange`, `f:validateDoubleRange`, `f:validateLength`, `f:validateRequired`, `f:validateRegex`, `f:validateBean`.
+      - id: jsf-custom-validator
+        prompt: |-
+          Write a custom JSF validator and use it on an input.
+        cloze: |-
+          ```java
+          @{{c1::FacesValidator}}("dragonNameValidator")
+          public class DragonNameValidator implements Validator<String> {
+              public void validate(FacesContext ctx, UIComponent c, String value) {
+                  if (!value.endsWith("the Terrible")) throw new {{c2::ValidatorException}}(new FacesMessage("..."));
+              }
+          }
+          ```
+          ```xml
+          <f:validator {{c3::validatorId}}="dragonNameValidator"/>
+          ```
+      - id: jsf-validator-method
+        q: |-
+          Besides a validator class, how else can you validate a JSF input with Java code?
+        a: |-
+          A **validator method** on a bean, with the same signature as `Validator.validate`: `<h:inputText validator="#{nameValidator.validateAlpha}"/>`.
+      - id: jsf-converters
+        q: |-
+          Which standard converter tags exist?
+        a: |-
+          `<f:convertDateTime pattern=... type=... timeZone=...>`, `<f:convertNumber type="number|currency|percent" currencyCode=...>`, and `<f:converter converterId=...>` for custom ones.
+      - id: jsf-converter-forclass
+        q: |-
+          How do you make a custom converter apply automatically to every `Treasure` property?
+        a: |-
+          `@FacesConverter(forClass = Treasure.class)` instead of `@FacesConverter("treasureConverter")`.
+
+  - section: Listeners
+    cards:
+      - id: jsf-listeners
+        q: |-
+          Which listener tags can you nest in JSF components?
+        a: |-
+          `f:actionListener` (`ActionListener.processAction`), `f:setPropertyActionListener` (sets a bean property on click), `f:valueChangeListener`, `f:phaseListener`.
+
+  - section: AJAX
+    cards:
+      - id: jsf-ajax
+        prompt: |-
+          Update the greeting on every keystroke in the name field.
+        cloze: |-
+          ```xml
+          <h:inputText id="name" value="#{hoardController.dragonName}">
+              <f:ajax event="{{c1::keyup}}" {{c2::execute}}="@this" {{c3::render}}="greeting"/>
+          </h:inputText>
+          ```
+      - id: jsf-ajax-execute-render
+        q: |-
+          `f:ajax` `execute` vs `render`, and which keywords do they accept?
+        a: |-
+          `execute`: the components whose values are **sent and processed**. `render`: the components to **re-render**. Keywords: `@this`, `@form`, `@all`, `@none`.
+      - id: jsf-immediate
+        q: |-
+          What does `immediate="true"` do?
+        a: |-
+          Processes the component in an **earlier phase**, which skips validation of the other components.
+      - id: jsf-ajax-wrap
+        q: |-
+          What happens if you wrap several components in `<f:ajax>`?
+        a: |-
+          AJAX is applied to all of them, each with its default event.
+
+  - section: File upload and HTML5
+    cards:
+      - id: jsf-upload
+        q: |-
+          What's needed for a JSF file upload, and what type is the bound property?
+        a: |-
+          `<h:form enctype="multipart/form-data">` with `<h:inputFile value="#{bean.upload}"/>`; the property is a `jakarta.servlet.http.Part` (`getInputStream()`, `getSubmittedFileName()`).
+      - id: jsf-html5
+        q: |-
+          How do you use a plain HTML element with JSF attributes, and pass through an attribute JSF doesn't know?
+        a: |-
+          `<input jsf:id="name" jsf:value="#{...}"/>` (namespace `http://xmlns.jcp.org/jsf`). `<h:inputText p:placeholder="..."/>` (namespace `.../jsf/passthrough`).
+
+  - section: Faces Flow
+    cards:
+      - id: jsf-flow-layout
+        q: |-
+          How is a Faces Flow `hoardopening` laid out on disk?
+        a: |-
+          A directory `hoardopening/` in the webapp root with `hoardopening-flow.xml` (can be empty), the entry page `hoardopening.xhtml` (= flow name), and more pages. The return page lies **outside** the directory.
+      - id: jsf-flow-bean
+        q: |-
+          What scope does a flow's controller bean have?
+        a: |-
+          `@Named @FlowScoped("hoardopening")` (and `Serializable`).
+
+  - section: Push
+    cards:
+      - id: jsf-push
+        prompt: |-
+          Push a raid alert from the server to the browser over a JSF WebSocket channel.
+        cloze: |-
+          ```java
+          @Inject {{c1::@Push}} PushContext raidAlerts;    // channel name = field name
+          raidAlerts.send("Knight approaching!");
+          ```
+          ```xml
+          <{{c2::f:websocket}} channel="raidAlerts" onmessage="onRaidAlert"/>
+          ```

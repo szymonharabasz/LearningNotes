@@ -1,0 +1,265 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Context and Dependency Injection.md
+tag: cdi
+
+sections:
+  - section: Bean discovery
+    cards:
+      - id: cdi-discovery-mode
+        q: |-
+          `beans.xml` `bean-discovery-mode`: what do `all` and `annotated` (the default) mean?
+        a: |-
+          `all`: every class is a CDI bean. `annotated`: only classes with a **bean-defining annotation** (a scope or a stereotype).
+      - id: cdi-ejb-are-beans
+        q: |-
+          Are EJBs (`@Stateless`, `@Stateful`, `@Singleton`) CDI beans?
+        a: |-
+          Yes.
+
+  - section: Injection and producers
+    cards:
+      - id: cdi-inject-points
+        q: |-
+          Where can `@Inject` go? What is an injected method called?
+        a: |-
+          On a field, a constructor, or a method. An injected method is an **initializer method**.
+      - id: cdi-named
+        q: |-
+          What does `@Named` do, and what kind of annotation is it?
+        a: |-
+          Gives the bean an **EL name**, e.g. `#{hoardController}` in JSF. `@Named` is itself a **qualifier**.
+      - id: cdi-produces
+        q: |-
+          When do you need a `@Produces` method or field?
+        a: |-
+          To inject things that **aren't beans**: enums, JDK classes, third-party objects, objects built from config.
+          ```java
+          @Produces @ApplicationScoped
+          Clock vaultClock() { return Clock.systemUTC(); }
+          ```
+      - id: cdi-eager
+        q: |-
+          CDI beans are created lazily. What are three ways to create one eagerly at startup?
+        a: |-
+          EJB `@Singleton @Startup`; an observer `void init(@Observes @Initialized(ApplicationScoped.class) Object o)`; `@Startup` in Quarkus.
+
+  - section: Scopes
+    cards:
+      - id: cdi-dependent
+        q: |-
+          What is the default CDI scope, and what does it mean?
+        a: |-
+          `@Dependent`: a **new instance for every injection point**, living as long as its owner.
+      - id: cdi-session-serializable
+        q: |-
+          What must a `@SessionScoped` bean be?
+        a: |-
+          `Serializable` (sessions can be passivated or replicated).
+      - id: cdi-application-proxy
+        q: |-
+          What do clients of an `@ApplicationScoped` bean actually get injected?
+        a: |-
+          A **client proxy**, which forwards to the single instance (created lazily, on first use).
+      - id: cdi-conversation
+        prompt: |-
+          Start and end a JSF conversation in a `@ConversationScoped` bean.
+        cloze: |-
+          ```java
+          @Inject {{c1::Conversation}} conversation;
+          conversation.{{c2::begin()}};      // or begin("hoard-opening-42")
+          conversation.{{c3::end()}};
+          ```
+      - id: cdi-flowscoped
+        q: |-
+          Which CDI scope belongs to JSF Faces Flow?
+        a: |-
+          `@FlowScoped("flow-name")`
+
+  - section: Qualifiers
+    cards:
+      - id: cdi-qualifier-define
+        prompt: |-
+          Define a qualifier annotation `@DragonClass`.
+        cloze: |-
+          ```java
+          @{{c1::Qualifier}}
+          @Retention(RUNTIME)
+          @Target({METHOD, FIELD, PARAMETER, TYPE})
+          public @interface DragonClass { Age value(); }
+          ```
+      - id: cdi-nonbinding
+        q: |-
+          What does `@Nonbinding` on a qualifier (or interceptor binding) member do?
+        a: |-
+          The member **doesn't take part in resolution**: beans with different values still match. Without it, every member must match.
+      - id: cdi-builtin-qualifiers
+        q: |-
+          What are CDI's built-in qualifiers?
+        a: |-
+          `@Default`, `@Any`, `@Named`
+      - id: cdi-instance-select
+        q: |-
+          How do you choose one of several bean implementations **at runtime**?
+        a: |-
+          Inject `Instance<Account>` and call `select(...)` with a qualifier instance (an `AnnotationLiteral`), then `get()`.
+
+  - section: Alternatives and stereotypes
+    cards:
+      - id: cdi-alternative
+        q: |-
+          You mark implementations with `@Alternative`. What are the two ways to select one?
+        a: |-
+          List it in `beans.xml` `<alternatives><class>...</class></alternatives>`, or put **`@Priority`** on the chosen one.
+      - id: cdi-stereotype
+        q: |-
+          What is a CDI stereotype, and what can't it declare?
+        a: |-
+          An annotation (`@Stereotype`) bundling a scope, interceptor bindings, `@Named`, `@Alternative`. It can't declare **qualifiers**, except `@Named` with no value.
+
+  - section: Interceptors
+    cards:
+      - id: cdi-interceptor-steps
+        q: |-
+          What are the three steps to create and use a CDI interceptor?
+        a: |-
+          1. Define an `@InterceptorBinding` annotation (`@GoblinProof`).
+          2. Write the class: `@GoblinProof @Interceptor @Priority(...)` with an `@AroundInvoke` method.
+          3. Put `@GoblinProof` on a bean class or method.
+      - id: cdi-interceptor-class
+        prompt: |-
+          Write the interceptor for the binding `@GoblinProof`, enabled without `beans.xml`.
+        cloze: |-
+          ```java
+          @GoblinProof @{{c1::Interceptor}}
+          @{{c2::Priority}}(Interceptor.Priority.APPLICATION)
+          public class GoblinProofInterceptor {
+              @{{c3::AroundInvoke}}
+              public Object check({{c4::InvocationContext}} ctx) throws Exception {
+                  return ctx.{{c5::proceed()}};
+              }
+          }
+          ```
+      - id: cdi-interceptors-old
+        q: |-
+          `@Interceptors(GoblinProofInterceptor.class)` vs an interceptor binding: pros and cons?
+        a: |-
+          The old way (Interceptors spec, EJBs) **needs no activation** in `beans.xml` or `@Priority`, but **couples** the bean to the interceptor class.
+      - id: cdi-invocationcontext
+        q: |-
+          Name the `InvocationContext` methods. Which one shares data along the chain?
+        a: |-
+          `getTarget()`, `getMethod()`, `getParameters()`, `setParameters(Object[])`, **`getContextData()`** (a map shared along the chain), `proceed()`.
+      - id: cdi-interceptor-other
+        q: |-
+          Besides `@AroundInvoke`, which interceptor methods exist?
+        a: |-
+          `@AroundConstruct`, `@AroundTimeout` (EJB timers), `@PostConstruct`, `@PreDestroy`. In an interceptor class, the lifecycle methods take an `InvocationContext`.
+      - id: cdi-exclude-interceptors
+        q: |-
+          EJB only: what do `@ExcludeDefaultInterceptors` and `@ExcludeClassInterceptors` exclude?
+        a: |-
+          Default interceptors (configured in `ejb-jar.xml`), and the interceptors declared on the class (for one method).
+
+  - section: Decorators
+    cards:
+      - id: cdi-decorator-vs-interceptor
+        q: |-
+          Decorator vs interceptor?
+        a: |-
+          An interceptor is **generic** (any method). A decorator **implements a business interface** and wraps beans of that type, with business logic.
+      - id: cdi-decorator
+        prompt: |-
+          Write a decorator that takes a 10% goblin commission off every `Treasure`'s value.
+        cloze: |-
+          ```java
+          @{{c1::Decorator}}
+          @Priority(Interceptor.Priority.APPLICATION)
+          public {{c2::abstract}} class GoblinCommissionDecorator implements Treasure {
+              @Inject @{{c3::Delegate}}
+              Treasure treasure;
+
+              public BigDecimal value() { return treasure.value().multiply(new BigDecimal("0.9")); }
+          }
+          ```
+        extra: |-
+          Abstract, so it needn't implement all interface methods. Enable with `@Priority` or `<decorators>` in `beans.xml` (which also sets the order).
+
+  - section: Events
+    cards:
+      - id: cdi-fire-async
+        q: |-
+          What's the difference between `event.fire(...)` and `event.fireAsync(...)`? Which observers get each?
+        a: |-
+          `fire` is synchronous and notifies `@Observes` methods. `fireAsync` returns a `CompletionStage` and notifies **only `@ObservesAsync`** methods.
+      - id: cdi-observer-order
+        q: |-
+          How do you order synchronous observers?
+        a: |-
+          `@Observes @Priority(...)` on the observer parameter.
+      - id: cdi-transactional-observer
+        prompt: |-
+          Observe `HoardDeposited` only after the transaction commits, without creating the bean just for the event.
+        cloze: |-
+          ```java
+          public void afterCommit(@Observes(during = TransactionPhase.{{c1::AFTER_SUCCESS}},
+                                            notifyObserver = Reception.{{c2::IF_EXISTS}}) HoardDeposited event)
+          ```
+        extra: |-
+          Phases: `IN_PROGRESS` (default), `BEFORE_COMPLETION`, `AFTER_COMPLETION`, `AFTER_FAILURE`, `AFTER_SUCCESS`.
+      - id: cdi-event-metadata
+        q: |-
+          What extra observer parameter tells you about the fired event?
+        a: |-
+          `EventMetadata` (qualifiers, injection point, type).
+      - id: cdi-annotation-literal
+        q: |-
+          How do you fire an event to observers with a qualifier value chosen **at runtime**?
+        a: |-
+          Create the qualifier instance by extending `AnnotationLiteral`, then `event.select(literal).fire(...)`:
+          ```java
+          class AlarmChannelLiteral extends AnnotationLiteral<AlarmChannel> implements AlarmChannel { ... }
+          alarms.select(new AlarmChannelLiteral(Channel.RAVEN)).fireAsync(alarm);
+          ```
+
+  - section: Transactions (JTA)
+    cards:
+      - id: cdi-transactional
+        prompt: |-
+          Roll back on the checked `VaultBreachedException`, but not on `MinorGoblinMistake`.
+        cloze: |-
+          ```java
+          @Transactional(value = TxType.REQUIRED,
+                         {{c1::rollbackOn}} = VaultBreachedException.class,
+                         {{c2::dontRollbackOn}} = MinorGoblinMistake.class)
+          ```
+      - id: cdi-transactional-default-rollback
+        q: |-
+          With `@Transactional`, which exceptions roll back by default?
+        a: |-
+          Only **unchecked** exceptions.
+      - id: cdi-txtypes
+        q: |-
+          List the six `TxType` values. Which is the default?
+        a: |-
+          `REQUIRED` (default), `REQUIRES_NEW`, `MANDATORY`, `SUPPORTS`, `NOT_SUPPORTED`, `NEVER`.
+
+  - section: Managed concurrency
+    cards:
+      - id: cdi-managed-executor
+        q: |-
+          Why use `ManagedExecutorService` instead of a plain `ExecutorService` in an application server?
+        a: |-
+          Its threads are managed by the server, so the **CDI context, security and JNDI** are available in the tasks. Inject with `@Resource`. (`ManagedScheduledExecutorService` for scheduled tasks.)
+
+  - section: Looking up beans programmatically
+    cards:
+      - id: cdi-current
+        q: |-
+          How do you get a bean of a generic type from code that **isn't** a bean?
+        a: |-
+          `CDI.current().select(new TypeLiteral<Repository<Hoard>>() {}).get()`
+      - id: cdi-beanmanager
+        q: |-
+          With `BeanManager`, what are the steps to get a reference for a type known only at runtime?
+        a: |-
+          Build a `ParameterizedType`, then: `bean = manager.resolve(manager.getBeans(type))`, `cc = manager.createCreationalContext(bean)`, `manager.getReference(bean, type, cc)`.

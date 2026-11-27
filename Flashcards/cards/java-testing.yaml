@@ -1,0 +1,60 @@
+deck: Java
+source: Java, Jakarta EE, Microprofile/Testing with JUnit and Mockito.md
+tag: testing
+
+sections:
+  - section: JUnit 5
+    cards:
+      - id: jt-junit4-to-5
+        q: |-
+          What are the JUnit 5 names for `@Before`, `@BeforeClass`, `@After`, `@AfterClass`, `@Ignore`, `@RunWith`?
+        a: |-
+          `@BeforeEach`, `@BeforeAll`, `@AfterEach`, `@AfterAll`, `@Disabled`, `@ExtendWith`
+      - id: jt-beforeall-static
+        q: |-
+          Must a `@BeforeAll` method be static?
+        a: |-
+          Yes, unless the class is annotated `@TestInstance(Lifecycle.PER_CLASS)`.
+      - id: jt-assertthrows
+        prompt: |-
+          Assert that depositing a cursed ring throws `CursedTreasureException`.
+        cloze: |-
+          ```java
+          {{c1::assertThrows}}(CursedTreasureException.class, {{c2::() -> vault.deposit(new CursedRing())}});
+          ```
+
+  - section: Mockito
+    cards:
+      - id: jt-mockito-extension
+        q: |-
+          Which annotations set up Mockito in a JUnit 5 test: enable it, create a mock, inject mocks, capture arguments?
+        a: |-
+          `@ExtendWith(MockitoExtension.class)`, `@Mock`, `@InjectMocks`, `@Captor ArgumentCaptor<T>`.
+      - id: jt-injectmocks-order
+        q: |-
+          How does `@InjectMocks` inject the mocks?
+        a: |-
+          Constructor injection first, then setters, then fields.
+      - id: jt-when-given
+        prompt: |-
+          Stub `treasures.findById(42L)` in classic and in BDD style.
+        cloze: |-
+          ```java
+          {{c1::when}}(treasures.findById(42L)).{{c2::thenReturn}}(Optional.of(crown));
+          {{c3::given}}(treasures.findById(42L)).{{c4::willReturn}}(Optional.of(crown));
+          ```
+      - id: jt-captor
+        prompt: |-
+          Verify that `save` was called, and check the argument that was passed.
+        cloze: |-
+          ```java
+          verify(treasures).save(appraisalCaptor.{{c1::capture()}});
+          assertEquals(new BigDecimal("1000"), appraisalCaptor.{{c2::getValue()}}.value());
+          ```
+        extra: |-
+          A captor is also handy for checking what was passed to an async callback, e.g. `asyncResponse.resume(...)`.
+      - id: jt-never
+        q: |-
+          How do you verify that `delete` was **never** called, with any argument?
+        a: |-
+          `verify(treasures, never()).delete(any());` (same as `times(0)`)

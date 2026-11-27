@@ -1,0 +1,91 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Servlets and WebSockets.md
+tag: servlets
+
+sections:
+  - section: Servlets
+    cards:
+      - id: srv-webservlet
+        prompt: |-
+          Declare a servlet at `/vault-door` without `web.xml` and handle GET.
+        cloze: |-
+          ```java
+          @{{c1::WebServlet}}(name = "VaultDoor", urlPatterns = "/vault-door")
+          public class VaultDoorServlet extends {{c2::HttpServlet}} {
+              protected void {{c3::doGet}}(HttpServletRequest req, HttpServletResponse resp) { ... }
+          }
+          ```
+      - id: srv-forward-include
+        q: |-
+          How does a servlet hand the request over to a JSP, and what's the alternative to forwarding?
+        a: |-
+          `request.getRequestDispatcher("/vault.jsp").forward(request, response)`. Alternative: `include(...)`, which inserts the output and returns.
+      - id: srv-request-info
+        q: |-
+          How does a servlet read the client's IP, a header, and a session attribute?
+        a: |-
+          `request.getRemoteAddr()`, `request.getHeader("User-Agent")`, `request.getSession().getAttribute("DRAGON")`.
+
+  - section: Filters
+    cards:
+      - id: srv-filter-stop
+        q: |-
+          How does a servlet `Filter` stop a request from going further?
+        a: |-
+          By **not calling** `chain.doFilter(request, response)`.
+      - id: srv-filter-target
+        q: |-
+          What are the two ways to say which requests a `@WebFilter` applies to?
+        a: |-
+          `urlPatterns = "/*"` or `servletNames = {"VaultDoor", "Ledger"}`.
+      - id: srv-filter-init
+        q: |-
+          Must a `Filter` implement `init` and `destroy`?
+        a: |-
+          No: since Servlet 4.0 they have default implementations.
+      - id: srv-filter-vs-jaxrs
+        q: |-
+          Servlet filter vs JAX-RS filter?
+        a: |-
+          A JAX-RS `ContainerRequestFilter` knows about the **matched resource method** (unless `@PreMatching`); a servlet filter works on raw requests.
+
+  - section: WebSockets
+    cards:
+      - id: ws-server-endpoint
+        prompt: |-
+          Write a WebSocket server endpoint at `/cave-chat` that broadcasts each message.
+        cloze: |-
+          ```java
+          @{{c1::ServerEndpoint}}("/cave-chat")
+          public class CaveChatEndpoint {
+              @{{c2::OnMessage}}
+              public void broadcast(String message, Session sender) throws IOException {
+                  for (Session s : sender.{{c3::getOpenSessions()}})
+                      if (s.isOpen()) s.{{c4::getBasicRemote()}}.sendText(message);
+              }
+          }
+          ```
+      - id: ws-basic-async
+        q: |-
+          `getBasicRemote()` vs `getAsyncRemote()`?
+        a: |-
+          Basic sends **blocking**; async doesn't block.
+      - id: ws-lifecycle
+        q: |-
+          Which annotations handle WebSocket lifecycle events, and what parameters do they take?
+        a: |-
+          `@OnOpen(Session)`, `@OnMessage(String, Session)`, `@OnError(Session, Throwable)`, `@OnClose(Session, CloseReason)`.
+      - id: ws-java-client
+        q: |-
+          How does a Java client connect to a WebSocket endpoint?
+        a: |-
+          An `@ClientEndpoint` class and `ContainerProvider.getWebSocketContainer().connectToServer(this, new URI("ws://host:8080/dragonbank/cave-chat"))` (context root + endpoint path).
+      - id: ws-js-client
+        q: |-
+          What does a JavaScript WebSocket client look like?
+        a: |-
+          ```javascript
+          const socket = new WebSocket("ws://localhost:8080/dragonbank/cave-chat");
+          socket.onmessage = event => console.log(event.data);
+          socket.send("Knight spotted!");
+          ```

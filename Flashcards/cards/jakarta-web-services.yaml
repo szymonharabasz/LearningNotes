@@ -1,0 +1,196 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Web services - JAX-RS and JAX-WS.md
+tag: jaxrs
+
+sections:
+  - section: Application and resources
+    cards:
+      - id: jaxrs-application
+        prompt: |-
+          Put all JAX-RS resources under `/api` without `web.xml`.
+        cloze: |-
+          ```java
+          @{{c1::ApplicationPath}}("api")
+          public class DragonBankApi extends {{c2::Application}} { }
+          ```
+
+  - section: Parameters
+    cards:
+      - id: jaxrs-param-annotations
+        q: |-
+          What are the seven JAX-RS parameter annotations?
+        a: |-
+          `@PathParam`, `@QueryParam`, `@MatrixParam`, `@FormParam`, `@HeaderParam`, `@CookieParam`, `@BeanParam`.
+      - id: jaxrs-matrix
+        q: |-
+          What is a matrix parameter, and where can it appear?
+        a: |-
+          `;name=value` attached to **any path segment**: `/treasures;color=red/gems` → `@MatrixParam("color")`.
+      - id: jaxrs-beanparam
+        q: |-
+          What does `@BeanParam` do?
+        a: |-
+          Injects a class whose fields carry `@PathParam`, `@QueryParam`, ... annotations: groups parameters.
+      - id: jaxrs-defaultvalue
+        q: |-
+          How do you supply a value for a missing query parameter?
+        a: |-
+          `@DefaultValue("1") @QueryParam("page") int page`
+      - id: jaxrs-context
+        q: |-
+          Which `@Context` objects give access to the URI, headers and security?
+        a: |-
+          `UriInfo` (`getPathParameters()`, `getQueryParameters()`), `HttpHeaders` (`getRequestHeaders()`, `getCookies()`), `SecurityContext`.
+
+  - section: Responses
+    cards:
+      - id: jaxrs-created
+        prompt: |-
+          Return 201 Created with a `Location` header pointing to the new hoard.
+        cloze: |-
+          ```java
+          Response.{{c1::created}}(uriInfo.{{c2::getAbsolutePathBuilder()}}.path(id.toString()).build())
+                  .entity(hoard).build();
+          ```
+      - id: jaxrs-webappexception
+        q: |-
+          How do you return an error status from a resource method without building a `Response`?
+        a: |-
+          Throw `WebApplicationException(Status.FORBIDDEN)` or a subclass such as `NotFoundException`, `BadRequestException`.
+      - id: jaxrs-generictype
+        q: |-
+          Why do you need `new GenericType<List<Dragon>>() {}` to read a list, and why the `{}`?
+        a: |-
+          Generic type arguments are erased. The `{}` makes an **anonymous subclass**, which keeps the type argument at runtime.
+
+  - section: Providers
+    cards:
+      - id: jaxrs-provider-register
+        q: |-
+          How are JAX-RS providers (mappers, readers, filters...) registered?
+        a: |-
+          With `@Provider`, or registered in the `Application`.
+      - id: jaxrs-exception-mapper
+        prompt: |-
+          Map `VaultBreachedException` to a 409 response.
+        cloze: |-
+          ```java
+          @Provider
+          public class VaultBreachedMapper implements {{c1::ExceptionMapper<VaultBreachedException>}} {
+              public Response {{c2::toResponse}}(VaultBreachedException ex) {
+                  return Response.status(Status.CONFLICT).entity(ex.getMessage()).build();
+              }
+          }
+          ```
+      - id: jaxrs-body-reader
+        q: |-
+          What do you implement to read a custom media type like `application/x-dragon-scroll` into a `Dragon`?
+        a: |-
+          `@Provider @Consumes("application/x-dragon-scroll")` + `MessageBodyReader<Dragon>` with `isReadable(...)` and `readFrom(..., InputStream entityStream)`. (`MessageBodyWriter`: `isWriteable` + `writeTo`.)
+      - id: jaxrs-param-converter
+        q: |-
+          A parameter type needs custom conversion from a string. What's the simpler alternative to an entity provider, and when is none needed at all?
+        a: |-
+          A `ParamConverterProvider` returning a `ParamConverter<T>` (`fromString`/`toString`). None is needed if the type has `valueOf(String)`, `fromString(String)` or a `String` constructor.
+      - id: jaxrs-reader-interceptor
+        q: |-
+          What do `ReaderInterceptor` / `WriterInterceptor` wrap?
+        a: |-
+          Reading / writing the **entity body** (`aroundReadFrom` / `aroundWriteTo`), e.g. to change the stream; call `ctx.proceed()`.
+
+  - section: Filters
+    cards:
+      - id: jaxrs-prematching
+        q: |-
+          What's the difference between a default `ContainerRequestFilter` and one with `@PreMatching`?
+        a: |-
+          Default: **post-matching**, it knows the matched resource method. `@PreMatching`: runs before matching and can change the URI or HTTP method.
+      - id: jaxrs-abortwith
+        q: |-
+          How does a request filter reject a request?
+        a: |-
+          `ctx.abortWith(Response.status(Status.UNAUTHORIZED).build())`
+      - id: jaxrs-request-property
+        q: |-
+          How do you pass data from a request filter to the response filter?
+        a: |-
+          Request properties: `ctx.setProperty("request.id", id)`, later `requestCtx.getProperty("request.id")`.
+      - id: jaxrs-namebinding
+        q: |-
+          How do you apply a filter only to selected resource methods (two ways)?
+        a: |-
+          **Name binding:** a `@NameBinding` annotation on both the provider and the methods (like a CDI interceptor binding).
+          **`DynamicFeature`:** `configure(ResourceInfo, FeatureContext)` registers the provider per method with arbitrary logic.
+
+  - section: Asynchronous resources
+    cards:
+      - id: jaxrs-asyncresponse
+        prompt: |-
+          Look up a hoard asynchronously in a JAX-RS resource method.
+        cloze: |-
+          ```java
+          public void getHoardAsync(@PathParam("id") long id, {{c1::@Suspended AsyncResponse}} ar) {
+              executor.submit(() -> ar.{{c2::resume}}(slowGoblinLookup(id)));
+          }
+          ```
+        extra: |-
+          Resuming with an exception (`ar.resume(new NotFoundException())`) produces an error response.
+      - id: jaxrs-completionstage
+        q: |-
+          Besides `AsyncResponse`, how else can a JAX-RS method be asynchronous?
+        a: |-
+          Return a `CompletionStage<T>` and complete it from another thread (`complete` / `completeExceptionally`).
+
+  - section: Server-Sent Events
+    cards:
+      - id: jaxrs-sse-single
+        q: |-
+          How does a JAX-RS method stream Server-Sent Events to one client?
+        a: |-
+          `@Produces(MediaType.SERVER_SENT_EVENTS)`, inject `@Context SseEventSink sink` and `@Context Sse sse`, send `sse.newEventBuilder().name(...).data(...).build()`. **Closing the sink** ends the stream.
+      - id: jaxrs-sse-broadcast
+        q: |-
+          How do you broadcast SSE to all clients, and where must the broadcaster live?
+        a: |-
+          `sse.newBroadcaster()`, `broadcaster.register(sink)`, `broadcaster.broadcast(event)`. Keep it in an `@ApplicationScoped` / `@Singleton` resource.
+      - id: jaxrs-sse-browser
+        q: |-
+          How does a browser receive named SSE events?
+        a: |-
+          `new EventSource(url).addEventListener("gold-price", e => ... e.data ...)`
+
+  - section: JAX-RS client API
+    cards:
+      - id: jaxrs-client-basic
+        prompt: |-
+          JAX-RS client: GET hoard 42 using a path template.
+        cloze: |-
+          ```java
+          Client client = {{c1::ClientBuilder}}.newBuilder().connectTimeout(1, TimeUnit.SECONDS).build();
+          client.{{c2::target}}("http://localhost:8080/api/hoards")
+                .path("{id}").{{c3::resolveTemplate}}("id", 42L)
+                .{{c4::request()}}.get(Hoard.class);
+          ```
+      - id: jaxrs-client-async
+        q: |-
+          What are the three asynchronous styles of the JAX-RS client?
+        a: |-
+          `request().async().get()` → `Future<Response>`; `async().get(new InvocationCallback<T>() {...})` (`completed`/`failed`); `request().rx().get(...)` → `CompletionStage`.
+      - id: jaxrs-client-put
+        q: |-
+          How do you send a JSON body with the JAX-RS client?
+        a: |-
+          `target.request().put(Entity.entity(hoard, MediaType.APPLICATION_JSON), Hoard.class)`
+
+  - section: SOAP (JAX-WS)
+    cards:
+      - id: jaxws-webservice
+        q: |-
+          How do you expose a SOAP service, and is `@WebMethod` required?
+        a: |-
+          `@WebService` on a POJO or a `@Stateless` EJB. `@WebMethod` is optional: all public methods are exposed.
+      - id: jaxws-client
+        q: |-
+          How do you write a JAX-WS client?
+        a: |-
+          Generate classes with `wsimport http://host/Service?wsdl`, then inject `@WebServiceRef(wsdlLocation = "...?wsdl") GoblinLedgerService_Service service;`.

@@ -1,0 +1,89 @@
+deck: Java
+source: Java, Jakarta EE, Microprofile/Java concurrency.md
+tag: java-concurrency
+
+sections:
+  - section: Threads
+    cards:
+      - id: jc-thread-two-ways
+        q: |-
+          What are the two classic ways to define what a `Thread` runs?
+        a: |-
+          Pass a `Runnable` (`new Thread(Vault::countGold)`), or extend `Thread` and override `run()`. Then call `start()`, **not** `run()`.
+      - id: jc-interrupted
+        q: |-
+          You catch `InterruptedException` and can't rethrow it. What must you do?
+        a: |-
+          **Restore the interrupted flag**, so that code further up the stack can see it:
+          ```java
+          catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+              throw new RuntimeException(e);
+          }
+          ```
+
+  - section: Executors
+    cards:
+      - id: jc-executor-autocloseable
+        q: |-
+          Since JDK 19, how can you make sure all tasks submitted to an `ExecutorService` have finished?
+        a: |-
+          `ExecutorService` is `AutoCloseable`: use try-with-resources. `close()` **waits for the submitted tasks** to finish.
+      - id: jc-forkjoin
+        q: |-
+          What is the point of a `ForkJoinPool`?
+        a: |-
+          **Work stealing** for divide-and-conquer tasks: idle threads take tasks from busy threads' queues (good cache affinity).
+
+  - section: Virtual threads
+    cards:
+      - id: jc-virtual-ways
+        q: |-
+          What are three ways to run code on a virtual thread?
+        a: |-
+          ```java
+          Thread.startVirtualThread(runnable);
+          Thread.ofVirtual().unstarted(runnable).start();     // also Thread.ofPlatform()
+          try (var ex = Executors.newVirtualThreadPerTaskExecutor()) { ex.submit(task); }
+          ```
+
+  - section: CompletableFuture
+    cards:
+      - id: jc-run-supply
+        q: |-
+          `CompletableFuture.runAsync` vs `supplyAsync`? And `get()` vs `join()`?
+        a: |-
+          `runAsync` takes a `Runnable` (no result); `supplyAsync` takes a `Supplier` (with a result). Both `get()` and `join()` block; `join()` throws **unchecked** exceptions.
+      - id: jc-apply-accept
+        q: |-
+          What's the difference between `thenApply` and `thenAccept`?
+        a: |-
+          `thenApply` **transforms** the result (returns a new value). `thenAccept` **consumes** it (returns `CompletableFuture<Void>`).
+      - id: jc-compose-combine
+        q: |-
+          `thenCompose` vs `thenCombine`: when do you use which?
+        a: |-
+          `thenCompose`: **sequential**; the second async call needs the first result (flat-map).
+          `thenCombine`: **parallel**; two independent futures, combined when both finish.
+      - id: jc-combine-example
+        prompt: |-
+          Appraise the crown and the sceptre in parallel, then print the sum.
+        cloze: |-
+          ```java
+          crown.{{c1::thenCombine}}(sceptre, BigDecimal::add).thenAccept(System.out::println);
+          ```
+      - id: jc-allof
+        q: |-
+          How do you run something after **several** futures complete?
+        a: |-
+          `CompletableFuture.allOf(f1, f2).thenRun(...)`. `allOf` returns `CompletableFuture<Void>`, so read the results with `f1.join()`. (`anyOf` completes with the first.)
+      - id: jc-exceptionally
+        q: |-
+          How do you replace a failed `CompletableFuture`'s result with a default?
+        a: |-
+          `.exceptionally(ex -> BigDecimal.ZERO)`
+      - id: jc-server-side
+        q: |-
+          What are the server-side counterparts of plain Java SE threads and futures in Jakarta EE / MicroProfile / Quarkus?
+        a: |-
+          `ManagedExecutorService` (Jakarta Concurrency), `@Asynchronous` (EJB, and MicroProfile FT), Mutiny `Uni`/`Multi` (Quarkus).

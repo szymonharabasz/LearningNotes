@@ -1,0 +1,115 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Serialization and deserialization of XML and JSON.md
+tag: serialization
+
+sections:
+  - section: Overview
+    cards:
+      - id: ser-jaxrs-auto
+        q: |-
+          How does JAX-RS convert objects to JSON or XML? What can you return without any binding?
+        a: |-
+          Automatically with **JSON-B** or **JAX-B**, based on `@Produces`/`@Consumes`. `JsonObject`/`JsonArray` (JSON-P) can be returned directly. (Jersey: add `jersey-media-moxy`.)
+      - id: ser-jsonb-vs-jsonp
+        q: |-
+          JSON-B vs JSON-P?
+        a: |-
+          **JSON-B** binds **objects** to JSON (like JAX-B for XML). **JSON-P** processes JSON **without classes**: object model or streaming.
+
+  - section: JSON-B
+    cards:
+      - id: ser-jsonb-basic
+        q: |-
+          How do you serialize and deserialize with JSON-B?
+        a: |-
+          `Jsonb jsonb = JsonbBuilder.create(); jsonb.toJson(dragon); jsonb.fromJson(json, Dragon.class);`
+      - id: ser-jsonb-generic
+        q: |-
+          How do you deserialize a `List<Dragon>` with JSON-B?
+        a: |-
+          Pass the runtime generic type: `jsonb.fromJson(json, new ArrayList<Dragon>() {}.getClass().getGenericSuperclass())`
+      - id: ser-jsonb-config
+        prompt: |-
+          Configure JSON-B to use snake_case property names and pretty printing.
+        cloze: |-
+          ```java
+          JsonbBuilder.create(new {{c1::JsonbConfig}}()
+              .{{c2::withPropertyNamingStrategy}}(PropertyNamingStrategy.LOWER_CASE_WITH_UNDERSCORES)
+              .{{c3::withFormatting}}(true));
+          ```
+      - id: ser-jsonb-annotations
+        q: |-
+          Which JSON-B annotations rename a property, skip it, format a date, format a number?
+        a: |-
+          `@JsonbProperty("dragon_name")`, `@JsonbTransient`, `@JsonbDateFormat("yy/MM/dd")`, `@JsonbNumberFormat("#0.00")`.
+      - id: ser-jsonb-class-annotations
+        q: |-
+          Which class-level JSON-B annotations control property order and serializing nulls?
+        a: |-
+          `@JsonbPropertyOrder(PropertyOrderStrategy.LEXICOGRAPHICAL)` (or `REVERSE`, `ANY`), `@JsonbNillable` (JSON-B 3: `@JsonbProperty(nillable = true)`).
+
+  - section: JSON-P
+    cards:
+      - id: ser-jsonp-build
+        prompt: |-
+          JSON-P: build a JSON object with a nested object.
+        cloze: |-
+          ```java
+          JsonObject dragon = Json.{{c1::createObjectBuilder()}}
+              .add("name", "Ignatius")
+              .add("cave", Json.createObjectBuilder().add("kingdom", "Eriador"))
+              .{{c2::build()}};
+          ```
+      - id: ser-jsonp-collect
+        q: |-
+          How do you collect a stream into a `JsonArray`?
+        a: |-
+          `.collect(JsonCollectors.toJsonArray())`
+      - id: ser-jsonp-read-write
+        q: |-
+          JSON-P object model: how do you read and write JSON text?
+        a: |-
+          `Json.createReader(reader).readObject()` (or `readArray()`), `Json.createWriter(writer).writeObject(obj)`. Both are closeable.
+      - id: ser-json-pointer
+        q: |-
+          What does `Json.createPointer("/1/name").getValue(dragonsArray)` return?
+        a: |-
+          The `name` of the **second** element (JSON Pointer, zero-based).
+      - id: ser-json-patch
+        q: |-
+          How do you apply a JSON Patch, and is the original modified?
+        a: |-
+          `Json.createPatchBuilder().replace("/1/name", "Brunhilde").remove("/0").build().apply(array)`. JSON values are **immutable**: you get a new value.
+      - id: ser-jsonp-streaming
+        q: |-
+          What are the JSON-P streaming classes for writing and reading?
+        a: |-
+          `JsonGenerator` (`writeStartObject().write(k, v).writeEnd()`), and `JsonParser` (`hasNext()`/`next()` returning events like `KEY_NAME`, `VALUE_STRING`, `START_OBJECT`).
+
+  - section: XML
+    cards:
+      - id: ser-jaxb
+        q: |-
+          What do you need to use JAX-B on Java 11+?
+        a: |-
+          `@XmlRootElement` on the class, and the dependencies `jakarta.xml.bind-api` plus an implementation (it was **removed from the JDK** in Java 11).
+      - id: ser-dom-vs-sax
+        q: |-
+          DOM vs SAX?
+        a: |-
+          **DOM:** the whole document in memory as a tree (read and modify). **SAX:** streaming, with event callbacks; low memory, read-only.
+      - id: ser-dom-parse
+        q: |-
+          How do you parse an XML string into a DOM `Document`?
+        a: |-
+          `DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(xml)))`
+      - id: ser-dom-text
+        q: |-
+          DOM: you call `getNodeValue()` on an element and get `null`. What should you use?
+        a: |-
+          `getTextContent()`. `getNodeValue()` is `null` for elements.
+      - id: ser-sax-handler
+        q: |-
+          Which `DefaultHandler` methods do you override for SAX, and which pitfall does `characters` have?
+        a: |-
+          `startElement`, `endElement`, `characters`. `characters` **can be called several times** for one text node, so accumulate the text.

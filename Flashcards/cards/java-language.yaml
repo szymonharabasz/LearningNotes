@@ -1,0 +1,271 @@
+deck: Java
+source: Java, Jakarta EE, Microprofile/Java language.md
+tag: java
+
+sections:
+  - section: Classes and interfaces
+    cards:
+      - id: jl-private-abstract
+        q: |-
+          Can a method be both `private` and `abstract`?
+        a: |-
+          No. Nobody could override it, so it could never be implemented.
+      - id: jl-method-field-same-name
+        q: |-
+          Can a class have a method and a field with the same name?
+        a: |-
+          Yes. Methods and fields live in different namespaces.
+      - id: jl-protected-other-package
+        q: |-
+          A subclass in **another package** inherits a `protected` member. Through which references can it access that member?
+        a: |-
+          Only through references of **its own type** (or a subtype), not through a reference to the superclass or a sibling subclass. (`protected` also includes package access.)
+      - id: jl-interface-vs-abstract
+        q: |-
+          Interfaces can have `default` methods. What can an abstract class still do that an interface can't?
+        a: |-
+          Have **instance fields** and **constructors**.
+      - id: jl-default-diamond
+        q: |-
+          A class inherits the same method signature from two interfaces, and at least one has a `default` implementation. What must the class do, and how can it reuse one of them?
+        a: |-
+          It must **override** the method. The override can delegate: `Treasure.super.value()`.
+      - id: jl-cast-between-interfaces
+        q: |-
+          Will the compiler let you cast a reference from one interface type to an unrelated interface type?
+        a: |-
+          Yes. Some class might implement both, so the check is left to runtime (`ClassCastException`).
+      - id: jl-inner-new
+        prompt: |-
+          Create an instance of the inner class `GoblinTeller` from outside the enclosing `Bank` instance `bank`.
+        cloze: |-
+          ```java
+          var teller = {{c1::bank.new}} GoblinTeller("Grizzlegut");
+          ```
+      - id: jl-anonymous-extend
+        q: |-
+          What can an anonymous class extend or implement?
+        a: |-
+          Any interface, or any **non-final** class, including JDK classes.
+      - id: jl-double-brace
+        q: |-
+          What exactly is "double-brace initialization" `new ArrayList<String>() {{ add("crown"); }}`, and why is it discouraged?
+        a: |-
+          The outer braces are the body of an **anonymous subclass**; the inner braces are its **instance initializer block**. It creates an extra class and captures `this` (memory leaks).
+      - id: jl-method-ref-super
+        q: |-
+          Which forms of method references refer to the current object or its parent?
+        a: |-
+          `this::method`, `Outer.this::method` and `super::method`, e.g. `new Thread(super::countGold)`.
+      - id: jl-finalize
+        q: |-
+          Which `finalize` method does the GC call? What about an overload with another signature?
+        a: |-
+          Only exactly `protected void finalize()`. An overload is an ordinary method. (Finalization is deprecated for removal.)
+
+  - section: Lambdas and effectively final variables
+    cards:
+      - id: jl-effectively-final-loops
+        q: |-
+          Lambdas can only capture effectively final variables. Which of these compiles, and why?
+          ```java
+          for (var dragon : dragons) { new Thread(() -> print(dragon)).start(); }
+          for (int i = 0; i < n; i++) { new Thread(() -> print(i)).start(); }
+          ```
+        a: |-
+          Only the first. The enhanced-for variable is a **fresh variable in each iteration** (effectively final); the classic loop counter `i` is modified.
+
+  - section: Records
+    cards:
+      - id: jl-record-fields
+        q: |-
+          What fields does a record have, and can you add more?
+        a: |-
+          The components become implicitly `private final` fields. You **cannot** declare extra instance fields; static fields, instance methods and extra constructors are allowed.
+      - id: jl-record-extra-constructor
+        q: |-
+          What must an extra (non-canonical) record constructor do?
+        a: |-
+          Call the canonical constructor (`this(...)`).
+      - id: jl-record-compact
+        q: |-
+          How does a **compact** canonical constructor work? What can't you do in it?
+        a: |-
+          It has no parameter list. You may validate or **reassign the parameters**; they are assigned to the fields **afterwards**. You can't assign the fields yourself.
+          ```java
+          record GoldRange(int from, int to) {
+              GoldRange { if (from > to) { int t = from; from = to; to = t; } }
+          }
+          ```
+
+  - section: Sealed classes
+    cards:
+      - id: jl-sealed-syntax
+        prompt: |-
+          Declare a sealed interface `Treasure` with four permitted implementations.
+        cloze: |-
+          ```java
+          public {{c1::sealed}} interface Treasure {{c2::permits}} GoldCoin, Gem, Artifact, CursedRing { }
+          ```
+      - id: jl-sealed-modifiers
+        q: |-
+          Which modifier must every permitted subclass of a sealed type have?
+        a: |-
+          One of `final`, `sealed` or `non-sealed` (`non-sealed` lets anyone extend it).
+      - id: jl-sealed-location
+        q: |-
+          Where must the permitted subclasses be? And if `permits` is omitted?
+        a: |-
+          In the **same module**, or the same package when in the unnamed module. Without `permits`, they must be declared **in the same file**.
+
+  - section: Enums
+    cards:
+      - id: jl-enum-static-fields
+        q: |-
+          Why can't an enum constructor use the enum's static fields? What's the workaround?
+        a: |-
+          Static fields are initialized **after** the constants are created. Use a static initializer block instead.
+      - id: jl-enum-constant-body
+        q: |-
+          What can an enum constant's body contain?
+        a: |-
+          Anything an anonymous class body can, typically overrides of the enum's methods. Constructor arguments go at the constant: `HATCHLING("H")`.
+      - id: jl-enum-nested
+        q: |-
+          Is an enum nested in a class static or inner?
+        a: |-
+          Implicitly **static**.
+
+  - section: Switch and pattern matching
+    cards:
+      - id: jl-switch-forms
+        q: |-
+          Colon form vs arrow form of `switch`: fall-through, braces, mixing?
+        a: |-
+          **Colon:** falls through, no braces needed. **Arrow:** no fall-through; braces needed unless a single expression or statement. You **can't mix** both forms in one switch.
+      - id: jl-switch-yield
+        prompt: |-
+          Return a value from a colon-form switch **expression**.
+        cloze: |-
+          ```java
+          var mood = switch (day) {
+              case "Monday": {{c1::yield}} "Knights' visiting day";
+              default:       yield "Quiet";
+          };
+          ```
+        extra: |-
+          `yield` is also needed in an arrow case with a block.
+      - id: jl-switch-guard
+        prompt: |-
+          Pattern switch: match heavy gold coins first, then deconstruct a `Gem` record, ignoring its second component.
+        cloze: |-
+          ```java
+          case GoldCoin c {{c1::when}} c.weight() > 10 -> "a heavy coin";
+          case GoldCoin c                      -> "a coin";
+          case {{c2::Gem(var color, _)}}               -> "a " + color + " gem";
+          ```
+      - id: jl-instanceof-record
+        prompt: |-
+          Test whether `obj` is a `Cave` record and bind its first component in one step.
+        cloze: |-
+          ```java
+          if (obj instanceof {{c1::Cave(String kingdom, _)}}) { System.out.println(kingdom); }
+          ```
+      - id: jl-unnamed
+        q: |-
+          What does `_` mean in `list.stream().map(_ -> "gold")` or `Gem(var color, _)`?
+        a: |-
+          An **unnamed** variable or pattern (final in JDK 22): a value you don't use.
+
+  - section: Newer JDK features
+    cards:
+      - id: jl-string-templates
+        q: |-
+          Can you use string templates `STR."Hello \{name}"`?
+        a: |-
+          No. They were a preview in JDK 21–22 and were **withdrawn in JDK 23**.
+      - id: jl-instance-main
+        q: |-
+          What is the shortest complete Java program in JDK 25?
+        a: |-
+          A compact source file with an instance `main` method:
+          ```java
+          void main() { IO.println("Hello, dragon!"); }
+          ```
+
+  - section: Exceptions
+    cards:
+      - id: jl-unchecked
+        q: |-
+          Which exceptions are unchecked?
+        a: |-
+          `RuntimeException` and `Error`, and their subclasses.
+      - id: jl-require-non-null-else
+        q: |-
+          Which `Objects` methods replace a `null` with a default, eagerly vs lazily?
+        a: |-
+          `Objects.requireNonNullElse(cave, Cave.DEFAULT)` and `Objects.requireNonNullElseGet(cave, () -> ...)`.
+          Also: `requireNonNull(x, "message")`, `checkIndex(index, length)`.
+      - id: jl-uncaught-handler
+        q: |-
+          How do you install a handler for exceptions no thread catches?
+        a: |-
+          `Thread.setDefaultUncaughtExceptionHandler((thread, ex) -> ...)`
+      - id: jl-stacktrace-string
+        q: |-
+          How do you get a stack trace as a `String`?
+        a: |-
+          ```java
+          var sw = new StringWriter();
+          ex.printStackTrace(new PrintWriter(sw));
+          String trace = sw.toString();
+          ```
+
+  - section: Small API reminders
+    cards:
+      - id: jl-equals
+        q: |-
+          What are the checks in a typical `equals` implementation, and how does `hashCode` match it?
+        a: |-
+          `this == o` → true; `o == null || getClass() != o.getClass()` → false; cast, then `Objects.equals(...)` per field. `hashCode()` returns `Objects.hash(...)` of the **same** fields.
+      - id: jl-properties-io
+        q: |-
+          How do you load and save a `Properties` file?
+        a: |-
+          `properties.load(in)` and `properties.store(out, "comment")`, with `Files.newInputStream`/`newOutputStream` in try-with-resources.
+      - id: jl-numberformat
+        q: |-
+          How do you format a number as a currency, or as a percentage, for the current locale?
+        a: |-
+          `NumberFormat.getCurrencyInstance().format(x)` / `NumberFormat.getPercentInstance().format(x)`
+
+  - section: Build and packaging
+    cards:
+      - id: jl-manifest-newline
+        q: |-
+          The `Main-Class` in your `MANIFEST.MF` is ignored. A classic cause?
+        a: |-
+          The manifest **must end with a newline**; otherwise the last line is ignored.
+      - id: jl-java-cp
+        q: |-
+          How do you run a class other than `Main-Class` from a JAR?
+        a: |-
+          `java -cp dragonbank.jar com.dragonbank.Other` (`java -jar` always uses `Main-Class`).
+      - id: jl-gradle-task
+        q: |-
+          How do you define a custom Gradle task (current and older syntax)?
+        a: |-
+          ```groovy
+          tasks.register('helloDragon') { doLast { println 'Roar!' } }
+          task helloDragon { doLast { ... } }    // older
+          ```
+      - id: jl-gradle-flatdir
+        q: |-
+          How does Gradle use JARs from a local `libs` directory, and how do you list all tasks?
+        a: |-
+          `repositories { flatDir { dirs 'libs' } }`. List tasks with `gradle tasks --all`.
+      - id: jl-javax-jakarta
+        q: |-
+          `javax.*` vs `jakarta.*` packages: since when, and what changed?
+        a: |-
+          Since **Jakarta EE 9** the packages are `jakarta.*` (`jakarta.persistence`, `jakarta.ws.rs`...). EE 8 used `javax.*`. The APIs are otherwise the same. Quarkus 3 and Spring Boot 3 use `jakarta.*`.

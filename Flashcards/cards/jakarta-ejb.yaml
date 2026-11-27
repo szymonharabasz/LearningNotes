@@ -1,0 +1,139 @@
+deck: Jakarta EE
+source: Java, Jakarta EE, Microprofile/Enterprise JavaBeans.md
+tag: ejb
+
+sections:
+  - section: Bean types and lifecycle
+    cards:
+      - id: ejb-types
+        q: |-
+          What are the four EJB types, and how many instances does each have?
+        a: |-
+          `@Stateless` (pooled, no client state), `@Stateful` (one per client), `@Singleton` (one per application), `@MessageDriven` (consumes JMS messages).
+      - id: ejb-startup-dependson
+        q: |-
+          Which annotations create a `@Singleton` at deployment, and control the initialization order?
+        a: |-
+          `@Startup` and `@DependsOn("VaultKeyring")`.
+      - id: ejb-passivate
+        q: |-
+          Which lifecycle callbacks exist only for `@Stateful` beans, and when are they called?
+        a: |-
+          `@PrePassivate` / `@PostActivate`: before and after the bean is swapped out to disk.
+
+  - section: Views
+    cards:
+      - id: ejb-no-interface
+        q: |-
+          When does an EJB get a **no-interface view**? And if it implements interfaces?
+        a: |-
+          Automatically when it has no `@Local`/`@Remote` and no interfaces. If it implements interfaces, add **`@LocalBean`** to get the no-interface view as well.
+      - id: ejb-remote-on-bean
+        q: |-
+          Where can you declare that an interface is a remote view?
+        a: |-
+          `@Remote` on the interface, or `@Remote(VaultSession.class)` on the bean class (same for `@Local`).
+      - id: ejb-inject-static
+        q: |-
+          Can an `@EJB` injected field be `static`?
+        a: |-
+          No, except in the main class of an application client.
+      - id: ejb-remote-lookup
+        q: |-
+          What does a standalone client need to look up a remote EJB?
+        a: |-
+          The compiled **remote interface** on its classpath, and an `InitialContext` with **server-specific** properties (initial context factory, ORB host and port). Then `ic.lookup("com.dragonbank.VaultSession")`; `ic.list("")` shows what is bound.
+
+  - section: Asynchronous methods
+    cards:
+      - id: ejb-async
+        prompt: |-
+          EJB: make `countAllGold` run asynchronously and return its result.
+        cloze: |-
+          ```java
+          @{{c1::Asynchronous}}
+          public {{c2::Future}}<BigDecimal> countAllGold() {
+              return new {{c3::AsyncResult}}<>(sum);
+          }
+          ```
+        extra: |-
+          The method can also return `void` (fire and forget). MicroProfile FT has its own `@Asynchronous`.
+
+  - section: Concurrency in Singleton
+    cards:
+      - id: ejb-singleton-default-lock
+        q: |-
+          What is the default concurrency behaviour of an EJB `@Singleton`?
+        a: |-
+          **Container-managed**, with lock **`WRITE`** on every method, so all calls are serialized.
+      - id: ejb-lock-read
+        prompt: |-
+          Let many threads read the gold price concurrently, waiting at most 30 s for the lock.
+        cloze: |-
+          ```java
+          @Lock(LockType.{{c1::READ}})
+          @{{c2::AccessTimeout}}(value = 30, unit = TimeUnit.SECONDS)
+          public BigDecimal getPrice() { ... }
+          ```
+      - id: ejb-bean-concurrency
+        q: |-
+          What does `@ConcurrencyManagement(ConcurrencyManagementType.BEAN)` mean?
+        a: |-
+          The container does no locking: **you synchronize yourself**.
+
+  - section: Transactions
+    cards:
+      - id: ejb-tx-default
+        q: |-
+          With container-managed transactions, what transaction attribute does an EJB business method have by default?
+        a: |-
+          `REQUIRED`. Change it with `@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)` etc.
+      - id: ejb-setrollbackonly
+        q: |-
+          How do you mark a container-managed transaction for rollback without throwing?
+        a: |-
+          `@Resource EJBContext ctx` (or `SessionContext`), then `ctx.setRollbackOnly()`.
+      - id: ejb-bmt
+        q: |-
+          How do you write an EJB with bean-managed transactions?
+        a: |-
+          `@TransactionManagement(TransactionManagementType.BEAN)`, inject `@Resource UserTransaction tx`, and call `tx.begin()` / `tx.commit()` yourself.
+      - id: ejb-system-vs-app-exception
+        q: |-
+          EJB **system** vs **application** exceptions: rollback and wrapping?
+        a: |-
+          **System** (unchecked, not annotated): roll back, wrapped in `EJBException`, logged.
+          **Application** (checked, or `@ApplicationException`): reach the client **unwrapped**, **no** rollback unless `@ApplicationException(rollback = true)`.
+      - id: ejb-appexception-jaxrs
+        q: |-
+          Your JAX-RS `ExceptionMapper` for a runtime exception thrown from an EJB never fires. Why, and what's the fix?
+        a: |-
+          The EJB container wraps it in `EJBException`. Annotate the exception with **`@ApplicationException`**.
+
+  - section: Timers
+    cards:
+      - id: ejb-timer-programmatic
+        q: |-
+          How do you create a programmatic EJB timer, and which method does it call?
+        a: |-
+          Inject `@Resource TimerService`, call e.g. `createIntervalTimer(new Date(), 5000, new TimerConfig("gold-count", false))`. It calls the bean's **`@Timeout`** method, which gets the `Timer` (`getInfo()`, `cancel()`).
+      - id: ejb-schedule-defaults
+        q: |-
+          `@Schedule(minute = "*/5")` fires only between 00:00 and 00:59. Why?
+        a: |-
+          The defaults are `second = "0"`, `minute = "0"`, **`hour = "0"`**, and `*` for day and month fields. You also need `hour = "*"`.
+      - id: ejb-schedule-persistent
+        q: |-
+          Do `@Schedule` timers survive a server restart?
+        a: |-
+          Yes: `persistent = true` is the default.
+      - id: ejb-schedule-values
+        q: |-
+          What do these `@Schedule` values mean: `minute = "25/10"`, `dayOfMonth = "-2"`, `dayOfMonth = "1st Tue"`?
+        a: |-
+          From minute 25, every 10 minutes; two days before the end of the month; the first Tuesday of the month.
+      - id: ejb-schedules
+        q: |-
+          How do you give one method several schedules?
+        a: |-
+          `@Schedules({ @Schedule(dayOfWeek = "Mon"), @Schedule(dayOfMonth = "Last") })` (or repeat `@Schedule`).
